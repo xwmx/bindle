@@ -28,6 +28,7 @@
 # Environment
 ###############################################################################
 
+_me=$(basename $0)
 source_dir=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../home/" && pwd )
 target_dir=$HOME
 
@@ -62,7 +63,7 @@ target_dir=$HOME
 
 _help-update-submodules() {
 cat <<EOM
-Usage: dotfiles update-submodules
+Usage: $_me update-submodules
 
 Update git submodules. An alias for the git command:
   git submodule foreach git pull
@@ -74,7 +75,7 @@ update-submodules() {
 
 _help-update-homebrew() {
 cat <<EOM
-Usage: dotfiles update-homebrew
+Usage: $_me update-homebrew
 
 Update homebrew and homebrew cask using the brew.sh install script.
 
@@ -90,7 +91,7 @@ update-homebrew() {
 
 _help-update-npm() {
 cat <<EOM
-Usage: dotfiles update-npm
+Usage: $_me update-npm
 
 Update node modules using the npm.sh script.
 
@@ -106,7 +107,7 @@ update-npm() {
 
 _help-update-pip() {
 cat <<EOM
-Usage: dotfiles update-pip
+Usage: $_me update-pip
 
 Update Python pip packaages using the pip.sh script.
 
@@ -122,7 +123,7 @@ update-pip() {
 
 _help-update-packages() {
 cat <<EOM
-Usage: dotfiles update-packages
+Usage: $_me update-packages
 
 Update Homebrew, Homebrew Cask, npm, and pip using each dedicated task:
   update-homebrew
@@ -140,7 +141,7 @@ update-packages() {
 
 _help-customize-icons() {
 cat <<EOM
-Usage: dotfiles customize-icons
+Usage: $_me customize-icons
 
 Customize icons of Homebrew-installed applications.
 
@@ -155,7 +156,7 @@ customize-icons() {
 
 _help-configure-osx() {
 cat <<EOM
-Usage: dotfiles configure-osx
+Usage: $_me configure-osx
 
 Set various preferences for OS X and default Apple applications.
 
@@ -170,7 +171,7 @@ configure-osx() {
 
 _help-configure-osx-apps() {
 cat <<EOM
-Usage: dotfiles configure-osx
+Usage: $_me configure-osx
 
 Set various preferences for non-default OS X applications.
 
@@ -190,7 +191,7 @@ configure-osx-apps() {
 
 _help-status() {
 cat <<EOM
-Usage: dotfiles status
+Usage: $_me status
 
 List dotfile status (i = identical, e = a file exists, x = no file eixsts).
 '@' suffixes denote existing symlinks.
@@ -215,7 +216,7 @@ status() {
 
 _help-backup-status() {
 cat <<EOM
-Usage: dotfiles backup-status
+Usage: $_me backup-status
 
 List dotfile backup (.bak file) status (i = identical, e = a file exists, x = no file eixsts).
 '@' suffixes denote existing symlinks.
@@ -241,7 +242,7 @@ backup-status() {
 
 _help-clean() {
 cat <<EOM
-Usage: dotfiles clean
+Usage: $_me clean
 
 Remove dotfile links in home directory with status 'i'
 EOM
@@ -262,9 +263,9 @@ clean() {
 
 _help-clear() {
 cat <<EOM
-Usage: dotfiles clear
+Usage: $_me clear
 
-Remove dotfiles from home directory with status 'i' (via clean task), backs up files with status 'e'
+Remove $_me from home directory with status 'i' (via clean task), backs up files with status 'e'
 EOM
 }
 _clear() {
@@ -282,7 +283,7 @@ clear() {
 
 _help-link() {
 cat <<EOM
-Usage: dotfiles link
+Usage: $_me link
 
 Link dotfiles to home directory. Existing files skipped.
 EOM
@@ -309,7 +310,7 @@ _function_exists() {
 
 _help-help() {
 cat <<EOM
-Usage: dotfiles help [task]
+Usage: $_me help [task]
 
 Display help information for the dotfiles command or a specified task.
 EOM
@@ -328,10 +329,10 @@ help() {
 Tasks for managing OS X dotfiles and environment config.
 
 Usage:
-  dotfiles [task]
+  $_me [task]
 
 Task help:
-  dotfiles help [task]
+  $_me help [task]
 
 $(tasks --pretty)
 EOM
@@ -350,7 +351,7 @@ EOM
 
 _help-tasks() {
 cat <<EOM
-Usage: dotfiles tasks [--pretty]
+Usage: $_me tasks [--pretty]
 
 Display the list of available tasks.
 EOM
