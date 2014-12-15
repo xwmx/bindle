@@ -59,9 +59,9 @@ configure-osx-apps() {
 
 # Example task group:
 #
-# _help-example - prints help text.
-# _example() - task to be run for each dotfile.
-# example() - the task as it appears to the user
+# _help-example - Optional. Prints help text.
+# _example() - The task to be run for each dotfile.
+# example() - The task as it appears to the user
 #
 #
 # _help-example() {
