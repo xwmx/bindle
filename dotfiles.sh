@@ -3,6 +3,54 @@
 # DOTFILES
 #
 # Tasks for managing dotfiles.
+#
+# Example task group:
+#
+# _help-example - Optional. Prints help text.
+# _example() - Optional. The task to be run for each dotfile.
+# example() - The task as it appears to the user
+#
+#
+# _help-example() {
+#   echo "Example help text."
+# }
+# _example() {
+#   echo $f
+#   echo $filename
+#   echo $target_file
+# }
+# example() {
+#   _each_dotfile _example
+# }
+
+
+###############################################################################
+# Environment
+###############################################################################
+
+
+source_dir=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../home/" && pwd )
+target_dir=$HOME
+
+
+###############################################################################
+# Utility functions
+###############################################################################
+
+# Iterate over each dotfile and execute a provided function on each one.
+_each_dotfile() {
+  per_file_command=$1
+  for f in $source_dir/.*
+  do
+    filename=$(basename "$f")
+    target_file=$target_dir/$filename
+    if !( [[ "$filename" =~ ^\.?\.$ ]] ); then
+      # Subfunctions can access the variables in this command, so it's not
+      # necessary to pass them as arguments.
+      $per_file_command
+    fi
+  done
+}
 
 ###############################################################################
 # Tasks
@@ -56,40 +104,6 @@ configure-osx-apps() {
 
 # Linking
 #------------------------------------------------------------------------------
-
-# Example task group:
-#
-# _help-example - Optional. Prints help text.
-# _example() - The task to be run for each dotfile.
-# example() - The task as it appears to the user
-#
-#
-# _help-example() {
-#   echo "Example help text."
-# }
-# _example() {
-#   echo $f
-#   echo $filename
-#   echo $target_file
-# }
-# example() {
-#   _each_dotfile _example
-# }
-
-# Utility function for iterating over each source file.
-_each_dotfile() {
-  per_file_command=$1
-  for f in $source_dir/.*
-  do
-    filename=$(basename "$f")
-    target_file=$target_dir/$filename
-    if !( [[ "$filename" =~ ^\.?\.$ ]] ); then
-      # Subfunctions can access the variables in this command, so it's not
-      # necessary to pass them as arguments.
-      $per_file_command
-    fi
-  done
-}
 
 # Status
 
