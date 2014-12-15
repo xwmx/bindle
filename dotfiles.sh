@@ -57,89 +57,107 @@ configure-osx-apps() {
 # Linking
 #------------------------------------------------------------------------------
 
+# Example task group:
+#
+# _help-example - prints help text.
+# _example() - task to be run for each file.
+# example() - the task as it appears to the user
+#
+#
+# _help-example() {
+#   echo "Example help text."
+# }
+# _example() {
+#   echo $f
+#   echo $filename
+#   echo $target_file
+# }
+# example() {
+#   _each_file _example
+# }
+
+# Utility function for iterating over each source file.
+_each_file() {
+  for f in $source_dir/.*
+  do
+    filename=$(basename "$f")
+    target_file=$target_dir/$filename
+    if !( [[ "$filename" =~ ^\.?\.$ ]] ); then
+      $1 $f $filename $target_file
+    fi
+  done
+}
+
+# Status
+
 _help-status() {
   echo "List dotfile.bak status (i = identical, e = a file exists, x = no file eixsts)."
   echo "'@' suffixes denote existing symlinks."
 }
-status() {
-  for f in $source_dir/.*
-  do
-    filename=$(basename "$f")
-    target_file=$target_dir/$filename
-    if !( [[ "$filename" =~ ^\.?\.$ ]] ); then
-      if ( [[ -L $target_file ]] && \
-           [[ "$(readlink $target_file)" == "$f" ]]
-      ); then
-        echo "i   $filename"
-      elif [[ -a $target_file ]]; then
-        echo " e  $filename"
-      else
-        echo "  x $filename"
-      fi
-    fi
-  done
+_status() {
+  if ( [[ -L $target_file ]] && \
+       [[ "$(readlink $target_file)" == "$f" ]]
+  ); then
+    echo "i   $filename"
+  elif [[ -a $target_file ]]; then
+    echo " e  $filename"
+  else
+    echo "  x $filename"
+  fi
 }
+status() {
+  _each_file _status
+}
+
+# Clean
 
 _help-clean() {
   echo "Remove dotfile links in home directory with status 'i'"
 }
-clean() {
-  for f in $source_dir/.*
-  do
-    filename=$(basename "$f")
-    target_file=$target_dir/$filename
-    if !( [[ "$filename" =~ ^\.?\.$ ]] ); then
-      if ( [[ -L $target_file ]] && \
-           [[ "$(readlink $target_file)" == "$f" ]]
-      ); then
-        echo "Removing linked file: $target_file"
-        rm $target_file
-      fi
-    fi
-  done
+_clean() {
+  if ( [[ -L $target_file ]] && \
+       [[ "$(readlink $target_file)" == "$f" ]]
+  ); then
+    echo "Removing linked file: $target_file"
+    rm $target_file
+  fi
 }
+clean() {
+  _each_file _clean
+}
+
+# Clear
 
 _help-clear() {
   echo "Remove dotfiles from home directory with status 'i' (via clean task), backs up files with status 'e'"
 }
-clear() {
-
-  clean
-
-  for f in $source_dir/.*
-  do
-    filename=$(basename "$f")
-    target_file=$target_dir/$filename
-    if !( [[ "$filename" =~ ^\.?\.$ ]] ); then
-      if [[ -a $target_file ]]; then
-        echo "Backing up file: $target_file"
-        mv $target_file "$target_file".bak
-      fi
-    fi
-  done
+_clear() {
+  if [[ -a $target_file ]]; then
+    echo "Backing up file: $target_file"
+    mv $target_file "$target_file".bak
+  fi
 }
+clear() {
+  clean
+  _each_file _clear
+}
+
+# Link
 
 _help-link() {
   echo "Link dotfiles to home directory. List files skipped."
 }
-link() {
-  existing_files=""
-  for f in $source_dir/.*
-  do
-    filename=$(basename "$f")
-    target_file=$target_dir/$filename
-    if !( [[ "$filename" =~ ^\.?\.$ ]] ); then
-      if [[ -a $target_file ]]; then
-        echo Exists: $target_file
-      else
-        echo "Linking $f => $target_file"
-        ln -s $f $target_file
-      fi
-    fi
-  done
+_link() {
+  if [[ -a $target_file ]]; then
+    echo Exists: $filename
+  else
+    echo "Linking $f => $target_file"
+    ln -s $f $target_file
+  fi
 }
-
-
+link() {
+  _each_file _link
+}
 
 # Help
 #------------------------------------------------------------------------------
