@@ -218,18 +218,20 @@ _function_exists() {
 
 help() {
   if [[ $# = 0 ]]; then
-    echo "dotfiles"
-    echo ""
-    echo "Tasks for managing OS X dotfiles and environment config."
-    echo ""
-    echo "Usage:"
-    echo "  dotfiles [task]"
-    echo ""
-    echo "Task help:"
-    echo "  dotfiles help [task]"
-    echo ""
-    tasks --pretty
-  else
+    cat <<EOM
+dotfiles
+
+Tasks for managing OS X dotfiles and environment config.
+
+Usage:
+  dotfiles [task]
+
+Task help:
+  dotfiles help [task]
+
+$(tasks --pretty)
+EOM
+ else
    local help_function="_help-$1"
    if _function_exists $help_function ; then
      echo "$($help_function)"
