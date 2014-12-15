@@ -11,28 +11,6 @@
 source_dir=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../home/" && pwd )
 target_dir=$HOME
 
-source_file() {
-  echo $source_dir/$1
-}
-
-target_file() {
-  echo $target_dir/$1
-}
-
-source_files() {
-  local i=0
-  local files=()
-  for f in $source_dir/.*
-  do
-    filename=$(basename "$f")
-    if !( [[ "$filename" =~ ^\.?\.$ ]] ); then
-      $files[$i]
-      ((i++))
-    fi
-  done
-  echo $files[@]
-}
-
 # Maintenance
 #------------------------------------------------------------------------------
 
