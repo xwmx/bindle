@@ -227,11 +227,11 @@ _backup-status() {
   if ( [[ -L $target_file ]] && \
        [[ "$(readlink $target_file)" == "$f" ]]
   ); then
-    echo "i   $filename"
+    echo "i   $filename.bak"
   elif [[ -a $target_file ]]; then
-    echo " e  $filename"
+    echo " e  $filename.bak"
   else
-    echo "  x $filename"
+    echo "  x $filename.bak"
   fi
 }
 backup-status() {
