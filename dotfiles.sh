@@ -191,10 +191,12 @@ configure-osx-apps() {
 # Status
 
 _help-status() {
-  echo "Usage: dotfiles status"
-  echo ""
-  echo "List dotfile status (i = identical, e = a file exists, x = no file eixsts)."
-  echo "'@' suffixes denote existing symlinks."
+cat <<EOM
+Usage: dotfiles status
+
+List dotfile status (i = identical, e = a file exists, x = no file eixsts).
+'@' suffixes denote existing symlinks.
+EOM
 }
 _status() {
   if ( [[ -L $target_file ]] && \
@@ -214,10 +216,12 @@ status() {
 # Backup Status
 
 _help-backup-status() {
-  echo "Usage: dotfiles backup-status"
-  echo ""
-  echo "List dotfile backup (.bak file) status (i = identical, e = a file exists, x = no file eixsts)."
-  echo "'@' suffixes denote existing symlinks."
+cat <<EOM
+Usage: dotfiles backup-status
+
+List dotfile backup (.bak file) status (i = identical, e = a file exists, x = no file eixsts).
+'@' suffixes denote existing symlinks.
+EOM
 }
 _backup-status() {
   target_file=$target_file.bak
@@ -238,9 +242,11 @@ backup-status() {
 # Clean
 
 _help-clean() {
-  echo "Usage: dotfiles clean"
-  echo ""
-  echo "Remove dotfile links in home directory with status 'i'"
+cat <<EOM
+Usage: dotfiles clean
+
+Remove dotfile links in home directory with status 'i'
+EOM
 }
 _clean() {
   if ( [[ -L $target_file ]] && \
@@ -257,9 +263,11 @@ clean() {
 # Clear
 
 _help-clear() {
-  echo "Usage: dotfiles clear"
-  echo ""
-  echo "Remove dotfiles from home directory with status 'i' (via clean task), backs up files with status 'e'"
+cat <<EOM
+Usage: dotfiles clear
+
+Remove dotfiles from home directory with status 'i' (via clean task), backs up files with status 'e'
+EOM
 }
 _clear() {
   if [[ -a $target_file ]]; then
@@ -275,9 +283,11 @@ clear() {
 # Link
 
 _help-link() {
-  echo "Usage: dotfiles link"
-  echo ""
-  echo "Link dotfiles to home directory. Existing files skipped."
+cat <<EOM
+Usage: dotfiles link
+
+Link dotfiles to home directory. Existing files skipped.
+EOM
 }
 _link() {
   if [[ -a $target_file ]]; then
