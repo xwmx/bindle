@@ -91,6 +91,10 @@ _each_file() {
 # Status
 
 _help-status() {
+  echo "Usage: dotfiles status"
+  echo ""
+  echo "Description:"
+  echo ""
   echo "List dotfile.bak status (i = identical, e = a file exists, x = no file eixsts)."
   echo "'@' suffixes denote existing symlinks."
 }
@@ -112,6 +116,10 @@ status() {
 # Clean
 
 _help-clean() {
+  echo "Usage: dotfiles clean"
+  echo ""
+  echo "Description:"
+  echo ""
   echo "Remove dotfile links in home directory with status 'i'"
 }
 _clean() {
@@ -129,6 +137,10 @@ clean() {
 # Clear
 
 _help-clear() {
+  echo "Usage: dotfiles clear"
+  echo ""
+  echo "Description:"
+  echo ""
   echo "Remove dotfiles from home directory with status 'i' (via clean task), backs up files with status 'e'"
 }
 _clear() {
@@ -145,6 +157,10 @@ clear() {
 # Link
 
 _help-link() {
+  echo "Usage: dotfiles link"
+  echo ""
+  echo "Description:"
+  echo ""
   echo "Link dotfiles to home directory. List files skipped."
 }
 _link() {
@@ -162,12 +178,21 @@ link() {
 # Help
 #------------------------------------------------------------------------------
 
+_function_exists() {
+  [ `type -t $1`"" == 'function' ]
+}
+
 help() {
   if [[ $# = 0 ]]; then
     echo "Usage: dotfiles [task]"
   else
-    echo "$(_help-$1)"
-  fi
+   local help_function="_help-$1"
+   if _function_exists $help_function ; then
+     echo "$($help_function)"
+   else
+    echo "No additional information for $1"
+   fi
+ fi
 }
 
 # Task Listing
