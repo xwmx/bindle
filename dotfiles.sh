@@ -161,7 +161,7 @@ _help-link() {
   echo ""
   echo "Description:"
   echo ""
-  echo "Link dotfiles to home directory. List files skipped."
+  echo "Link dotfiles to home directory. Existing files skipped."
 }
 _link() {
   if [[ -a $target_file ]]; then
