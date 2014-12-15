@@ -51,6 +51,20 @@ _each_dotfile() {
   done
 }
 
+_each_target_dotfile() {
+  per_file_command=$1
+  for f in $target_dir/.*
+  do
+    filename=$(basename "$f")
+    source_file=$source_dir/$filename
+    if !( [[ "$filename" =~ ^\.?\.$ ]] ); then
+      # Subfunctions can access the variables in this command, so it's not
+      # necessary to pass them as arguments.
+      $per_file_command
+    fi
+  done
+}
+
 ###############################################################################
 # Tasks
 ###############################################################################
@@ -183,6 +197,123 @@ configure-osx-apps() {
 
 # Linking
 #------------------------------------------------------------------------------
+
+_help-list() {
+cat <<EOM
+Usage: $_me list
+
+List all dotfiles from in the home directory and indicate whether they are linked (i) or are files (f).
+EOM
+}
+_list() {
+  if ( [[ -L $f ]] && \
+       [[ "$(readlink $f)" == "$source_file" ]]
+  ); then
+    echo "i   $filename"
+  elif [[ -a $f ]]; then
+    echo " e  $filename"
+  fi
+
+}
+list() {
+  _each_target_dotfile _list
+}
+
+
+_help-list-untracked() {
+cat <<EOM
+Usage: $_me list-untracked
+
+List all untracked dotfiles from in the home directory.
+EOM
+}
+_list-untracked() {
+  if !( [[ -L $f ]] && \
+        [[ "$(readlink $f)" == "$source_file" ]] && \
+        [[ -a $f ]]
+  ); then
+    echo " e  $filename"
+  fi
+
+}
+list-untracked() {
+  _each_target_dotfile _list-untracked
+}
+
+_help-list-tracked() {
+cat <<EOM
+Usage: $_me list-tracked
+
+List all tracked dotfiles from in the home directory.
+EOM
+}
+_list-tracked() {
+  if ( [[ -L $f ]] && \
+       [[ "$(readlink $f)" == "$source_file" ]]
+  ); then
+    echo "i   $filename"
+  fi
+
+}
+list-tracked() {
+  _each_target_dotfile _list-tracked
+}
+
+_help-add() {
+cat <<EOM
+Usage: $_me add filename
+
+Add the specified dotfile to the dotfiles repository and link.
+EOM
+}
+add() {
+  if [[ $# = 0 ]]; then
+    echo "must specify file"
+  elif [[ ! -a $1 ]]; then
+    echo "file does not exist"
+  else
+    filename=$(basename $1)
+    target_file=$target_dir/$filename
+    source_file=$source_dir/$filename
+    if [[ ! -a $source_file ]]; then
+      echo "file does not exist"
+    elif [[ ! -L $target_file ]]; then
+      echo "file is not a symlink"
+    else
+      mv $target_file $source_dir
+      echo "Linking $source_file => $target_file"
+      ln -s $source_file $target_file
+    fi
+  fi
+}
+
+_help-restore() {
+cat <<EOM
+Usage: $_me restore filename
+
+Unlink the specified file and move from the dotfiles repository back to $HOME"
+EOM
+}
+restore() {
+  if [[ $# = 0 ]]; then
+    echo "must specify file"
+  elif [[ ! -a $1 ]]; then
+    echo "file does not exist"
+  else
+    filename=$(basename $1)
+    target_file=$target_dir/$filename
+    source_file=$source_dir/$filename
+    if [[ ! -a $source_file ]]; then
+      echo "file does not exist"
+    elif [[ ! -L $target_file ]]; then
+      echo "file is not a symlink"
+    else
+      rm $target_file
+      mv $source_file $target_file
+      echo "Restored: $source_file => $target_file"
+    fi
+  fi
+}
 
 # Status
 
