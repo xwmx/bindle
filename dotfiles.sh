@@ -62,6 +62,7 @@ target_dir=$HOME
 # Maintenance
 #------------------------------------------------------------------------------
 
+
 update-submodules() {
   git submodule foreach git pull
 }
@@ -217,7 +218,17 @@ _function_exists() {
 
 help() {
   if [[ $# = 0 ]]; then
-    echo "Usage: dotfiles [task]"
+    echo "dotfiles"
+    echo ""
+    echo "Tasks for managing OS X dotfiles and environment config."
+    echo ""
+    echo "Usage:"
+    echo "  dotfiles [task]"
+    echo ""
+    echo "Task help:"
+    echo "  dotfiles help [task]"
+    echo ""
+    tasks --pretty
   else
    local help_function="_help-$1"
    if _function_exists $help_function ; then
@@ -232,6 +243,7 @@ help() {
 #------------------------------------------------------------------------------
 
 tasks() {
+  [[ $1 == "--pretty" ]] && echo "Available tasks:"
   task_list=($(declare -F))
   for t in ${task_list[@]}
   do
@@ -239,7 +251,11 @@ tasks() {
           [[ $t == "-f" ]] || \
           [[ "$t" =~ ^_(.*) ]]
     ); then
-      echo "$t"
+      if [[ $1 == "--pretty" ]]; then
+        echo "  $t"
+      else
+        echo "$t"
+      fi
     fi
   done
 }
