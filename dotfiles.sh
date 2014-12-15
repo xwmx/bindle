@@ -60,7 +60,7 @@ configure-osx-apps() {
 # Example task group:
 #
 # _help-example - prints help text.
-# _example() - task to be run for each file.
+# _example() - task to be run for each dotfile.
 # example() - the task as it appears to the user
 #
 #
@@ -73,7 +73,7 @@ configure-osx-apps() {
 #   echo $target_file
 # }
 # example() {
-#   _each_file _example
+#   _each_dotfile _example
 # }
 
 # Utility function for iterating over each source file.
