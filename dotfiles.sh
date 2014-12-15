@@ -111,6 +111,30 @@ status() {
   _each_dotfile _status
 }
 
+# Backup Status
+
+_help-backup-status() {
+  echo "Usage: dotfiles backup-status"
+  echo ""
+  echo "List dotfile backup (.bak file) status (i = identical, e = a file exists, x = no file eixsts)."
+  echo "'@' suffixes denote existing symlinks."
+}
+_backup-status() {
+  target_file=$target_file.bak
+  if ( [[ -L $target_file ]] && \
+       [[ "$(readlink $target_file)" == "$f" ]]
+  ); then
+    echo "i   $filename"
+  elif [[ -a $target_file ]]; then
+    echo " e  $filename"
+  else
+    echo "  x $filename"
+  fi
+}
+backup-status() {
+  _each_dotfile _backup-status
+}
+
 # Clean
 
 _help-clean() {
