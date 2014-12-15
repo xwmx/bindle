@@ -78,12 +78,15 @@ configure-osx-apps() {
 
 # Utility function for iterating over each source file.
 _each_dotfile() {
+  per_file_command=$1
   for f in $source_dir/.*
   do
     filename=$(basename "$f")
     target_file=$target_dir/$filename
     if !( [[ "$filename" =~ ^\.?\.$ ]] ); then
-      $1 $f $filename $target_file
+      # Subfunctions can access the variables in this command, so it's not
+      # necessary to pass them as arguments.
+      $per_file_command
     fi
   done
 }
