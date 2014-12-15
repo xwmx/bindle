@@ -62,42 +62,124 @@ target_dir=$HOME
 # Maintenance
 #------------------------------------------------------------------------------
 
+_help-update-submodules() {
+cat <<EOM
+Usage: dotfiles update-submodules
 
+Update git submodules. An alias for the git command:
+  git submodule foreach git pull
+EOM
+}
 update-submodules() {
   git submodule foreach git pull
 }
 
+_help-update-homebrew() {
+cat <<EOM
+Usage: dotfiles update-homebrew
+
+Update homebrew and homebrew cask using the brew.sh install script.
+
+brew.sh location:
+  $DOTFILES/script/packages/brew.sh
+
+EOM
+}
 update-homebrew() {
   echo ">> Updating Homebrew formulas and casks..."
   $DOTFILES/script/packages/brew.sh
 }
 
+_help-update-npm() {
+cat <<EOM
+Usage: dotfiles update-npm
+
+Update node modules using the npm.sh script.
+
+npm.sh location:
+  $DOTFILES/script/packages/npm.sh
+
+EOM
+}
 update-npm() {
   echo ">> Updating global npm modules..."
   $DOTFILES/script/packages/npm.sh
 }
 
+_help-update-pip() {
+cat <<EOM
+Usage: dotfiles update-pip
+
+Update Python pip packaages using the pip.sh script.
+
+pip.sh location:
+  $DOTFILES/script/packages/pip.sh
+
+EOM
+}
 update-pip() {
   echo ">> Updating pip packages..."
   $DOTFILES/script/packages/pip.sh
 }
 
+_help-update-packages() {
+cat <<EOM
+Usage: dotfiles update-packages
+
+Update Homebrew, Homebrew Cask, npm, and pip using each dedicated task:
+  update-homebrew
+  update-npm
+  update-pip
+
+For information about each task, see help for the individual tasks.
+EOM
+}
 update-packages() {
   update-homebrew
   update-npm
   update-pip
 }
 
+_help-customize-icons() {
+cat <<EOM
+Usage: dotfiles customize-icons
+
+Customize icons of Homebrew-installed applications.
+
+For more information, reference the following script:
+  $DOTFILES/script/customizations/customize_icons.rb
+EOM
+}
 customize-icons() {
   echo ">> Customizing icons of Homebrew-installed applications..."
   $DOTFILES/script/customizations/customize_icons.rb
 }
 
+_help-configure-osx() {
+cat <<EOM
+Usage: dotfiles configure-osx
+
+Set various preferences for OS X and default Apple applications.
+
+For more information, reference the following script:
+  $DOTFILES/script/config/osx.sh
+EOM
+}
 configure-osx() {
   echo ">> Configuring OS X preferences..."
   $DOTFILES/script/config/osx.sh
 }
 
+_help-configure-osx-apps() {
+cat <<EOM
+Usage: dotfiles configure-osx
+
+Set various preferences for non-default OS X applications.
+
+For more information, reference the following script:
+  $DOTFILES/script/config/osx_apps.sh
+EOM
+}
 configure-osx-apps() {
   echo ">> Configuring OS X application preferences..."
   $DOTFILES/script/config/osx_apps.sh
@@ -216,6 +298,14 @@ _function_exists() {
   [ `type -t $1`"" == 'function' ]
 }
 
+
+_help-help() {
+cat <<EOM
+Usage: dotfiles help [task]
+
+Display help information for the dotfiles command or a specified task.
+EOM
+}
 help() {
   if [[ $# = 0 ]]; then
     cat <<EOM
@@ -244,6 +334,13 @@ EOM
 # Task Listing
 #------------------------------------------------------------------------------
 
+_help-tasks() {
+cat <<EOM
+Usage: dotfiles tasks [--pretty]
+
+Display the list of available tasks.
+EOM
+}
 tasks() {
   [[ $1 == "--pretty" ]] && echo "Available tasks:"
   task_list=($(declare -F))
