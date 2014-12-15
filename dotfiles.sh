@@ -77,7 +77,7 @@ configure-osx-apps() {
 # }
 
 # Utility function for iterating over each source file.
-_each_file() {
+_each_dotfile() {
   for f in $source_dir/.*
   do
     filename=$(basename "$f")
@@ -110,7 +110,7 @@ _status() {
   fi
 }
 status() {
-  _each_file _status
+  _each_dotfile _status
 }
 
 # Clean
@@ -131,7 +131,7 @@ _clean() {
   fi
 }
 clean() {
-  _each_file _clean
+  _each_dotfile _clean
 }
 
 # Clear
@@ -151,7 +151,7 @@ _clear() {
 }
 clear() {
   clean
-  _each_file _clear
+  _each_dotfile _clear
 }
 
 # Link
@@ -172,7 +172,7 @@ _link() {
   fi
 }
 link() {
-  _each_file _link
+  _each_dotfile _link
 }
 
 # Help
