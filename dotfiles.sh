@@ -93,8 +93,6 @@ _each_dotfile() {
 _help-status() {
   echo "Usage: dotfiles status"
   echo ""
-  echo "Description:"
-  echo ""
   echo "List dotfile status (i = identical, e = a file exists, x = no file eixsts)."
   echo "'@' suffixes denote existing symlinks."
 }
@@ -118,8 +116,6 @@ status() {
 _help-clean() {
   echo "Usage: dotfiles clean"
   echo ""
-  echo "Description:"
-  echo ""
   echo "Remove dotfile links in home directory with status 'i'"
 }
 _clean() {
@@ -139,8 +135,6 @@ clean() {
 _help-clear() {
   echo "Usage: dotfiles clear"
   echo ""
-  echo "Description:"
-  echo ""
   echo "Remove dotfiles from home directory with status 'i' (via clean task), backs up files with status 'e'"
 }
 _clear() {
@@ -158,8 +152,6 @@ clear() {
 
 _help-link() {
   echo "Usage: dotfiles link"
-  echo ""
-  echo "Description:"
   echo ""
   echo "Link dotfiles to home directory. Existing files skipped."
 }
