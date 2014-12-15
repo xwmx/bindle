@@ -95,7 +95,7 @@ _help-status() {
   echo ""
   echo "Description:"
   echo ""
-  echo "List dotfile.bak status (i = identical, e = a file exists, x = no file eixsts)."
+  echo "List dotfile status (i = identical, e = a file exists, x = no file eixsts)."
   echo "'@' suffixes denote existing symlinks."
 }
 _status() {
