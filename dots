@@ -43,10 +43,16 @@
 # Set to the command's basename.
 _me=$(basename $0)
 
+
+# Ensure that $DOTFILES is set in the environment.
+if [[ -z $DOTFILES ]]; then
+  echo "Error: \$DOTFILES must be set to your dotfiles directory" && exit 1
+fi
+
 # $source_dir
 #
 # Set to a 'home' directory adjacent to this command's enclosing directory.
-source_dir=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../home/" && pwd )
+source_dir=$DOTFILES/home
 
 # $target_dir
 #
