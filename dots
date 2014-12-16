@@ -245,16 +245,18 @@ _help-all() {
 cat <<EOM
 Usage: $_me all
 
-List all dotfiles from in the home directory and indicate whether they are linked (i) or are files (f).
+List all dotfiles from in the home directory and indicate whether they are identical (i). Directory listings are prefixed with a 'd' and symbolic links with a '@'.
 EOM
 }
 _all() {
   if ( [[ -L $f ]] && \
        [[ "$(readlink $f)" == "$source_file" ]]
   ); then
-    echo "i   $filename"
+    echo "@  i   $filename"
+  elif [[ -d $f ]]; then
+    echo "d      $filename"
   elif [[ -a $f ]]; then
-    echo " e  $filename"
+    echo "       $filename"
   fi
 
 }
