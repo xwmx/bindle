@@ -104,25 +104,25 @@ _each_target_dotfile() {
 
 # Configuration ###############################################################
 
-# ----------------------------------------------------------- update-submodules
+# ----------------------------------------------------------- update_submodules
 
-_help-update-submodules() {
+_help_update_submodules() {
 cat <<EOM
-Usage: $_me update-submodules
+Usage: $_me update_submodules
 
 Update git submodules. An alias for the git command:
   git submodule foreach git pull
 EOM
 }
-update-submodules() {
+update_submodules() {
   git submodule foreach git pull
 }
 
-# ------------------------------------------------------------- update-homebrew
+# ------------------------------------------------------------- update_homebrew
 
-_help-update-homebrew() {
+_help_update_homebrew() {
 cat <<EOM
-Usage: $_me update-homebrew
+Usage: $_me update_homebrew
 
 Update homebrew and homebrew cask using the brew.sh install script.
 
@@ -131,16 +131,16 @@ brew.sh location:
 
 EOM
 }
-update-homebrew() {
+update_homebrew() {
   echo ">> Updating Homebrew formulas and casks..."
   $DOTFILES/script/packages/brew.sh
 }
 
-# ------------------------------------------------------------------ update-npm
+# ------------------------------------------------------------------ update_npm
 
-_help-update-npm() {
+_help_update_npm() {
 cat <<EOM
-Usage: $_me update-npm
+Usage: $_me update_npm
 
 Update node modules using the npm.sh script.
 
@@ -149,16 +149,16 @@ npm.sh location:
 
 EOM
 }
-update-npm() {
+update_npm() {
   echo ">> Updating global npm modules..."
   $DOTFILES/script/packages/npm.sh
 }
 
-# ------------------------------------------------------------------ update-pip
+# ------------------------------------------------------------------ update_pip
 
-_help-update-pip() {
+_help_update_pip() {
 cat <<EOM
-Usage: $_me update-pip
+Usage: $_me update_pip
 
 Update Python pip packaages using the pip.sh script.
 
@@ -167,36 +167,36 @@ pip.sh location:
 
 EOM
 }
-update-pip() {
+update_pip() {
   echo ">> Updating pip packages..."
   $DOTFILES/script/packages/pip.sh
 }
 
-# ------------------------------------------------------------- update-packages
+# ------------------------------------------------------------- update_packages
 
-_help-update-packages() {
+_help_update_packages() {
 cat <<EOM
-Usage: $_me update-packages
+Usage: $_me update_packages
 
 Update Homebrew, Homebrew Cask, npm, and pip using each dedicated task:
-  update-homebrew
-  update-npm
-  update-pip
+  update_homebrew
+  update_npm
+  update_pip
 
 For information about each task, see help for the individual tasks.
 EOM
 }
-update-packages() {
-  update-homebrew
-  update-npm
-  update-pip
+update_packages() {
+  update_homebrew
+  update_npm
+  update_pip
 }
 
-# ------------------------------------------------------------- customize-icons
+# ------------------------------------------------------------- customize_icons
 
-_help-customize-icons() {
+_help_customize_icons() {
 cat <<EOM
-Usage: $_me customize-icons
+Usage: $_me customize_icons
 
 Customize icons of Homebrew-installed applications.
 
@@ -204,16 +204,16 @@ For more information, reference the following script:
   $DOTFILES/script/customizations/customize_icons.rb
 EOM
 }
-customize-icons() {
+customize_icons() {
   echo ">> Customizing icons of Homebrew-installed applications..."
   $DOTFILES/script/customizations/customize_icons.rb
 }
 
-# --------------------------------------------------------------- configure-osx
+# --------------------------------------------------------------- configure_osx
 
-_help-configure-osx() {
+_help_configure_osx() {
 cat <<EOM
-Usage: $_me configure-osx
+Usage: $_me configure_osx
 
 Set various preferences for OS X and default Apple applications.
 
@@ -221,16 +221,16 @@ For more information, reference the following script:
   $DOTFILES/script/config/osx.sh
 EOM
 }
-configure-osx() {
+configure_osx() {
   echo ">> Configuring OS X preferences..."
   $DOTFILES/script/config/osx.sh
 }
 
-# ---------------------------------------------------------- configure-osx-apps
+# ---------------------------------------------------------- configure_osx_apps
 
-_help-configure-osx-apps() {
+_help_configure_osx_apps() {
 cat <<EOM
-Usage: $_me configure-osx
+Usage: $_me configure_osx
 
 Set various preferences for non-default OS X applications.
 
@@ -238,7 +238,7 @@ For more information, reference the following script:
   $DOTFILES/script/config/osx_apps.sh
 EOM
 }
-configure-osx-apps() {
+configure_osx_apps() {
   echo ">> Configuring OS X application preferences..."
   $DOTFILES/script/config/osx_apps.sh
 }
@@ -279,7 +279,7 @@ all() {
 
 # ------------------------------------------------------------------- untracked
 
-_help-untracked() {
+_help_untracked() {
 cat <<EOM
 Usage: $_me untracked
 
@@ -307,7 +307,7 @@ untracked() {
 
 # --------------------------------------------------------------------- tracked
 
-_help-tracked() {
+_help_tracked() {
 cat <<EOM
 Usage: $_me tracked
 
@@ -331,7 +331,7 @@ tracked() {
 
 # ------------------------------------------------------------------------- add
 
-_help-add() {
+_help_add() {
 cat <<EOM
 Usage: $_me add filename
 
@@ -361,7 +361,7 @@ add() {
 
 # --------------------------------------------------------------------- restore
 
-_help-restore() {
+_help_restore() {
 cat <<EOM
 Usage: $_me restore filename
 
@@ -391,7 +391,7 @@ restore() {
 
 # ---------------------------------------------------------------------- status
 
-_help-status() {
+_help_status() {
 cat <<EOM
 Usage: $_me status
 
@@ -418,11 +418,11 @@ status() {
   _each_dotfile _status
 }
 
-# --------------------------------------------------------------- backup-status
+# --------------------------------------------------------------- backup_status
 
-_help-backup-status() {
+_help_backup_status() {
 cat <<EOM
-Usage: $_me backup-status
+Usage: $_me backup_status
 
 List status of backups (.bak) of added dotfiles relative to the corresponding tracked file.
 
@@ -432,7 +432,7 @@ Indicator prefixes display information about the status of each entry:
     x - No file exists
 EOM
 }
-_backup-status() {
+_backup_status() {
   target_file=$target_file.bak
   if ( [[ -L $target_file ]] && \
        [[ "$(readlink $target_file)" == "$f" ]]
@@ -444,13 +444,13 @@ _backup-status() {
     echo "  x $filename.bak"
   fi
 }
-backup-status() {
-  _each_dotfile _backup-status
+backup_status() {
+  _each_dotfile _backup_status
 }
 
 # ----------------------------------------------------------------------- clean
 
-_help-clean() {
+_help_clean() {
 cat <<EOM
 Usage: $_me clean
 
@@ -471,7 +471,7 @@ clean() {
 
 # ----------------------------------------------------------------------- clear
 
-_help-clear() {
+_help_clear() {
 cat <<EOM
 Usage: $_me clear
 
@@ -491,7 +491,7 @@ clear() {
 
 # ------------------------------------------------------------------------ link
 
-_help-link() {
+_help_link() {
 cat <<EOM
 Usage: $_me link
 
@@ -520,7 +520,7 @@ _function_exists() {
   [ `type -t $1`"" == 'function' ]
 }
 
-_help-help() {
+_help_help() {
 cat <<EOM
 Usage: $_me help [task]
 
@@ -548,7 +548,7 @@ Task help:
 $(tasks)
 EOM
  else
-   local help_function="_help-$1"
+   local help_function="_help_$1"
    if _function_exists $help_function ; then
      echo "$($help_function)"
    else
@@ -559,7 +559,7 @@ EOM
 
 # Task List ###################################################################
 
-_help-tasks() {
+_help_tasks() {
 cat <<EOM
 Usage: $_me tasks [--raw]
 
