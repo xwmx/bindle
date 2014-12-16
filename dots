@@ -506,6 +506,15 @@ edit() {
   $EDITOR $DOTFILES
 }
 
+desc dir <<EOM
+Usage: $_me dir
+
+Prints the current value of \$DOTFILES
+EOM
+dir() {
+  echo "$DOTFILES"
+}
+
 
 # Help ########################################################################
 
