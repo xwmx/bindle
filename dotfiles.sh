@@ -40,35 +40,39 @@ target_dir=$HOME
 # Utility functions
 ###############################################################################
 
-# Iterate over each dotfile and execute a provided function on each one.
-_each_dotfile() {
-  per_file_command=$1
-  for f in $source_dir/.*
+# Iterate over the files in the specified directory and execute the specified
+# function.
+#
+# Usage: _each_file directory function
+_each_file() {
+  per_file_function=$2
+  for f in $1/.*
   do
     filename=$(basename "$f")
-    source_file=$f
+    source_file=$source_dir/$filename
     target_file=$target_dir/$filename
     if !( [[ "$filename" =~ ^\.?\.$ ]] ); then
-      # Subfunctions can access the variables in this command, so it's not
+      # Subfunctions can access the variables in this function, so it's not
       # necessary to pass them as arguments.
-      $per_file_command
+      $per_file_function
     fi
   done
 }
 
+# Iterate over the files in the source directory and execute the specified
+# function.
+#
+# Usage: _each_dotfile function
+_each_dotfile() {
+  _each_file $source_dir $1
+}
+
+# Iterate over the files in the target directory and execute the specified
+# function.
+#
+# Usage: _each_target_dotfile function
 _each_target_dotfile() {
-  per_file_command=$1
-  for f in $target_dir/.*
-  do
-    filename=$(basename "$f")
-    source_file=$source_dir/$filename
-    target_file=$f
-    if !( [[ "$filename" =~ ^\.?\.$ ]] ); then
-      # Subfunctions can access the variables in this command, so it's not
-      # necessary to pass them as arguments.
-      $per_file_command
-    fi
-  done
+  _each_file $target_dir $1
 }
 
 ###############################################################################
