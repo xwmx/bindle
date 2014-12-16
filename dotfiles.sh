@@ -524,20 +524,22 @@ EOM
 }
 tasks() {
   [[ $1 == "--pretty" ]] && echo "Available tasks:"
-  task_list=($(declare -F))
-  for t in ${task_list[@]}
+  function_list=($(declare -F))
+  task_list=()
+  for t in ${function_list[@]}
   do
     if !( [[ $t == "declare" ]] || \
           [[ $t == "-f" ]] || \
           [[ "$t" =~ ^_(.*) ]]
     ); then
-      if [[ $1 == "--pretty" ]]; then
-        echo "  $t"
-      else
-        echo "$t"
-      fi
+      task_list+="$t "
     fi
   done
+  if [[ $1 == "--pretty" ]]; then
+    for i in ${task_list[@]}; do echo "  $i"; done
+  else
+    echo $task_list
+  fi
 }
 
 ###############################################################################
