@@ -249,10 +249,12 @@ List all dotfiles from in the home directory and indicate whether they are ident
 EOM
 }
 _all() {
-  if ( [[ -L $f ]] && \
-       [[ "$(readlink $f)" == "$source_file" ]]
-  ); then
-    echo "@  i   $filename"
+  if [[ -L $f ]]; then
+    if [[ "$(readlink $f)" == "$source_file" ]]; then
+      echo "@  i   $filename"
+    else
+      echo "@      $filename"
+    fi
   elif [[ -d $f ]]; then
     echo "d      $filename"
   elif [[ -a $f ]]; then
