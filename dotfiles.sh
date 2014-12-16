@@ -32,8 +32,19 @@
 # Environment
 ###############################################################################
 
+# $_me
+#
+# Set to the command's basename.
 _me=$(basename $0)
+
+# $source_dir
+#
+# Set to a 'home' directory adjacent to this command's enclosing directory.
 source_dir=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../home/" && pwd )
+
+# $target_dir
+#
+# Set to $HOME in the environment.
 target_dir=$HOME
 
 ###############################################################################
