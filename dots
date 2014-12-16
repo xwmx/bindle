@@ -320,9 +320,9 @@ EOM
 }
 add() {
   if [[ $# = 0 ]]; then
-    echo "must specify file"
+    echo "Error: must specify a valid file or directory name." && exit 1
   elif [[ ! -a $1 ]]; then
-    echo "file does not exist"
+    echo "Error: file or directory does not exist." && exit 1
   else
     filename=$(basename $1)
     target_file=$target_dir/$filename
@@ -350,9 +350,9 @@ EOM
 }
 restore() {
   if [[ $# = 0 ]]; then
-    echo "must specify file"
+    echo "Error: must specify a valid file or directory name." && exit 1
   elif [[ ! -a $1 ]]; then
-    echo "file does not exist"
+    echo "Error: file or directory does not exist." && exit 1
   else
     filename=$(basename $1)
     target_file=$target_dir/$filename
