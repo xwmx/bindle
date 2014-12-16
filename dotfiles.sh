@@ -69,8 +69,7 @@ _each_target_dotfile() {
 # Tasks
 ###############################################################################
 
-# Maintenance
-#------------------------------------------------------------------------------
+# Configuration ###############################################################
 
 _help-update-submodules() {
 cat <<EOM
@@ -83,6 +82,8 @@ EOM
 update-submodules() {
   git submodule foreach git pull
 }
+
+# -----------------------------------------------------------------------------
 
 _help-update-homebrew() {
 cat <<EOM
@@ -100,6 +101,8 @@ update-homebrew() {
   $DOTFILES/script/packages/brew.sh
 }
 
+# -----------------------------------------------------------------------------
+
 _help-update-npm() {
 cat <<EOM
 Usage: $_me update-npm
@@ -116,6 +119,8 @@ update-npm() {
   $DOTFILES/script/packages/npm.sh
 }
 
+# -----------------------------------------------------------------------------
+
 _help-update-pip() {
 cat <<EOM
 Usage: $_me update-pip
@@ -131,6 +136,8 @@ update-pip() {
   echo ">> Updating pip packages..."
   $DOTFILES/script/packages/pip.sh
 }
+
+# -----------------------------------------------------------------------------
 
 _help-update-packages() {
 cat <<EOM
@@ -150,6 +157,8 @@ update-packages() {
   update-pip
 }
 
+# -----------------------------------------------------------------------------
+
 _help-customize-icons() {
 cat <<EOM
 Usage: $_me customize-icons
@@ -164,6 +173,8 @@ customize-icons() {
   echo ">> Customizing icons of Homebrew-installed applications..."
   $DOTFILES/script/customizations/customize_icons.rb
 }
+
+# -----------------------------------------------------------------------------
 
 _help-configure-osx() {
 cat <<EOM
@@ -180,6 +191,8 @@ configure-osx() {
   $DOTFILES/script/config/osx.sh
 }
 
+# -----------------------------------------------------------------------------
+
 _help-configure-osx-apps() {
 cat <<EOM
 Usage: $_me configure-osx
@@ -195,8 +208,7 @@ configure-osx-apps() {
   $DOTFILES/script/config/osx_apps.sh
 }
 
-# Linking
-#------------------------------------------------------------------------------
+# Dotfiles ####################################################################
 
 _help-list() {
 cat <<EOM
@@ -219,6 +231,7 @@ list() {
   _each_target_dotfile _list
 }
 
+# -----------------------------------------------------------------------------
 
 _help-list-untracked() {
 cat <<EOM
@@ -240,6 +253,8 @@ list-untracked() {
   _each_target_dotfile _list-untracked
 }
 
+# -----------------------------------------------------------------------------
+
 _help-list-tracked() {
 cat <<EOM
 Usage: $_me list-tracked
@@ -258,6 +273,8 @@ _list-tracked() {
 list-tracked() {
   _each_target_dotfile _list-tracked
 }
+
+# -----------------------------------------------------------------------------
 
 _help-add() {
 cat <<EOM
@@ -287,6 +304,8 @@ add() {
   fi
 }
 
+# -----------------------------------------------------------------------------
+
 _help-restore() {
 cat <<EOM
 Usage: $_me restore filename
@@ -315,7 +334,7 @@ restore() {
   fi
 }
 
-# Status
+# -----------------------------------------------------------------------------
 
 _help-status() {
 cat <<EOM
@@ -340,7 +359,7 @@ status() {
   _each_dotfile _status
 }
 
-# Backup Status
+# -----------------------------------------------------------------------------
 
 _help-backup-status() {
 cat <<EOM
@@ -366,7 +385,7 @@ backup-status() {
   _each_dotfile _backup-status
 }
 
-# Clean
+# -----------------------------------------------------------------------------
 
 _help-clean() {
 cat <<EOM
@@ -387,7 +406,7 @@ clean() {
   _each_dotfile _clean
 }
 
-# Clear
+# -----------------------------------------------------------------------------
 
 _help-clear() {
 cat <<EOM
@@ -407,7 +426,7 @@ clear() {
   _each_dotfile _clear
 }
 
-# Link
+# -----------------------------------------------------------------------------
 
 _help-link() {
 cat <<EOM
@@ -428,8 +447,7 @@ link() {
   _each_dotfile _link
 }
 
-# Help
-#------------------------------------------------------------------------------
+# Help ########################################################################
 
 _function_exists() {
   [ `type -t $1`"" == 'function' ]
@@ -474,8 +492,7 @@ EOM
  fi
 }
 
-# Task Listing
-#------------------------------------------------------------------------------
+# Task List ###################################################################
 
 _help-tasks() {
 cat <<EOM
