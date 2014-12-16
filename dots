@@ -98,14 +98,14 @@ _each_target_dotfile() {
   _each_file $target_dir $1
 }
 
-# _desc()
+# desc()
 #
 # Usage:
-#   _desc task "description"
+#   desc task "description"
 #
 # Create a description for a specified task name. The task description text can
 # be passed as the second argument or as standard input.
-_desc() {
+desc() {
   [[ -z $1 ]] && echo "_desc(): No task name specified." && exit 1
   if [[ -n $2 ]]; then
     read -d '' _desc_$1 <<EOM
@@ -124,7 +124,7 @@ EOM
 
 # ----------------------------------------------------------- update_submodules
 
-_desc update_submodules <<EOM
+desc update_submodules <<EOM
 Usage: $_me update_submodules
 >>>>>>> help
 
@@ -137,7 +137,7 @@ update_submodules() {
 
 # ------------------------------------------------------------- update_homebrew
 
-_desc update_homebrew <<EOM
+desc update_homebrew <<EOM
 Usage: $_me update_homebrew
 
 Update homebrew and homebrew cask using the brew.sh install script.
@@ -153,7 +153,7 @@ update_homebrew() {
 
 # ------------------------------------------------------------------ update_npm
 
-_desc update_npm <<EOM
+desc update_npm <<EOM
 Usage: $_me update_npm
 
 Update node modules using the npm.sh script.
@@ -169,7 +169,7 @@ update_npm() {
 
 # ------------------------------------------------------------------ update_pip
 
-_desc update_pip <<EOM
+desc update_pip <<EOM
 Usage: $_me update_pip
 
 Update Python pip packaages using the pip.sh script.
@@ -185,7 +185,7 @@ update_pip() {
 
 # ------------------------------------------------------------- update_packages
 
-_desc update_packages <<EOM
+desc update_packages <<EOM
 Usage: $_me update_packages
 
 Update Homebrew, Homebrew Cask, npm, and pip using each dedicated task:
@@ -203,7 +203,7 @@ update_packages() {
 
 # ------------------------------------------------------------- customize_icons
 
-_desc customize_icons <<EOM
+desc customize_icons <<EOM
 Usage: $_me customize_icons
 
 Customize icons of Homebrew-installed applications.
@@ -218,7 +218,7 @@ customize_icons() {
 
 # --------------------------------------------------------------- configure_osx
 
-_desc configure_osx <<EOM
+desc configure_osx <<EOM
 Usage: $_me configure_osx
 
 Set various preferences for OS X and default Apple applications.
@@ -233,7 +233,7 @@ configure_osx() {
 
 # ---------------------------------------------------------- configure_osx_apps
 
-_desc configure_osx_apps <<EOM
+desc configure_osx_apps <<EOM
 Usage: $_me configure_osx
 
 Set various preferences for non-default OS X applications.
@@ -250,7 +250,7 @@ configure_osx_apps() {
 
 # ------------------------------------------------------------------------- all
 
-_desc all <<EOM
+desc all <<EOM
 Usage: $_me all
 
 List all dotfiles from in the home directory.
@@ -280,7 +280,7 @@ all() {
 
 # ------------------------------------------------------------------- untracked
 
-_desc untracked <<EOM
+desc untracked <<EOM
 Usage: $_me untracked
 
 List all untracked dotfiles from in the home directory.
@@ -306,7 +306,7 @@ untracked() {
 
 # --------------------------------------------------------------------- tracked
 
-_desc tracked <<EOM
+desc tracked <<EOM
 Usage: $_me tracked
 
 List all tracked dotfiles from in the home directory.
@@ -328,7 +328,7 @@ tracked() {
 
 # ------------------------------------------------------------------------- add
 
-_desc add <<EOM
+desc add <<EOM
 Usage: $_me add filename
 
 Add the specified dotfile to the dotfiles repository and link.
@@ -356,7 +356,7 @@ add() {
 
 # --------------------------------------------------------------------- restore
 
-_desc restore <<EOM
+desc restore <<EOM
 Usage: $_me restore filename
 
 Unlink the specified file and move from the dotfiles repository back to $HOME"
@@ -384,7 +384,7 @@ restore() {
 
 # ---------------------------------------------------------------------- status
 
-_desc status <<EOM
+desc status <<EOM
 Usage: $_me status
 
 List status of added dotfiles relative to the corresponding tracked file.
@@ -411,7 +411,7 @@ status() {
 
 # --------------------------------------------------------------- backup_status
 
-_desc backup_status <<EOM
+desc backup_status <<EOM
 Usage: $_me backup_status
 
 List status of backups (.bak) of added dotfiles relative to the corresponding tracked file.
@@ -439,7 +439,7 @@ backup_status() {
 
 # ----------------------------------------------------------------------- clean
 
-_desc clean <<EOM
+desc clean <<EOM
 Usage: $_me clean
 
 Remove dotfile links in home directory with status 'i'
@@ -458,7 +458,7 @@ clean() {
 
 # ----------------------------------------------------------------------- clear
 
-_desc clear <<EOM
+desc clear <<EOM
 Usage: $_me clear
 
 Remove $_me from home directory with status 'i' (via clean task), backs up files with status 'e'
@@ -476,7 +476,7 @@ clear() {
 
 # ------------------------------------------------------------------------ link
 
-_desc link <<EOM
+desc link <<EOM
 Usage: $_me link
 
 Link dotfiles to home directory. Existing files skipped.
@@ -503,7 +503,7 @@ _function_exists() {
   [ `type -t $1`"" == 'function' ]
 }
 
-_desc help <<EOM
+desc help <<EOM
 Usage: $_me help [task]
 
 Display help information for the dotfiles command or a specified task.
@@ -540,7 +540,7 @@ EOM
 
 # Task List ###################################################################
 
-_desc tasks <<EOM
+desc tasks <<EOM
 Usage: $_me tasks [--raw]
 
 Display the list of available tasks.
@@ -553,7 +553,8 @@ tasks() {
   do
     if !( [[ $t == "declare" ]] || \
           [[ $t == "-f" ]] || \
-          [[ "$t" =~ ^_(.*) ]]
+          [[ "$t" =~ ^_(.*) ]] || \
+          [[ "$t" == "desc" ]]
     ); then
       task_list+="$t "
     fi
