@@ -237,14 +237,14 @@ configure-osx-apps() {
 
 # Dotfiles ####################################################################
 
-_help-list() {
+_help-all() {
 cat <<EOM
-Usage: $_me list
+Usage: $_me all
 
 List all dotfiles from in the home directory and indicate whether they are linked (i) or are files (f).
 EOM
 }
-_list() {
+_all() {
   if ( [[ -L $f ]] && \
        [[ "$(readlink $f)" == "$source_file" ]]
   ); then
@@ -254,8 +254,8 @@ _list() {
   fi
 
 }
-list() {
-  _each_target_dotfile _list
+all() {
+  _each_target_dotfile _all
 }
 
 # -----------------------------------------------------------------------------
