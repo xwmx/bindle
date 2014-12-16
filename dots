@@ -12,14 +12,14 @@
 #
 # Example task group:
 #
-# _help-example - Optional. Prints help text.
+# desc example - Optional. A short description for the task.
 # _example() - Optional. The task to be run for each dotfile.
 # example() - The task as it appears to the user
 #
 #
-# _help-example() {
-#   echo "Example help text."
-# }
+# desc example <<EOM
+#   Example help text.
+# EOM
 # _example() {
 #   echo $f
 #   echo $source_file
