@@ -470,10 +470,13 @@ link() {
 
 # Help ########################################################################
 
+# _function_exists()
+#
+# Takes a potential function name as an argument and returns whether a function
+# exists with that name.
 _function_exists() {
   [ `type -t $1`"" == 'function' ]
 }
-
 
 _help-help() {
 cat <<EOM
