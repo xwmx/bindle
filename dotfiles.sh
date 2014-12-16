@@ -546,12 +546,28 @@ tasks() {
 # Main
 ###############################################################################
 
+# _contains()
+#
+# Takes an item and a list and determines whether the list contains the item.
+#
+# Usage:
+#   _contains "$list" "$item"
+_contains() {
+  [[ $1 =~ (^| )$2($| ) ]] && exit 0 || exit 1
+}
+
 _dotfiles_main() {
   if ( [[ $# = 0 ]] || [[ $1 == "-h" ]] ); then
     help
-  else
-    eval $@
     exit 0
+  else
+    if ( _contains "$(tasks --raw)" $1 ); then
+      eval $@
+      exit 0
+    else
+      echo "Error: task not found."
+      exit 1
+    fi
   fi
 }
 
