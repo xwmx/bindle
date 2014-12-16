@@ -272,7 +272,7 @@ _help-untracked() {
 cat <<EOM
 Usage: $_me untracked
 
-List all untracked dotfiles from in the home directory.
+List all untracked dotfiles from in the home directory. Directory listings are prefixed with a 'd' and symbolic links with a '@'.
 EOM
 }
 _untracked() {
@@ -296,7 +296,7 @@ _help-tracked() {
 cat <<EOM
 Usage: $_me tracked
 
-List all tracked dotfiles from in the home directory.
+List all tracked dotfiles from in the home directory. Listings are prefixed with a '@' to identify them as symbolic links, and 'i' to indicate that they are identical to the tracked file.
 EOM
 }
 _tracked() {
