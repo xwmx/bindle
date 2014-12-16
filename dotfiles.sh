@@ -501,7 +501,7 @@ Usage:
 Task help:
   $_me help [task]
 
-$(tasks --pretty)
+$(tasks)
 EOM
  else
    local help_function="_help-$1"
@@ -517,13 +517,13 @@ EOM
 
 _help-tasks() {
 cat <<EOM
-Usage: $_me tasks [--pretty]
+Usage: $_me tasks [--raw]
 
 Display the list of available tasks.
 EOM
 }
 tasks() {
-  [[ $1 == "--pretty" ]] && echo "Available tasks:"
+  [[ ! $1 == "--raw" ]] && echo "Available tasks:"
   function_list=($(declare -F))
   task_list=()
   for t in ${function_list[@]}
@@ -535,10 +535,10 @@ tasks() {
       task_list+="$t "
     fi
   done
-  if [[ $1 == "--pretty" ]]; then
-    for i in ${task_list[@]}; do echo "  $i"; done
-  else
+  if [[ $1 == "--raw" ]]; then
     echo $task_list
+  else
+    for i in ${task_list[@]}; do echo "  $i"; done
   fi
 }
 
