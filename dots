@@ -260,14 +260,14 @@ all() {
 
 # -----------------------------------------------------------------------------
 
-_help-list-untracked() {
+_help-untracked() {
 cat <<EOM
-Usage: $_me list-untracked
+Usage: $_me untracked
 
 List all untracked dotfiles from in the home directory.
 EOM
 }
-_list-untracked() {
+_untracked() {
   if !( [[ -L $f ]] && \
         [[ "$(readlink $f)" == "$source_file" ]] && \
         [[ -a $f ]]
@@ -276,20 +276,20 @@ _list-untracked() {
   fi
 
 }
-list-untracked() {
-  _each_target_dotfile _list-untracked
+untracked() {
+  _each_target_dotfile _untracked
 }
 
 # -----------------------------------------------------------------------------
 
-_help-list-tracked() {
+_help-tracked() {
 cat <<EOM
-Usage: $_me list-tracked
+Usage: $_me tracked
 
 List all tracked dotfiles from in the home directory.
 EOM
 }
-_list-tracked() {
+_tracked() {
   if ( [[ -L $f ]] && \
        [[ "$(readlink $f)" == "$source_file" ]]
   ); then
@@ -297,8 +297,8 @@ _list-tracked() {
   fi
 
 }
-list-tracked() {
-  _each_target_dotfile _list-tracked
+tracked() {
+  _each_target_dotfile _tracked
 }
 
 # -----------------------------------------------------------------------------
