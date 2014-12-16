@@ -276,13 +276,15 @@ List all untracked dotfiles from in the home directory.
 EOM
 }
 _untracked() {
-  if !( [[ -L $f ]] && \
-        [[ "$(readlink $f)" == "$source_file" ]] && \
-        [[ -a $f ]]
-  ); then
-    echo " e  $filename"
+  if [[ -L $f ]];then
+    if !( [[ "$(readlink $f)" == "$source_file" ]] ); then
+      echo "@      $filename"
+    fi
+  elif [[ -d $f ]]; then
+    echo "d      $filename"
+  elif [[ -a $f ]]; then
+    echo "       $filename"
   fi
-
 }
 untracked() {
   _each_target_dotfile _untracked
@@ -301,7 +303,7 @@ _tracked() {
   if ( [[ -L $f ]] && \
        [[ "$(readlink $f)" == "$source_file" ]]
   ); then
-    echo "i   $filename"
+    echo "@  i   $filename"
   fi
 
 }
