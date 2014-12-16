@@ -245,7 +245,12 @@ _help-all() {
 cat <<EOM
 Usage: $_me all
 
-List all dotfiles from in the home directory and indicate whether they are identical (i). Directory listings are prefixed with a 'd' and symbolic links with a '@'.
+List all dotfiles from in the home directory.
+
+Indicator prefixes display information about the type and status of each entry:
+  d   - Directory
+  @   - Symbolic link
+  @ i - Symbolic link to tracked file.
 EOM
 }
 _all() {
@@ -272,7 +277,11 @@ _help-untracked() {
 cat <<EOM
 Usage: $_me untracked
 
-List all untracked dotfiles from in the home directory. Directory listings are prefixed with a 'd' and symbolic links with a '@'.
+List all untracked dotfiles from in the home directory.
+
+Indicator prefixes display information about the type and status of each entry:
+  d   - Directory
+  @   - Symbolic link
 EOM
 }
 _untracked() {
@@ -296,7 +305,10 @@ _help-tracked() {
 cat <<EOM
 Usage: $_me tracked
 
-List all tracked dotfiles from in the home directory. Listings are prefixed with a '@' to identify them as symbolic links, and 'i' to indicate that they are identical to the tracked file.
+List all tracked dotfiles from in the home directory.
+
+Indicator prefixes display information about the type and status of each entry:
+  @ i - Symbolic link to tracked file.
 EOM
 }
 _tracked() {
@@ -377,8 +389,12 @@ _help-status() {
 cat <<EOM
 Usage: $_me status
 
-List dotfile status (i = identical, e = a file exists, x = no file eixsts).
-'@' suffixes denote existing symlinks.
+List status of added dotfiles relative to the corresponding tracked file.
+
+Indicator prefixes display information about the status of each entry:
+  i   - Identical, indicating a valid symbolic link to the tracked file
+   e  - A file exists, but it not linked to tracked file
+    x - No file exists
 EOM
 }
 _status() {
@@ -402,8 +418,12 @@ _help-backup-status() {
 cat <<EOM
 Usage: $_me backup-status
 
-List dotfile backup (.bak file) status (i = identical, e = a file exists, x = no file eixsts).
-'@' suffixes denote existing symlinks.
+List status of backups (.bak) of added dotfiles relative to the corresponding tracked file.
+
+Indicator prefixes display information about the status of each entry:
+  i   - Identical, indicating a valid symbolic link to the tracked file
+   e  - A file exists, but it not linked to tracked file
+    x - No file exists
 EOM
 }
 _backup-status() {
