@@ -129,7 +129,6 @@ EOM
 
 desc update_submodules <<EOM
 Usage: $_me update_submodules
->>>>>>> help
 
 Update git submodules. An alias for the git command:
   git submodule foreach git pull
