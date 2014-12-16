@@ -16,11 +16,15 @@
 # }
 # _example() {
 #   echo $f
+#   echo $source_file
 #   echo $filename
 #   echo $target_file
 # }
 # example() {
+#   echo ">> Listing each dotfile in repository"
 #   _each_dotfile _example
+#   echo ">> Listing each dotfile in HOME"
+#   _each_target_dotfile _example
 # }
 
 
@@ -42,6 +46,7 @@ _each_dotfile() {
   for f in $source_dir/.*
   do
     filename=$(basename "$f")
+    source_file=$f
     target_file=$target_dir/$filename
     if !( [[ "$filename" =~ ^\.?\.$ ]] ); then
       # Subfunctions can access the variables in this command, so it's not
@@ -57,6 +62,7 @@ _each_target_dotfile() {
   do
     filename=$(basename "$f")
     source_file=$source_dir/$filename
+    target_file=$f
     if !( [[ "$filename" =~ ^\.?\.$ ]] ); then
       # Subfunctions can access the variables in this command, so it's not
       # necessary to pass them as arguments.
