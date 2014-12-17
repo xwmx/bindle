@@ -12,9 +12,9 @@
 #
 # Example task group:
 #
-# desc example - Optional. A short description for the task.
-# _example() - Optional. The task to be run for each dotfile.
-# example() - The task as it appears to the user
+# desc example ""   - Optional. A short description for the task.
+# _example() { : }  - Optional. The task to be run for each dotfile.
+# example() { : }   - The task as it appears to the user
 #
 #
 # desc example <<EOM
@@ -63,41 +63,6 @@ target_dir=$HOME
 # Utility functions
 ###############################################################################
 
-# Iterate over the files in the specified directory and execute the specified
-# function.
-#
-# Usage: _each_file directory function
-_each_file() {
-  per_file_function=$2
-  for f in $1/.*
-  do
-    filename=$(basename "$f")
-    source_file=$source_dir/$filename
-    target_file=$target_dir/$filename
-    if !( [[ "$filename" =~ ^\.?\.$ ]] ); then
-      # Subfunctions can access the variables in this function, so it's not
-      # necessary to pass them as arguments.
-      $per_file_function
-    fi
-  done
-}
-
-# Iterate over the files in the source directory and execute the specified
-# function.
-#
-# Usage: _each_dotfile function
-_each_dotfile() {
-  _each_file $source_dir $1
-}
-
-# Iterate over the files in the target directory and execute the specified
-# function.
-#
-# Usage: _each_target_dotfile function
-_each_target_dotfile() {
-  _each_file $target_dir $1
-}
-
 # desc()
 #
 # Usage:
@@ -117,6 +82,66 @@ EOM
   else
     read -d '' _desc_$1
   fi
+}
+
+# _each_file()
+#
+# Iterate over the files in the specified directory and execute the specified
+# function.
+#
+# Usage: _each_file directory function
+_each_file() {
+  per_file_function=$2
+  for f in $1/.*
+  do
+    filename=$(basename "$f")
+    source_file=$source_dir/$filename
+    target_file=$target_dir/$filename
+    if !( [[ "$filename" =~ ^\.?\.$ ]] ); then
+      # Subfunctions can access the variables in this function, so it's not
+      # necessary to pass them as arguments.
+      $per_file_function
+    fi
+  done
+}
+
+# _each_dotfile()
+#
+# Iterate over the files in the source directory and execute the specified
+# function.
+#
+# Usage: _each_dotfile function
+_each_dotfile() {
+  _each_file $source_dir $1
+}
+
+# _each_target_dotfile()
+#
+# Iterate over the files in the target directory and execute the specified
+# function.
+#
+# Usage: _each_target_dotfile function
+_each_target_dotfile() {
+  _each_file $target_dir $1
+}
+
+
+# _function_exists()
+#
+# Takes a potential function name as an argument and returns whether a function
+# exists with that name.
+_function_exists() {
+  [ `type -t $1`"" == 'function' ]
+}
+
+# _contains()
+#
+# Takes an item and a list and determines whether the list contains the item.
+#
+# Usage:
+#   _contains "$list" "$item"
+_contains() {
+  [[ $1 =~ (^| )$2($| ) ]] && exit 0 || exit 1
 }
 
 ###############################################################################
@@ -518,14 +543,6 @@ dir() {
 
 # Help ########################################################################
 
-# _function_exists()
-#
-# Takes a potential function name as an argument and returns whether a function
-# exists with that name.
-_function_exists() {
-  [ `type -t $1`"" == 'function' ]
-}
-
 desc help <<EOM
 Usage: $_me help [task]
 
@@ -593,31 +610,19 @@ tasks() {
 # Main
 ###############################################################################
 
-# _contains()
-#
-# Takes an item and a list and determines whether the list contains the item.
-#
-# Usage:
-#   _contains "$list" "$item"
-_contains() {
-  [[ $1 =~ (^| )$2($| ) ]] && exit 0 || exit 1
-}
-
 _dotfiles_main() {
   if ( [[ $# = 0 ]] || [[ $1 == "-h" ]] ); then
     help
     exit 0
+  elif ( _contains "$(tasks --raw)" $1 ); then
+    eval $@
+    exit 0
   else
-    if ( _contains "$(tasks --raw)" $1 ); then
-      eval $@
-      exit 0
-    else
-      echo "Error: task not found."
-      exit 1
-    fi
+    echo "Error: task not found."
+    exit 1
   fi
 }
 
-# dotfiles main function
+# run _dotfiles_main function to start program.
 _dotfiles_main $@
 
