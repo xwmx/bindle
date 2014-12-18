@@ -74,7 +74,7 @@ target_dir=$HOME
 # To make the description text available to other functions, desc() assigns the
 # text to a variable with the format $_desc_function_name
 desc() {
-  [[ -z $1 ]] && echo "_desc(): No task name specified." && exit 1
+  [[ -z $1 ]] && echo "desc: No task name specified." && exit 1
   if [[ -n $2 ]]; then
     read -d '' _desc_$1 <<EOM
 $2
