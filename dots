@@ -484,25 +484,6 @@ backup_status() {
   _each_dotfile _backup_status_item
 }
 
-# ----------------------------------------------------------------------- clean
-
-desc clean <<EOM
-Usage: $_me clean
-
-Remove dotfile links in home directory with status 'i'
-EOM
-_clean_item() {
-  if ( [[ -L $target_file ]] && \
-       [[ "$(readlink $target_file)" == "$f" ]]
-  ); then
-    echo "Removing linked file: $target_file"
-    rm $target_file
-  fi
-}
-clean() {
-  _each_dotfile _clean_item
-}
-
 # ----------------------------------------------------------------------- clear
 
 desc clear <<EOM
@@ -550,6 +531,25 @@ link() {
   else
     _each_dotfile _link_item
   fi
+}
+
+# ----------------------------------------------------------------------- clean
+
+desc clean <<EOM
+Usage: $_me clean
+
+Remove dotfile links in home directory with status 'i'
+EOM
+_clean_item() {
+  if ( [[ -L $target_file ]] && \
+       [[ "$(readlink $target_file)" == "$f" ]]
+  ); then
+    echo "Removing linked file: $target_file"
+    rm $target_file
+  fi
+}
+clean() {
+  _each_dotfile _clean_item
 }
 
 # Utilties ####################################################################
