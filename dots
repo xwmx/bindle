@@ -215,7 +215,7 @@ Usage: $_me configure [--all] [configuration_script]
 Run the specified package update script.
 
 Configuration scripts can be added to:
-  $DOTFILES/script/config/
+  $DOTFILES/script/configure/
 EOM
 _run_config_script() {
   if [[ -e "$1" ]]; then
@@ -226,7 +226,7 @@ _run_config_script() {
   fi
 }
 configure() {
-  config_dir=$DOTFILES/script/config
+  config_dir=$DOTFILES/script/configure
   script_file=$config_dir/$1
   if [[ -n "$1" ]]; then
     if [[ "$1" == "--all" ]]; then
