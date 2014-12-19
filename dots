@@ -169,7 +169,7 @@ Usage: $_me update [list] [--all] [package_script]
 
 Run the specified package update script.
 
-package scripts can be added to:
+Package scripts can be added to:
   $DOTFILES/script/packages/
 
 EOM
@@ -212,9 +212,9 @@ EOM
 desc customize <<EOM
 Usage: $_me customize [--all] [customization_script]
 
-Run the specified package update script.
+Run the specified customization script.
 
-customization scripts can be added to:
+Customization scripts can be added to:
   $DOTFILES/script/customizations/
 EOM
 _run_customization_script() {
@@ -259,7 +259,7 @@ Usage: $_me configure [--all] [configuration_script]
 
 Run the specified package update script.
 
-package scripts can be added to:
+Configuration scripts can be added to:
   $DOTFILES/script/config/
 EOM
 _run_config_script() {
