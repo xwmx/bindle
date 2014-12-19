@@ -536,9 +536,11 @@ link() {
 # ---------------------------------------------------------------------- unlink
 
 desc clean <<EOM
-Usage: $_me unlink
+Usage: $_me unlink [filename]
 
 Remove dotfile links in home directory with status 'i'
+
+If a filename is passed to the unlink task, then it only acts on that file.
 EOM
 _unlink_item() {
   if ( [[ -L $target_file ]] && \
@@ -549,7 +551,15 @@ _unlink_item() {
   fi
 }
 unlink() {
-  _each_dotfile _unlink_item
+  if [[ -n "$1" ]]; then
+    local f="$source_dir/$1"
+    filename=$(basename "$1")
+    source_file=$source_dir/$filename
+    target_file=$target_dir/$filename
+    _unlink_item
+  else
+    _each_dotfile _unlink_item
+  fi
 }
 
 # Utilties ####################################################################
