@@ -207,51 +207,6 @@ EOM
   fi
 }
 
-# ------------------------------------------------------------------- customize
-
-desc customize <<EOM
-Usage: $_me customize [--all] [customization_script]
-
-Run the specified customization script.
-
-Customization scripts can be added to:
-  $DOTFILES/script/customizations/
-EOM
-_run_customization_script() {
-  if [[ -e "$1" ]]; then
-    echo ">> Running $(basename $1)"
-    $1
-  else
-    echo "Error: customization script '$1' not found." && exit 1
-  fi
-}
-customize() {
-  customizations_dir=$DOTFILES/script/customizations
-  script_file=$customizations_dir/$1
-  if [[ -n "$1" ]]; then
-    if [[ "$1" == "--all" ]]; then
-      for f in $customizations_dir/*
-      do
-        _run_customization_script $f
-      done
-    elif [[ "$1" == "list" ]]; then
-      for f in $customizations_dir/*
-      do
-        echo $(basename "$f")
-      done
-    else
-      _run_customization_script $script_file
-    fi
-  else
-    cat <<EOM
-Customization script must be specified. You can see available scripts by running
-
-$_me customize list
-EOM
-    exit 1
-  fi
-}
-
 # ------------------------------------------------------------------- configure
 
 desc configure <<EOM
@@ -292,6 +247,51 @@ configure() {
 Configuration script must be specified. You can see available scripts by running
 
 $_me configure list
+EOM
+    exit 1
+  fi
+}
+
+# ------------------------------------------------------------------- customize
+
+desc customize <<EOM
+Usage: $_me customize [--all] [customization_script]
+
+Run the specified customization script.
+
+Customization scripts can be added to:
+  $DOTFILES/script/customizations/
+EOM
+_run_customization_script() {
+  if [[ -e "$1" ]]; then
+    echo ">> Running $(basename $1)"
+    $1
+  else
+    echo "Error: customization script '$1' not found." && exit 1
+  fi
+}
+customize() {
+  customizations_dir=$DOTFILES/script/customizations
+  script_file=$customizations_dir/$1
+  if [[ -n "$1" ]]; then
+    if [[ "$1" == "--all" ]]; then
+      for f in $customizations_dir/*
+      do
+        _run_customization_script $f
+      done
+    elif [[ "$1" == "list" ]]; then
+      for f in $customizations_dir/*
+      do
+        echo $(basename "$f")
+      done
+    else
+      _run_customization_script $script_file
+    fi
+  else
+    cat <<EOM
+Customization script must be specified. You can see available scripts by running
+
+$_me customize list
 EOM
     exit 1
   fi
