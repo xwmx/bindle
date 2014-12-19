@@ -282,6 +282,8 @@ Usage: $_me list
 
 List all dotfiles from in the home directory.
 
+If 'tracked' or 'untracked' as passed as arguments to 'list', then those tasks are run.
+
 Indicator prefixes display information about the type and status of each entry:
   d   - Directory
   @   - Symbolic link
@@ -302,7 +304,13 @@ _list_item() {
 
 }
 list() {
-  _each_target_dotfile _list_item
+  if [[ "$1" == "untracked" ]]; then
+    untracked
+  elif [[ "$1" == "tracked" ]]; then
+    tracked
+  else
+    _each_target_dotfile _list_item
+  fi
 }
 
 # ------------------------------------------------------------------- untracked
