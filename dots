@@ -191,7 +191,22 @@ _contains() {
 # Tasks
 ###############################################################################
 
-# Submodules ##################################################################
+# git #########################################################################
+
+# ------------------------------------------------------------------------- git
+
+desc git <<EOM
+Usage: $_me git [options]
+
+Run a git command within the \$DOTFILES directory.
+EOM
+git() {
+  cd $DOTFILES
+
+  # Must get and call $bin_path to avoid calling this function again.
+  git_bin=$(which git)
+  $git_bin $@
+}
 
 # ----------------------------------------------------------- update_submodules
 
