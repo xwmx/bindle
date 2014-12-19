@@ -147,7 +147,6 @@ EOM
   fi
 }
 
-
 # _each_dotfile()
 #
 # Iterate over the files in the source directory and execute the specified
@@ -167,7 +166,6 @@ _each_dotfile() {
 _each_target_dotfile() {
   _each_file $target_dir $1
 }
-
 
 # _function_exists()
 #
@@ -231,7 +229,6 @@ Run the specified package script.
 
 Package scripts can be added to:
   $DOTFILES/script/install/
-
 EOM
 install() {
   _runner "install" $1
@@ -359,7 +356,6 @@ _tracked_item() {
   ); then
     echo "@  i   $filename"
   fi
-
 }
 tracked() {
   _each_target_dotfile _tracked_item
@@ -527,7 +523,6 @@ EOM
 dir() {
   echo "$DOTFILES"
 }
-
 
 # Help ########################################################################
 
