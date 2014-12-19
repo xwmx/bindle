@@ -260,7 +260,7 @@ Usage: $_me customize [--all] [customization_script]
 Run the specified customization script.
 
 Customization scripts can be added to:
-  $DOTFILES/script/customizations/
+  $DOTFILES/script/customize/
 EOM
 _run_customization_script() {
   if [[ -e "$1" ]]; then
@@ -271,7 +271,7 @@ _run_customization_script() {
   fi
 }
 customize() {
-  customizations_dir=$DOTFILES/script/customizations
+  customizations_dir=$DOTFILES/script/customize
   script_file=$customizations_dir/$1
   if [[ -n "$1" ]]; then
     if [[ "$1" == "--all" ]]; then
