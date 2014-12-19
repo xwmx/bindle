@@ -174,7 +174,7 @@ package scripts can be added to:
 
 EOM
 _run_package_update_script() {
-  if [[ -a "$1" ]]; then
+  if [[ -e "$1" ]]; then
     echo ">> Running $(basename $1)"
     $1
   else
@@ -346,7 +346,7 @@ _list_item() {
     fi
   elif [[ -d $f ]]; then
     echo "d      $filename"
-  elif [[ -a $f ]]; then
+  elif [[ -e $f ]]; then
     echo "       $filename"
   fi
 
@@ -358,7 +358,7 @@ list() {
     tracked
   elif [[ "$1" =~ ^\.(.*) ]]; then
     f="$target_dir/$1"
-    if [[ -a "$f" ]]; then
+    if [[ -e "$f" ]]; then
       filename=$(basename "$f")
       source_file=$source_dir/$filename
       target_file=$target_dir/$filename
@@ -389,7 +389,7 @@ _untracked_item() {
     fi
   elif [[ -d $f ]]; then
     echo "d      $filename"
-  elif [[ -a $f ]]; then
+  elif [[ -e $f ]]; then
     echo "       $filename"
   fi
 }
@@ -429,13 +429,13 @@ EOM
 add() {
   if [[ $# = 0 ]]; then
     echo "Error: must specify a valid file or directory name." && exit 1
-  elif [[ ! -a $1 ]]; then
+  elif [[ ! -e $1 ]]; then
     echo "Error: file or directory does not exist." && exit 1
   else
     filename=$(basename $1)
     target_file=$target_dir/$filename
     source_file=$source_dir/$filename
-    if [[ ! -a $source_file ]]; then
+    if [[ ! -e $source_file ]]; then
       echo "file does not exist"
     elif [[ ! -L $target_file ]]; then
       echo "file is not a symlink"
@@ -457,13 +457,13 @@ EOM
 restore() {
   if [[ $# = 0 ]]; then
     echo "Error: must specify a valid file or directory name." && exit 1
-  elif [[ ! -a $1 ]]; then
+  elif [[ ! -e $1 ]]; then
     echo "Error: file or directory does not exist." && exit 1
   else
     filename=$(basename $1)
     target_file=$target_dir/$filename
     source_file=$source_dir/$filename
-    if [[ ! -a $source_file ]]; then
+    if [[ ! -e $source_file ]]; then
       echo "file does not exist"
     elif [[ ! -L $target_file ]]; then
       echo "file is not a symlink"
@@ -492,7 +492,7 @@ _status_item() {
        [[ "$(readlink $target_file)" == "$f" ]]
   ); then
     echo "i   $filename"
-  elif [[ -a $target_file ]]; then
+  elif [[ -e $target_file ]]; then
     echo " e  $filename"
   else
     echo "  x $filename"
@@ -512,7 +512,7 @@ Link dotfiles to home directory. Existing files skipped.
 If a filename is passed to the link task, then it only acts on that file.
 EOM
 _link_item() {
-  if [[ -a $target_file ]]; then
+  if [[ -e $target_file ]]; then
     echo Exists: $filename
   else
     echo "Linking $f => $target_file"
@@ -525,7 +525,7 @@ link() {
     filename=$(basename "$1")
     source_file=$source_dir/$filename
     target_file=$target_dir/$filename
-    if [[ -a "$source_file" ]]; then
+    if [[ -e "$source_file" ]]; then
       _link_item
     fi
   else
