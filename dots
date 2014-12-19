@@ -105,6 +105,49 @@ _each_file() {
   done
 }
 
+# _runner()
+#
+# Run scripts in a specified script subdirectory.
+#
+# Usage: _runner subdirectory command
+_run_script() {
+  if [[ -e "$1" ]]; then
+    echo ">> Running $(basename $1)"
+    $1
+  else
+    echo "Error: script '$1' not found." && exit 1
+  fi
+}
+_runner() {
+  [[ -z $1 ]] && echo "_runner: No subdirectory specified." && exit 1
+  subdir=$1
+  subdir_path=$DOTFILES/script/$subdir
+  script_file=$subdir_path/$2
+  if [[ -n "$2" ]]; then
+    if [[ "$2" == "--all" ]]; then
+      for f in $subdir_path/*
+      do
+        _run_script $f
+      done
+    elif [[ "$2" == "list" ]]; then
+      for f in $subdir_path/*
+      do
+        echo $(basename "$f")
+      done
+    else
+      _run_script $script_file
+    fi
+  else
+    cat <<EOM
+Script must be specified. You can see available scripts by running the following command:
+
+$_me $1 list
+EOM
+    exit 1
+  fi
+}
+
+
 # _each_dotfile()
 #
 # Iterate over the files in the source directory and execute the specified
@@ -173,38 +216,8 @@ Package scripts can be added to:
   $DOTFILES/script/install/
 
 EOM
-_run_package_script() {
-  if [[ -e "$1" ]]; then
-    echo ">> Running $(basename $1)"
-    $1
-  else
-    echo "Error: package script '$1' not found." && exit 1
-  fi
-}
 install() {
-  packages_dir=$DOTFILES/script/install
-  script_file=$packages_dir/$1
-  if [[ -n "$1" ]]; then
-    if [[ "$1" == "--all" ]]; then
-      for f in $packages_dir/*
-      do
-        _run_package_script $f
-      done
-    elif [[ "$1" == "list" ]]; then
-      for f in $packages_dir/*
-      do
-        echo $(basename "$f")
-      done
-    else
-      _run_package_script $script_file
-    fi
-  else
-    cat <<EOM
-Package script must be specified. You can see available scripts by running
-
-$_me update list" && exit 1
-EOM
-  fi
+  _runner "install" $1
 }
 
 # ------------------------------------------------------------------- configure
@@ -217,39 +230,8 @@ Run the specified package update script.
 Configuration scripts can be added to:
   $DOTFILES/script/configure/
 EOM
-_run_config_script() {
-  if [[ -e "$1" ]]; then
-    echo ">> Running $(basename $1)"
-    $1
-  else
-    echo "Error: configuration script '$1' not found." && exit 1
-  fi
-}
 configure() {
-  config_dir=$DOTFILES/script/configure
-  script_file=$config_dir/$1
-  if [[ -n "$1" ]]; then
-    if [[ "$1" == "--all" ]]; then
-      for f in $config_dir/*
-      do
-        _run_config_script $f
-      done
-    elif [[ "$1" == "list" ]]; then
-      for f in $config_dir/*
-      do
-        echo $(basename "$f")
-      done
-    else
-      _run_config_script $script_file
-    fi
-  else
-    cat <<EOM
-Configuration script must be specified. You can see available scripts by running
-
-$_me configure list
-EOM
-    exit 1
-  fi
+  _runner "configure" $1
 }
 
 # ------------------------------------------------------------------- customize
@@ -262,39 +244,8 @@ Run the specified customization script.
 Customization scripts can be added to:
   $DOTFILES/script/customize/
 EOM
-_run_customization_script() {
-  if [[ -e "$1" ]]; then
-    echo ">> Running $(basename $1)"
-    $1
-  else
-    echo "Error: customization script '$1' not found." && exit 1
-  fi
-}
 customize() {
-  customizations_dir=$DOTFILES/script/customize
-  script_file=$customizations_dir/$1
-  if [[ -n "$1" ]]; then
-    if [[ "$1" == "--all" ]]; then
-      for f in $customizations_dir/*
-      do
-        _run_customization_script $f
-      done
-    elif [[ "$1" == "list" ]]; then
-      for f in $customizations_dir/*
-      do
-        echo $(basename "$f")
-      done
-    else
-      _run_customization_script $script_file
-    fi
-  else
-    cat <<EOM
-Customization script must be specified. You can see available scripts by running
-
-$_me customize list
-EOM
-    exit 1
-  fi
+  _runner "customize" $1
 }
 
 # Dotfiles ####################################################################
