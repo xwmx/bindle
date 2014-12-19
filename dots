@@ -284,6 +284,8 @@ List all dotfiles from in the home directory.
 
 If 'tracked' or 'untracked' as passed as arguments to 'list', then those tasks are run.
 
+If a dotfile name is passed as the second argument, then a listing is printed for that item.
+
 Indicator prefixes display information about the type and status of each entry:
   d   - Directory
   @   - Symbolic link
@@ -308,6 +310,16 @@ list() {
     untracked
   elif [[ "$1" == "tracked" ]]; then
     tracked
+  elif [[ "$1" =~ ^\.(.*) ]]; then
+    local f="$target_dir/$1"
+    if [[ -a "$f" ]]; then
+      filename=$(basename "$f")
+      source_file=$source_dir/$filename
+      target_file=$target_dir/$filename
+      _list_item
+    else
+      echo "File not found." && exit 1
+    fi
   else
     _each_target_dotfile _list_item
   fi
