@@ -533,14 +533,14 @@ link() {
   fi
 }
 
-# ----------------------------------------------------------------------- clean
+# ---------------------------------------------------------------------- unlink
 
 desc clean <<EOM
-Usage: $_me clean
+Usage: $_me unlink
 
 Remove dotfile links in home directory with status 'i'
 EOM
-_clean_item() {
+_unlink_item() {
   if ( [[ -L $target_file ]] && \
        [[ "$(readlink $target_file)" == "$f" ]]
   ); then
@@ -548,8 +548,8 @@ _clean_item() {
     rm $target_file
   fi
 }
-clean() {
-  _each_dotfile _clean_item
+unlink() {
+  _each_dotfile _unlink_item
 }
 
 # Utilties ####################################################################
