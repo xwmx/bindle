@@ -162,6 +162,40 @@ update_submodules() {
   git submodule foreach git pull
 }
 
+# ---------------------------------------------------------------------- update
+
+desc update <<EOM
+Usage: $_me update [list] [package_script]
+
+Run the specified package update script.
+
+package scripts can be added to:
+  $DOTFILES/script/packages/
+
+EOM
+update() {
+  packages_dir=$DOTFILES/script/packages
+  script_file=$packages_dir/$1
+  if [[ -n "$1" ]]; then
+    if [[ "$1" == "list" ]]; then
+      for f in $packages_dir/*
+      do
+        echo $(basename "$f")
+      done
+    elif [[ -a "$script_file" ]]; then
+      echo ">> Running $(basename $script_file)"
+      $script_file
+    else
+      echo "Error: package update script not found." && exit 1
+    fi
+  else
+    echo "Update script must be specified. You can see available scripts by running
+
+$_me update list" && exit 1
+  fi
+}
+
+
 # ------------------------------------------------------------- update_homebrew
 
 desc update_homebrew <<EOM
