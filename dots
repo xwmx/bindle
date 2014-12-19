@@ -268,37 +268,6 @@ EOM
   fi
 }
 
-
-# --------------------------------------------------------------- configure_osx
-
-desc configure_osx <<EOM
-Usage: $_me configure_osx
-
-Set various preferences for OS X and default Apple applications.
-
-For more information, reference the following script:
-  $DOTFILES/script/config/osx.sh
-EOM
-configure_osx() {
-  echo ">> Configuring OS X preferences..."
-  $DOTFILES/script/config/osx.sh
-}
-
-# ---------------------------------------------------------- configure_osx_apps
-
-desc configure_osx_apps <<EOM
-Usage: $_me configure_osx
-
-Set various preferences for non-default OS X applications.
-
-For more information, reference the following script:
-  $DOTFILES/script/config/osx_apps.sh
-EOM
-configure_osx_apps() {
-  echo ">> Configuring OS X application preferences..."
-  $DOTFILES/script/config/osx_apps.sh
-}
-
 # Dotfiles ####################################################################
 
 # ------------------------------------------------------------------------ list
