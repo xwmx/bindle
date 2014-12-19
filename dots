@@ -170,7 +170,7 @@ Usage: $_me install [list] [--all] [package_script]
 Run the specified package script.
 
 Package scripts can be added to:
-  $DOTFILES/script/packages/
+  $DOTFILES/script/install/
 
 EOM
 _run_package_script() {
@@ -182,7 +182,7 @@ _run_package_script() {
   fi
 }
 install() {
-  packages_dir=$DOTFILES/script/packages
+  packages_dir=$DOTFILES/script/install
   script_file=$packages_dir/$1
   if [[ -n "$1" ]]; then
     if [[ "$1" == "--all" ]]; then
