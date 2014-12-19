@@ -275,10 +275,10 @@ configure_osx_apps() {
 
 # Dotfiles ####################################################################
 
-# ------------------------------------------------------------------------- all
+# ------------------------------------------------------------------------ list
 
-desc all <<EOM
-Usage: $_me all
+desc list <<EOM
+Usage: $_me list
 
 List all dotfiles from in the home directory.
 
@@ -287,7 +287,7 @@ Indicator prefixes display information about the type and status of each entry:
   @   - Symbolic link
   @ i - Symbolic link to tracked file.
 EOM
-_all() {
+_list() {
   if [[ -L $f ]]; then
     if [[ "$(readlink $f)" == "$source_file" ]]; then
       echo "@  i   $filename"
@@ -301,8 +301,8 @@ _all() {
   fi
 
 }
-all() {
-  _each_target_dotfile _all
+list() {
+  _each_target_dotfile _list
 }
 
 # ------------------------------------------------------------------- untracked
