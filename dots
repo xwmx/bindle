@@ -546,7 +546,7 @@ _unlink_item() {
   if ( [[ -L $target_file ]] && \
        [[ "$(readlink $target_file)" == "$f" ]]
   ); then
-    echo "Removing linked file: $target_file"
+    echo "Removing link: $target_file"
     rm $target_file
   fi
 }
