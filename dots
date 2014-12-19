@@ -222,6 +222,53 @@ customize_icons() {
   $DOTFILES/script/customizations/customize_icons.rb
 }
 
+
+# ------------------------------------------------------------------- configure
+
+desc configure <<EOM
+Usage: $_me configure [--all] [configuration_script]
+
+Run the specified package update script.
+
+package scripts can be added to:
+  $DOTFILES/script/config/
+EOM
+_run_config_script() {
+  if [[ -e "$1" ]]; then
+    echo ">> Running $(basename $1)"
+    $1
+  else
+    echo "Error: configuration script '$1' not found." && exit 1
+  fi
+}
+configure() {
+  config_dir=$DOTFILES/script/config
+  script_file=$config_dir/$1
+  if [[ -n "$1" ]]; then
+    if [[ "$1" == "--all" ]]; then
+      for f in $config_dir/*
+      do
+        _run_config_script $f
+      done
+    elif [[ "$1" == "list" ]]; then
+      for f in $config_dir/*
+      do
+        echo $(basename "$f")
+      done
+    else
+      _run_config_script $script_file
+    fi
+  else
+    cat <<EOM
+Configuration script must be specified. You can see available scripts by running
+
+$_me configure list
+EOM
+    exit 1
+  fi
+}
+
+
 # --------------------------------------------------------------- configure_osx
 
 desc configure_osx <<EOM
