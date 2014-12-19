@@ -278,7 +278,7 @@ configure_osx_apps() {
 # ------------------------------------------------------------------------ list
 
 desc list <<EOM
-Usage: $_me list
+Usage: $_me list [filename]
 
 List all dotfiles from in the home directory.
 
