@@ -311,7 +311,7 @@ list() {
   elif [[ "$1" == "tracked" ]]; then
     tracked
   elif [[ "$1" =~ ^\.(.*) ]]; then
-    local f="$target_dir/$1"
+    f="$target_dir/$1"
     if [[ -a "$f" ]]; then
       filename=$(basename "$f")
       source_file=$source_dir/$filename
@@ -475,7 +475,7 @@ _link_item() {
 }
 link() {
   if [[ -n "$1" ]]; then
-    local f="$source_dir/$1"
+    f="$source_dir/$1"
     filename=$(basename "$1")
     source_file=$source_dir/$filename
     target_file=$target_dir/$filename
@@ -506,7 +506,7 @@ _unlink_item() {
 }
 unlink() {
   if [[ -n "$1" ]]; then
-    local f="$source_dir/$1"
+    f="$source_dir/$1"
     filename=$(basename "$1")
     source_file=$source_dir/$filename
     target_file=$target_dir/$filename
