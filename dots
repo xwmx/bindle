@@ -162,33 +162,33 @@ update_submodules() {
   git submodule foreach git pull
 }
 
-# ---------------------------------------------------------------------- update
+# --------------------------------------------------------------------- install
 
-desc update <<EOM
-Usage: $_me update [list] [--all] [package_script]
+desc install <<EOM
+Usage: $_me install [list] [--all] [package_script]
 
-Run the specified package update script.
+Run the specified package script.
 
 Package scripts can be added to:
   $DOTFILES/script/packages/
 
 EOM
-_run_package_update_script() {
+_run_package_script() {
   if [[ -e "$1" ]]; then
     echo ">> Running $(basename $1)"
     $1
   else
-    echo "Error: package update script '$1' not found." && exit 1
+    echo "Error: package script '$1' not found." && exit 1
   fi
 }
-update() {
+install() {
   packages_dir=$DOTFILES/script/packages
   script_file=$packages_dir/$1
   if [[ -n "$1" ]]; then
     if [[ "$1" == "--all" ]]; then
       for f in $packages_dir/*
       do
-        _run_package_update_script $f
+        _run_package_script $f
       done
     elif [[ "$1" == "list" ]]; then
       for f in $packages_dir/*
@@ -196,11 +196,11 @@ update() {
         echo $(basename "$f")
       done
     else
-      _run_package_update_script $script_file
+      _run_package_script $script_file
     fi
   else
     cat <<EOM
-Update script must be specified. You can see available scripts by running
+Package script must be specified. You can see available scripts by running
 
 $_me update list" && exit 1
 EOM
