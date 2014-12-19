@@ -524,9 +524,11 @@ clear() {
 # ------------------------------------------------------------------------ link
 
 desc link <<EOM
-Usage: $_me link
+Usage: $_me link [filename]
 
 Link dotfiles to home directory. Existing files skipped.
+
+If a filename is passed to the link task, then it only acts on that file.
 EOM
 _link_item() {
   if [[ -a $target_file ]]; then
@@ -537,7 +539,17 @@ _link_item() {
   fi
 }
 link() {
-  _each_dotfile _link_item
+  if [[ -n "$1" ]]; then
+    local f="$source_dir/$1"
+    filename=$(basename "$1")
+    source_file=$source_dir/$filename
+    target_file=$target_dir/$filename
+    if [[ -a "$source_file" ]]; then
+      _link_item
+    fi
+  else
+    _each_dotfile _link_item
+  fi
 }
 
 # Utilties ####################################################################
