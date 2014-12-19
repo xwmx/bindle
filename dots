@@ -12,9 +12,9 @@
 #
 # Example task group:
 #
-# desc example ""   - Optional. A short description for the task.
-# _example() { : }  - Optional. The task to be run for each dotfile.
-# example() { : }   - The task as it appears to the user
+# desc example ""         - Optional. A short description for the task.
+# _example_item() { : }   - Optional. The task to be run for each dotfile.
+# example() { : }         - The task as it appears to the user
 #
 #
 # desc example <<EOM
@@ -287,7 +287,7 @@ Indicator prefixes display information about the type and status of each entry:
   @   - Symbolic link
   @ i - Symbolic link to tracked file.
 EOM
-_list() {
+_list_item() {
   if [[ -L $f ]]; then
     if [[ "$(readlink $f)" == "$source_file" ]]; then
       echo "@  i   $filename"
@@ -302,7 +302,7 @@ _list() {
 
 }
 list() {
-  _each_target_dotfile _list
+  _each_target_dotfile _list_item
 }
 
 # ------------------------------------------------------------------- untracked
@@ -316,7 +316,7 @@ Indicator prefixes display information about the type and status of each entry:
   d   - Directory
   @   - Symbolic link
 EOM
-_untracked() {
+_untracked_item() {
   if [[ -L $f ]];then
     if !( [[ "$(readlink $f)" == "$source_file" ]] ); then
       echo "@      $filename"
@@ -328,7 +328,7 @@ _untracked() {
   fi
 }
 untracked() {
-  _each_target_dotfile _untracked
+  _each_target_dotfile _untracked_item
 }
 
 # --------------------------------------------------------------------- tracked
@@ -341,7 +341,7 @@ List all tracked dotfiles from in the home directory.
 Indicator prefixes display information about the type and status of each entry:
   @ i - Symbolic link to tracked file.
 EOM
-_tracked() {
+_tracked_item() {
   if ( [[ -L $f ]] && \
        [[ "$(readlink $f)" == "$source_file" ]]
   ); then
@@ -350,7 +350,7 @@ _tracked() {
 
 }
 tracked() {
-  _each_target_dotfile _tracked
+  _each_target_dotfile _tracked_item
 }
 
 # ------------------------------------------------------------------------- add
@@ -421,7 +421,7 @@ Indicator prefixes display information about the status of each entry:
    e  - A file exists, but it not linked to tracked file
     x - No file exists
 EOM
-_status() {
+_status_item() {
   if ( [[ -L $target_file ]] && \
        [[ "$(readlink $target_file)" == "$f" ]]
   ); then
@@ -433,7 +433,7 @@ _status() {
   fi
 }
 status() {
-  _each_dotfile _status
+  _each_dotfile _status_item
 }
 
 # --------------------------------------------------------------- backup_status
@@ -448,7 +448,7 @@ Indicator prefixes display information about the status of each entry:
    e  - A file exists, but it not linked to tracked file
     x - No file exists
 EOM
-_backup_status() {
+_backup_status_item() {
   target_file=$target_file.bak
   if ( [[ -L $target_file ]] && \
        [[ "$(readlink $target_file)" == "$f" ]]
@@ -461,7 +461,7 @@ _backup_status() {
   fi
 }
 backup_status() {
-  _each_dotfile _backup_status
+  _each_dotfile _backup_status_item
 }
 
 # ----------------------------------------------------------------------- clean
@@ -471,7 +471,7 @@ Usage: $_me clean
 
 Remove dotfile links in home directory with status 'i'
 EOM
-_clean() {
+_clean_item() {
   if ( [[ -L $target_file ]] && \
        [[ "$(readlink $target_file)" == "$f" ]]
   ); then
@@ -480,7 +480,7 @@ _clean() {
   fi
 }
 clean() {
-  _each_dotfile _clean
+  _each_dotfile _clean_item
 }
 
 # ----------------------------------------------------------------------- clear
@@ -490,7 +490,7 @@ Usage: $_me clear
 
 Remove $_me from home directory with status 'i' (via clean task), backs up files with status 'e'
 EOM
-_clear() {
+_clear_item() {
   if [[ -a $target_file ]]; then
     echo "Backing up file: $target_file"
     mv $target_file "$target_file".bak
@@ -498,7 +498,7 @@ _clear() {
 }
 clear() {
   clean
-  _each_dotfile _clear
+  _each_dotfile _clear_item
 }
 
 # ------------------------------------------------------------------------ link
@@ -508,7 +508,7 @@ Usage: $_me link
 
 Link dotfiles to home directory. Existing files skipped.
 EOM
-_link() {
+_link_item() {
   if [[ -a $target_file ]]; then
     echo Exists: $filename
   else
@@ -517,7 +517,7 @@ _link() {
   fi
 }
 link() {
-  _each_dotfile _link
+  _each_dotfile _link_item
 }
 
 # Utilties ####################################################################
