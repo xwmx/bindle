@@ -97,7 +97,7 @@ _each_file() {
     filename=$(basename "$f")
     source_file=$source_dir/$filename
     target_file=$target_dir/$filename
-    if !( [[ "$filename" =~ ^\.?\.$ ]] ); then
+    if ! ( [[ "$filename" =~ ^\.?\.$ ]] ); then
       # Subfunctions can access the variables in this function, so it's not
       # necessary to pass them as arguments.
       $per_file_function
@@ -327,7 +327,7 @@ Indicator prefixes display information about the type and status of each entry:
 EOM
 _untracked_item() {
   if [[ -L $f ]];then
-    if !( [[ "$(readlink "$f")" == "$source_file" ]] ); then
+    if ! ( [[ "$(readlink "$f")" == "$source_file" ]] ); then
       echo "@      $filename"
     fi
   elif [[ -d $f ]]; then
@@ -574,10 +574,10 @@ tasks() {
   task_list=()
   for t in ${function_list[@]}
   do
-    if !( [[ $t == "declare" ]] || \
-          [[ $t == "-f" ]] || \
-          [[ "$t" =~ ^_(.*) ]] || \
-          [[ "$t" == "desc" ]]
+    if ! ( [[ $t == "declare" ]] || \
+           [[ $t == "-f" ]] || \
+           [[ "$t" =~ ^_(.*) ]] || \
+           [[ "$t" == "desc" ]]
     ); then
       task_list+="$t "
     fi
