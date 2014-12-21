@@ -283,14 +283,14 @@ EOM
 _list_item() {
   if [[ -L $f ]]; then
     if [[ "$(readlink "$f")" == "$source_file" ]]; then
-      echo "@  i   $filename"
+      printf "@  i   %s\n" "$filename"
     else
-      echo "@      $filename"
+      printf "@      %s\n" "$filename"
     fi
   elif [[ -d $f ]]; then
-    echo "d      $filename"
+    printf "d      %s\n" "$filename"
   elif [[ -e $f ]]; then
-    echo "       $filename"
+    printf "       %s\n" "$filename"
   fi
 
 }
@@ -307,7 +307,7 @@ list() {
       target_file=$target_dir/$filename
       _list_item
     else
-      echo "File not found." && exit 1
+      printf "File not found.\n" && exit 1
     fi
   else
     _each_target_dotfile _list_item
@@ -328,12 +328,12 @@ EOM
 _untracked_item() {
   if [[ -L $f ]];then
     if ! ( [[ "$(readlink "$f")" == "$source_file" ]] ); then
-      echo "@      $filename"
+      printf "@      %s\n" "$filename"
     fi
   elif [[ -d $f ]]; then
-    echo "d      $filename"
+    printf "d      %s\n" "$filename"
   elif [[ -e $f ]]; then
-    echo "       $filename"
+    printf "       %s\n" "$filename"
   fi
 }
 untracked() {
@@ -354,7 +354,7 @@ _tracked_item() {
   if ( [[ -L $f ]] && \
        [[ "$(readlink "$f")" == "$source_file" ]]
   ); then
-    echo "@  i   $filename"
+    printf "@  i   %s\n" "$filename"
   fi
 }
 tracked() {
@@ -370,20 +370,20 @@ Add the specified dotfile to the dotfiles repository and link.
 EOM
 add() {
   if [[ $# = 0 ]]; then
-    echo "Must specify a valid file or directory name." && exit 1
+    printf "Must specify a valid file or directory name.\n" && exit 1
   elif [[ ! -e $1 ]]; then
-    echo "File or directory does not exist." && exit 1
+    printf "File or directory does not exist.\n" && exit 1
   else
     filename=$(basename "$1")
     target_file=$target_dir/$filename
     source_file=$source_dir/$filename
     if [[ ! -e $source_file ]]; then
-      echo "File does not exist."
+      printf "File does not exist.\n"
     elif [[ ! -L $target_file ]]; then
-      echo "File is not a symlink."
+      printf "File is not a symlink.\n"
     else
       mv "$target_file" "$source_dir"
-      echo "Linking $source_file => $target_file"
+      printf "Linking %s => %s\n" "$source_file" "$target_file"
       ln -s "$source_file" "$target_file"
     fi
   fi
@@ -398,21 +398,21 @@ Unlink the specified file and move from the dotfiles repository back to $HOME"
 EOM
 restore() {
   if [[ $# = 0 ]]; then
-    echo "Must specify a valid file or directory name." && exit 1
+    printf "Must specify a valid file or directory name.\n" && exit 1
   elif [[ ! -e $1 ]]; then
-    echo "File or directory does not exist." && exit 1
+    printf "File or directory does not exist.\n" && exit 1
   else
     filename=$(basename "$1")
     target_file=$target_dir/$filename
     source_file=$source_dir/$filename
     if [[ ! -e $source_file ]]; then
-      echo "File does not exist."
+      printf "File does not exist.\n"
     elif [[ ! -L $target_file ]]; then
-      echo "File is not a symlink."
+      printf "File is not a symlink.\n"
     else
       rm "$target_file"
       mv "$source_file" "$target_file"
-      echo "Restored: $source_file => $target_file"
+      printf "Restored: %s => %s\n" "$source_file" "$target_file"
     fi
   fi
 }
@@ -433,11 +433,11 @@ _status_item() {
   if ( [[ -L $target_file ]] && \
        [[ "$(readlink "$target_file")" == "$f" ]]
   ); then
-    echo "i   $filename"
+    printf "i   %s\n" "$filename"
   elif [[ -e $target_file ]]; then
-    echo " e  $filename"
+    printf " e  %s\n" "$filename"
   else
-    echo "  x $filename"
+    printf "  x %s\n" "$filename"
   fi
 }
 status() {
@@ -455,9 +455,9 @@ If a filename is passed to the link task, then it only acts on that file.
 EOM
 _link_item() {
   if [[ -e $target_file ]]; then
-    echo Exists: "$filename"
+    printf "Exists: %s\n" "$filename"
   else
-    echo "Linking $f => $target_file"
+    printf "Linking %s => %s\n" "$f" "$target_file"
     ln -s "$f" "$target_file"
   fi
 }
@@ -488,7 +488,7 @@ _unlink_item() {
   if ( [[ -L $target_file ]] && \
        [[ "$(readlink "$target_file")" == "$f" ]]
   ); then
-    echo "Removing link: $target_file"
+    printf "Removing link: %s\n" "$target_file"
     rm "$target_file"
   fi
 }
@@ -521,7 +521,7 @@ Usage: $_me dir
 Prints the current value of \$DOTFILES
 EOM
 dir() {
-  echo "$DOTFILES"
+  printf "%s\n" "$DOTFILES"
 }
 
 # Help ########################################################################
@@ -554,9 +554,9 @@ EOM
  else
    var="_desc_$1"
    if [[ -n ${!var} ]]; then
-     echo "${!var}"
+     printf "%s\n" "${!var}"
    else
-    echo "No additional information for $1"
+    printf "No additional information for \`%s\`\n" "$1"
    fi
  fi
 }
@@ -601,7 +601,7 @@ _dotfiles_main() {
     eval "$@"
     exit 0
   else
-    echo "Task not found."
+    printf "Task not found.\n"
     exit 1
   fi
 }
