@@ -572,7 +572,7 @@ tasks() {
   [[ ! $1 == "--raw" ]] && echo "Available tasks:"
   function_list=($(declare -F))
   task_list=()
-  for t in ${function_list[@]}
+  for t in "${function_list[@]}"
   do
     if ! ( [[ $t == "declare" ]] || \
            [[ $t == "-f" ]] || \
@@ -585,7 +585,7 @@ tasks() {
   if [[ $1 == "--raw" ]]; then
     echo "$task_list"
   else
-    for i in ${task_list[@]}; do echo "  $i"; done
+    for i in "${task_list[@]}"; do echo "  $i"; done
   fi
 }
 
