@@ -595,7 +595,7 @@ tasks() {
 
 _dotfiles_main() {
   if ( [[ $# = 0 ]] || [[ $1 == "-h" ]] ); then
-    help
+    help "$@"
     exit 0
   elif ( _contains "$(tasks --raw)" "$1" ); then
     eval "$@"
