@@ -579,13 +579,13 @@ tasks() {
            [[ "$t" =~ ^_(.*) ]] || \
            [[ "$t" == "desc" ]]
     ); then
-      task_list+="$t "
+      task_list+=("$t")
     fi
   done
   if [[ $1 == "--raw" ]]; then
-    echo "$task_list"
+    printf "%s " "${task_list[@]}"
   else
-    for i in "${task_list[@]}"; do echo "  $i"; done
+    printf "  %s\n" "${task_list[@]}"
   fi
 }
 
