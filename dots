@@ -41,7 +41,7 @@
 # $_me
 #
 # Set to the command's basename.
-_me=$(basename $0)
+_me=$(basename "$0")
 
 
 # Ensure that $DOTFILES is set in the environment.
@@ -76,11 +76,11 @@ target_dir=$HOME
 desc() {
   [[ -z $1 ]] && echo "desc: No task name specified." && exit 1
   if [[ -n $2 ]]; then
-    read -d '' _desc_$1 <<EOM
+    read -d '' "_desc_$1" <<EOM
 $2
 EOM
   else
-    read -d '' _desc_$1
+    read -d '' "_desc_$1"
   fi
 }
 
@@ -112,7 +112,7 @@ _each_file() {
 # Usage: _runner subdirectory command
 _run_script() {
   if [[ -e "$1" ]]; then
-    echo ">> Running $(basename $1)"
+    echo ">> Running $(basename "$1")"
     $1
   else
     echo "'$1' not found." && exit 1
@@ -127,7 +127,7 @@ _runner() {
     if [[ "$2" == "--all" ]]; then
       for f in $subdir_path/*
       do
-        _run_script $f
+        _run_script "$f"
       done
     elif [[ "$2" == "list" ]]; then
       for f in $subdir_path/*
@@ -135,7 +135,7 @@ _runner() {
         echo $(basename "$f")
       done
     else
-      _run_script $script_file
+      _run_script "$script_file"
     fi
   else
     cat <<EOM
@@ -154,7 +154,7 @@ EOM
 #
 # Usage: _each_dotfile function
 _each_dotfile() {
-  _each_file $source_dir $1
+  _each_file "$source_dir" "$1"
 }
 
 # _each_target_dotfile()
@@ -164,7 +164,7 @@ _each_dotfile() {
 #
 # Usage: _each_target_dotfile function
 _each_target_dotfile() {
-  _each_file $target_dir $1
+  _each_file "$target_dir" "$1"
 }
 
 # _function_exists()
@@ -199,11 +199,11 @@ Usage: $_me git [options]
 Run a git command within the \$DOTFILES directory.
 EOM
 git() {
-  cd $DOTFILES
+  cd "$DOTFILES"
 
   # Must get and call $bin_path to avoid calling this function again.
   git_bin=$(which git)
-  $git_bin $@
+  $git_bin "$@"
 }
 
 # ----------------------------------------------------------- update_submodules
@@ -231,7 +231,7 @@ Package scripts can be added to:
   $DOTFILES/script/install/
 EOM
 install() {
-  _runner "install" $1
+  _runner "install" "$1"
 }
 
 # ------------------------------------------------------------------- configure
@@ -245,7 +245,7 @@ Configuration scripts can be added to:
   $DOTFILES/script/configure/
 EOM
 configure() {
-  _runner "configure" $1
+  _runner "configure" "$1"
 }
 
 # ------------------------------------------------------------------- customize
@@ -259,7 +259,7 @@ Customization scripts can be added to:
   $DOTFILES/script/customize/
 EOM
 customize() {
-  _runner "customize" $1
+  _runner "customize" "$1"
 }
 
 # Dotfiles ####################################################################
@@ -282,7 +282,7 @@ Indicator prefixes display information about the type and status of each entry:
 EOM
 _list_item() {
   if [[ -L $f ]]; then
-    if [[ "$(readlink $f)" == "$source_file" ]]; then
+    if [[ "$(readlink "$f")" == "$source_file" ]]; then
       echo "@  i   $filename"
     else
       echo "@      $filename"
@@ -327,7 +327,7 @@ Indicator prefixes display information about the type and status of each entry:
 EOM
 _untracked_item() {
   if [[ -L $f ]];then
-    if !( [[ "$(readlink $f)" == "$source_file" ]] ); then
+    if !( [[ "$(readlink "$f")" == "$source_file" ]] ); then
       echo "@      $filename"
     fi
   elif [[ -d $f ]]; then
@@ -352,7 +352,7 @@ Indicator prefixes display information about the type and status of each entry:
 EOM
 _tracked_item() {
   if ( [[ -L $f ]] && \
-       [[ "$(readlink $f)" == "$source_file" ]]
+       [[ "$(readlink "$f")" == "$source_file" ]]
   ); then
     echo "@  i   $filename"
   fi
@@ -374,7 +374,7 @@ add() {
   elif [[ ! -e $1 ]]; then
     echo "File or directory does not exist." && exit 1
   else
-    filename=$(basename $1)
+    filename=$(basename "$1")
     target_file=$target_dir/$filename
     source_file=$source_dir/$filename
     if [[ ! -e $source_file ]]; then
@@ -382,9 +382,9 @@ add() {
     elif [[ ! -L $target_file ]]; then
       echo "File is not a symlink."
     else
-      mv $target_file $source_dir
+      mv "$target_file" "$source_dir"
       echo "Linking $source_file => $target_file"
-      ln -s $source_file $target_file
+      ln -s "$source_file" "$target_file"
     fi
   fi
 }
@@ -402,7 +402,7 @@ restore() {
   elif [[ ! -e $1 ]]; then
     echo "File or directory does not exist." && exit 1
   else
-    filename=$(basename $1)
+    filename=$(basename "$1")
     target_file=$target_dir/$filename
     source_file=$source_dir/$filename
     if [[ ! -e $source_file ]]; then
@@ -410,8 +410,8 @@ restore() {
     elif [[ ! -L $target_file ]]; then
       echo "File is not a symlink."
     else
-      rm $target_file
-      mv $source_file $target_file
+      rm "$target_file"
+      mv "$source_file" "$target_file"
       echo "Restored: $source_file => $target_file"
     fi
   fi
@@ -431,7 +431,7 @@ Indicator prefixes display information about the status of each entry:
 EOM
 _status_item() {
   if ( [[ -L $target_file ]] && \
-       [[ "$(readlink $target_file)" == "$f" ]]
+       [[ "$(readlink "$target_file")" == "$f" ]]
   ); then
     echo "i   $filename"
   elif [[ -e $target_file ]]; then
@@ -455,10 +455,10 @@ If a filename is passed to the link task, then it only acts on that file.
 EOM
 _link_item() {
   if [[ -e $target_file ]]; then
-    echo Exists: $filename
+    echo Exists: "$filename"
   else
     echo "Linking $f => $target_file"
-    ln -s $f $target_file
+    ln -s "$f" "$target_file"
   fi
 }
 link() {
@@ -486,10 +486,10 @@ If a filename is passed to the unlink task, then it only acts on that file.
 EOM
 _unlink_item() {
   if ( [[ -L $target_file ]] && \
-       [[ "$(readlink $target_file)" == "$f" ]]
+       [[ "$(readlink "$target_file")" == "$f" ]]
   ); then
     echo "Removing link: $target_file"
-    rm $target_file
+    rm "$target_file"
   fi
 }
 unlink() {
@@ -512,7 +512,7 @@ Usage: $_me edit
 Opens the the dotfiles directory in your \$EDITOR, currently set to '$EDITOR'.
 EOM
 edit() {
-  $EDITOR $DOTFILES
+  $EDITOR "$DOTFILES"
 }
 
 desc dir <<EOM
@@ -583,7 +583,7 @@ tasks() {
     fi
   done
   if [[ $1 == "--raw" ]]; then
-    echo $task_list
+    echo "$task_list"
   else
     for i in ${task_list[@]}; do echo "  $i"; done
   fi
@@ -597,7 +597,7 @@ _dotfiles_main() {
   if ( [[ $# = 0 ]] || [[ $1 == "-h" ]] ); then
     help
     exit 0
-  elif ( _contains "$(tasks --raw)" $1 ); then
+  elif ( _contains "$(tasks --raw)" "$1" ); then
     eval $@
     exit 0
   else
