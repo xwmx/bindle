@@ -132,7 +132,7 @@ _runner() {
     elif [[ "$2" == "list" ]]; then
       for f in $subdir_path/*
       do
-        echo $(basename "$f")
+        basename "$f"
       done
     else
       _run_script "$script_file"
