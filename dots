@@ -598,7 +598,7 @@ _dotfiles_main() {
     help
     exit 0
   elif ( _contains "$(tasks --raw)" "$1" ); then
-    eval $@
+    eval "$@"
     exit 0
   else
     echo "Task not found."
@@ -607,5 +607,5 @@ _dotfiles_main() {
 }
 
 # run _dotfiles_main function to start program.
-_dotfiles_main $@
+_dotfiles_main "$@"
 
