@@ -569,7 +569,6 @@ Usage: $_me tasks [--raw]
 Display the list of available tasks.
 EOM
 tasks() {
-  [[ ! $1 == "--raw" ]] && echo "Available tasks:"
   function_list=($(declare -F))
   task_list=()
   for t in "${function_list[@]}"
@@ -585,6 +584,7 @@ tasks() {
   if [[ $1 == "--raw" ]]; then
     printf "%s " "${task_list[@]}"
   else
+    printf "Available tasks:\n"
     printf "  %s\n" "${task_list[@]}"
   fi
 }
