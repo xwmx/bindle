@@ -46,7 +46,7 @@ _me=$(basename "$0")
 
 # Ensure that $DOTFILES is set in the environment.
 if [[ -z $DOTFILES ]]; then
-  echo "\$DOTFILES must be set to your dotfiles directory" && exit 1
+  printf "\$DOTFILES must be set to your dotfiles directory" && exit 1
 fi
 
 # $source_dir
@@ -109,7 +109,7 @@ done
 # To make the description text available to other functions, desc() assigns the
 # text to a variable with the format $_desc_function_name
 desc() {
-  [[ -z $1 ]] && echo "desc: No task name specified." && exit 1
+  [[ -z $1 ]] && printf "desc: No task name specified." && exit 1
   if [[ -n $2 ]]; then
     read -d '' "_desc_$1" <<EOM
 $2
@@ -147,10 +147,10 @@ _each_file() {
 # Usage: _runner subdirectory command
 _run_script() {
   if [[ -e "$1" ]]; then
-    echo ">> Running $(basename "$1")"
+    printf ">> Running %s\n" "$(basename "$1")"
     $1
   else
-    echo "'$1' not found." && exit 1
+    printf "'%s' not found." "$1" && exit 1
   fi
 }
 _runner() {
