@@ -593,19 +593,26 @@ tasks() {
 # Main
 ###############################################################################
 
-_dotfiles_main() {
-  if ( [[ $# = 0 ]] || [[ $1 == "-h" ]] ); then
-    help "$@"
-    exit 0
-  elif ( _contains "$(tasks --raw)" "$1" ); then
-    eval "$@"
-    exit 0
-  else
-    printf "Task not found.\n"
-    exit 1
-  fi
-}
+# Determine the desired command.
+while [ $# -gt 0 ]; do
+  opt="$1"
+  shift
+  case "$opt" in
+    -h|--help)
+      command="help"
+      break
+      ;;
+    *)
+      if ( _contains "$(list --raw)" "$opt" ); then
+        command=$opt
+      else
+        printf "Unknown command: %s\n" "$opt"
+        exit 1
+      fi
+      break
+      ;;
+  esac
+done
 
-# run _dotfiles_main function to start program.
-_dotfiles_main "$@"
-
+# Run the command with the first argument.
+$command "$1"
