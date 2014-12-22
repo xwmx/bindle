@@ -59,6 +59,41 @@ source_dir=$DOTFILES/home
 # Set to $HOME in the environment.
 target_dir=$HOME
 
+
+###############################################################################
+# Options
+###############################################################################
+
+# Get raw options for any tasks that expect them.
+raw_options=$*
+
+# Initialize task options and arguments arrays.
+#
+# These contain any options and arguments that will be used by the tasks.
+# Tasks handle their own argument and option checks using the created arrays.
+task_options=()
+task_arguments=()
+
+while [ $# -gt 0 ]; do
+  opt="$1"
+  shift
+  case "$opt" in
+    -h|--help)
+      command="help"
+      ;;
+    --*)
+      task_options+=("$opt")
+      ;;
+    *)
+      if [[ -n $command ]]; then
+        task_arguments+=("$opt")
+      else
+        command=$opt
+      fi
+      ;;
+  esac
+done
+
 ###############################################################################
 # Utility functions
 ###############################################################################
@@ -123,13 +158,13 @@ _runner() {
   subdir=$1
   subdir_path=$DOTFILES/script/$subdir
   script_file=$subdir_path/$2
-  if [[ -n "$2" ]]; then
-    if [[ "$2" == "--all" ]]; then
-      for f in $subdir_path/*
-      do
-        _run_script "$f"
-      done
-    elif [[ "$2" == "list" ]]; then
+  if _contains "--all" "${task_options[@]}"; then
+    for f in $subdir_path/*
+    do
+      _run_script "$f"
+    done
+  elif [[ -n "$2" ]]; then
+    if [[ "$2" == "list" ]]; then
       for f in $subdir_path/*
       do
         basename "$f"
@@ -180,9 +215,11 @@ _function_exists() {
 # Takes an item and a list and determines whether the list contains the item.
 #
 # Usage:
-#   _contains "$list" "$item"
+#   _contains "$item" "${list[@]}"
 _contains() {
-  [[ $1 =~ (^| )$2($| ) ]] && exit 0 || exit 1
+  local e
+  for e in "${@:2}"; do [[ "$e" == "$1" ]] && return 0; done
+  return 1
 }
 
 ###############################################################################
@@ -203,7 +240,11 @@ git() {
 
   # Must get and call $bin_path to avoid calling this function again.
   git_bin=$(which git)
-  $git_bin "$@"
+  # Use raw options to get the option string, minus the `git` command.
+  git_options=$(printf "%s" "$raw_options" | sed -e 's/^git //')
+
+  # call the environment's git with the git options
+  "$git_bin" "$git_options"
 }
 
 # ----------------------------------------------------------- update_submodules
@@ -581,7 +622,7 @@ tasks() {
       task_list+=("$t")
     fi
   done
-  if [[ $1 == "--raw" ]]; then
+  if _contains "--raw" "${task_options[@]}"; then
     printf "%s " "${task_list[@]}"
   else
     printf "Available tasks:\n"
@@ -589,30 +630,24 @@ tasks() {
   fi
 }
 
+
 ###############################################################################
 # Main
 ###############################################################################
 
-# Determine the desired command.
-while [ $# -gt 0 ]; do
-  opt="$1"
-  shift
-  case "$opt" in
-    -h|--help)
-      command="help"
-      break
-      ;;
-    *)
-      if ( _contains "$(list --raw)" "$opt" ); then
-        command=$opt
-      else
-        printf "Unknown command: %s\n" "$opt"
-        exit 1
-      fi
-      break
-      ;;
-  esac
-done
+# If $command is blank, then set to help
+if [[ -z $command ]]; then
+  command="help"
+fi
 
-# Run the command with the first argument.
-$command "$1"
+# Get the list of defined tasks.
+defined_tasks=($(tasks --raw))
+
+# Run the command and pass the task arguments.
+if ( _contains "$command" "${defined_tasks[@]}" ); then
+  $command "${task_arguments[@]}"
+else
+  printf "Unknown command: %s\n" "$command"
+  exit 1
+fi
+
