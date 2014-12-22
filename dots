@@ -81,7 +81,7 @@ while [ $# -gt 0 ]; do
     -h|--help)
       command="help"
       ;;
-    --*)
+    -*|--*)
       task_options+=("$opt")
       ;;
     *)
