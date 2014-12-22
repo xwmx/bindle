@@ -85,6 +85,8 @@ while [ $# -gt 0 ]; do
       task_options+=("$opt")
       ;;
     *)
+      # The first non-option argument is assumed to be the command/task name.
+      # All subsequent arguments are added to $task_arguments.
       if [[ -n $command ]]; then
         task_arguments+=("$opt")
       else
