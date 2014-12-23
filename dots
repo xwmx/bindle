@@ -64,9 +64,9 @@ while [ $# -gt 0 ]; do
       task_options+=("$opt")
       ;;
     bin|home)
-      # If anrgument prior to the task name is either 'bin' or 'home', set that
-      # as the context. Otherwise, if the task has already been set, then any
-      # matches are assumed to be task arguments.
+      # If an argument prior to the task name is either 'bin' or 'home', set
+      # that as the context. Otherwise, if the task has already been set, then
+      # any matches are assumed to be task arguments.
       if [[ -z $task ]]; then
         context="$opt"
       else
@@ -85,6 +85,7 @@ while [ $# -gt 0 ]; do
   esac
 done
 
+# If no context was set from the options, default to 'home'.
 if [[ -z $context ]]; then
   context="home"
 fi
@@ -188,9 +189,9 @@ _each_file() {
 
 # _runner()
 #
-# Run scripts in a specified script subdirectory.
+# Run or list scripts in a specified script subdirectory.
 #
-# Usage: _runner subdirectory command
+# Usage: _runner subdirectory [list|script_name|--all]
 _run_script() {
   if [[ -e "$1" ]]; then
     printf ">> Running %s\n" "$(basename "$1")"
