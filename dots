@@ -10,6 +10,8 @@
 #
 # A local configuration framework.
 #
+# Development Notes:
+#
 # Example task group:
 #
 # desc example ""         - Optional. A short description for the task.
@@ -18,7 +20,7 @@
 #
 #
 # desc example <<EOM
-#   Example help text.
+#   Example help text. Options specified with http://docopt.org/
 # EOM
 # _example() {
 #   echo $f
@@ -191,7 +193,7 @@ _each_file() {
 #
 # Run or list scripts in a specified script subdirectory.
 #
-# Usage: _runner subdirectory [list|script_name|--all]
+# Usage: _runner subdirectory ( --all | <list> | <script_name> )
 _run_script() {
   if [[ -e "$1" ]]; then
     printf ">> Running %s\n" "$(basename "$1")"
@@ -278,7 +280,7 @@ _contains() {
 # ------------------------------------------------------------------------- git
 
 desc git <<EOM
-Usage: $_me git [options]
+Usage: $_me git command [<options>]
 
 Run a git command within the \$DOTFILES directory.
 EOM
@@ -311,7 +313,7 @@ update_submodules() {
 # --------------------------------------------------------------------- install
 
 desc install <<EOM
-Usage: $_me install [list] [--all] [package_script]
+Usage: $_me install ( --all | <list> | <script_name> )
 
 Run the specified package script.
 
@@ -325,7 +327,7 @@ install() {
 # ------------------------------------------------------------------- configure
 
 desc configure <<EOM
-Usage: $_me configure [--all] [configuration_script]
+Usage: $_me configure ( --all| <configuration_script> )
 
 Run the specified package update script.
 
@@ -339,7 +341,7 @@ configure() {
 # ------------------------------------------------------------------- customize
 
 desc customize <<EOM
-Usage: $_me customize [--all] [customization_script]
+Usage: $_me customize ( --all | <customization_script> )
 
 Run the specified customization script.
 
@@ -355,7 +357,7 @@ customize() {
 # ------------------------------------------------------------------------ list
 
 desc list <<EOM
-Usage: $_me list [filename]
+Usage: $_me list [<filename>]
 
 List all dotfiles from in the home directory.
 
@@ -452,7 +454,7 @@ tracked() {
 # ------------------------------------------------------------------------- add
 
 desc add <<EOM
-Usage: $_me add filename
+Usage: $_me add <filename>
 
 Add the specified dotfile to the dotfiles repository and link.
 EOM
@@ -487,7 +489,7 @@ add() {
 # --------------------------------------------------------------------- restore
 
 desc restore <<EOM
-Usage: $_me restore filename
+Usage: $_me restore <filename>
 
 Unlink the specified file and move from the dotfiles repository back to $HOME"
 EOM
@@ -547,7 +549,7 @@ status() {
 # ------------------------------------------------------------------------ link
 
 desc link <<EOM
-Usage: $_me link [filename]
+Usage: $_me link <filename>
 
 Link dotfiles to home directory. Existing files skipped.
 
@@ -578,7 +580,7 @@ link() {
 # ---------------------------------------------------------------------- unlink
 
 desc clean <<EOM
-Usage: $_me unlink [filename]
+Usage: $_me unlink <filename>
 
 Remove dotfile links in home directory with status 'i'
 
@@ -627,7 +629,7 @@ dir() {
 # Help ########################################################################
 
 desc help <<EOM
-Usage: $_me help [task]
+Usage: $_me help [<task>]
 
 Display help information for the dotfiles command or a specified task.
 EOM
@@ -644,10 +646,10 @@ help() {
 Tasks for managing OS X dotfiles and environment config.
 
 Usage:
-  $_me [task]
+  $_me task [<task-arguments>] [--debug]
 
-Task help:
-  $_me help [task]
+Help:
+  $_me help [<task>]
 
 $(tasks)
 EOM
