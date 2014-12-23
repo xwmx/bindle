@@ -28,9 +28,9 @@
 # }
 # example() {
 #   echo ">> Listing each dotfile in repository"
-#   _each_tracked_dotfile _example
+#   _each_tracked_file _example
 #   echo ">> Listing each dotfile in HOME"
-#   _each_original_dotfile _example
+#   _each_original_file _example
 # }
 
 ###############################################################################
@@ -182,23 +182,23 @@ EOM
   fi
 }
 
-# _each_tracked_dotfile()
+# _each_tracked_file()
 #
 # Iterate over the files in the tracked directory and execute the specified
 # function.
 #
-# Usage: _each_tracked_dotfile function
-_each_tracked_dotfile() {
+# Usage: _each_tracked_file function
+_each_tracked_file() {
   _each_file "$tracked_dir" "$1"
 }
 
-# _each_original_dotfile()
+# _each_original_file()
 #
 # Iterate over the files in the original directory and execute the specified
 # function.
 #
-# Usage: _each_original_dotfile function
-_each_original_dotfile() {
+# Usage: _each_original_file function
+_each_original_file() {
   _each_file "$original_dir" "$1"
 }
 
@@ -351,7 +351,7 @@ list() {
       printf "File not found.\n" && exit 1
     fi
   else
-    _each_original_dotfile _list_item
+    _each_original_file _list_item
   fi
 }
 
@@ -378,7 +378,7 @@ _untracked_item() {
   fi
 }
 untracked() {
-  _each_original_dotfile _untracked_item
+  _each_original_file _untracked_item
 }
 
 # --------------------------------------------------------------------- tracked
@@ -399,7 +399,7 @@ _tracked_item() {
   fi
 }
 tracked() {
-  _each_original_dotfile _tracked_item
+  _each_original_file _tracked_item
 }
 
 # ------------------------------------------------------------------------- add
@@ -482,7 +482,7 @@ _status_item() {
   fi
 }
 status() {
-  _each_tracked_dotfile _status_item
+  _each_tracked_file _status_item
 }
 
 # ------------------------------------------------------------------------ link
@@ -512,7 +512,7 @@ link() {
       _link_item
     fi
   else
-    _each_tracked_dotfile _link_item
+    _each_tracked_file _link_item
   fi
 }
 
@@ -541,7 +541,7 @@ unlink() {
     original_file=$original_dir/$filename
     _unlink_item
   else
-    _each_tracked_dotfile _unlink_item
+    _each_tracked_file _unlink_item
   fi
 }
 
