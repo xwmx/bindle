@@ -79,18 +79,18 @@ while [ $# -gt 0 ]; do
   shift
   case "$opt" in
     -h|--help)
-      command="help"
+      task="help"
       ;;
     -*|--*)
       task_options+=("$opt")
       ;;
     *)
-      # The first non-option argument is assumed to be the command/task name.
-      # All subsequent arguments are added to $task_arguments.
-      if [[ -n $command ]]; then
+      # The first non-option argument is assumed to be the task name. All
+      # subsequent arguments are added to $task_arguments.
+      if [[ -n $task ]]; then
         task_arguments+=("$opt")
       else
-        command=$opt
+        task=$opt
       fi
       ;;
   esac
@@ -637,19 +637,19 @@ tasks() {
 # Main
 ###############################################################################
 
-# If $command is blank, then set to help
-if [[ -z $command ]]; then
-  command="help"
+# If $task is blank, then set to help
+if [[ -z $task ]]; then
+  task="help"
 fi
 
 # Get the list of defined tasks.
 defined_tasks=($(tasks --raw))
 
-# Run the command and pass the task arguments.
-if ( _contains "$command" "${defined_tasks[@]}" ); then
-  $command "${task_arguments[@]}"
+# Run the task and pass the task arguments.
+if ( _contains "$task" "${defined_tasks[@]}" ); then
+  $task "${task_arguments[@]}"
 else
-  printf "Unknown command: %s\n" "$command"
+  printf "Unknown task: %s\n" "$task"
   exit 1
 fi
 
