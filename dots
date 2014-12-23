@@ -223,7 +223,8 @@ _runner() {
     fi
   else
     cat <<EOM
-Script must be specified. You can see available scripts by running the following command:
+Script must be specified. You can see available scripts by running the \
+following command:
 
 $_me $1 list
 EOM
@@ -280,7 +281,8 @@ _contains() {
 # ------------------------------------------------------------------------- git
 
 desc git <<EOM
-Usage: $_me git command [<options>]
+Usage:
+  $_me git command [<options>]
 
 Run a git command within the \$DOTFILES directory.
 EOM
@@ -299,7 +301,8 @@ git() {
 # ----------------------------------------------------------- update_submodules
 
 desc update_submodules <<EOM
-Usage: $_me update_submodules
+Usage:
+  $_me update_submodules
 
 Update git submodules. An alias for the git command:
   git submodule foreach git pull
@@ -313,7 +316,8 @@ update_submodules() {
 # --------------------------------------------------------------------- install
 
 desc install <<EOM
-Usage: $_me install ( --all | <list> | <script_name> )
+Usage:
+  $_me install ( --all | <list> | <script_name> )
 
 Run the specified package script.
 
@@ -327,7 +331,8 @@ install() {
 # ------------------------------------------------------------------- configure
 
 desc configure <<EOM
-Usage: $_me configure ( --all| <configuration_script> )
+Usage:
+  $_me configure ( --all| <configuration_script> )
 
 Run the specified package update script.
 
@@ -357,18 +362,27 @@ customize() {
 # ------------------------------------------------------------------------ list
 
 desc list <<EOM
-Usage: $_me list [<filename>]
+Usage:
+  $_me list [<filename>]
+  $_me [<context>] list [<filename>]
+  $_me bin list [<filename>]
+  $_me home list [<filename>]
 
-List all dotfiles from in the home directory.
+List all files in the original directory of the current context ('bin' or \
+'home'). If no context is passed, the context defaults to 'home' (ie, \
+dotfiles).
 
-If 'tracked' or 'untracked' as passed as arguments to 'list', then those tasks are run.
+If 'tracked' or 'untracked' as passed as arguments to 'list', then those \
+tasks are run.
 
-If a dotfile name is passed as the second argument, then a listing is printed for that item.
+If a filename is passed as an argument, then a listing is printed for only \
+that item.
 
 Indicator prefixes display information about the type and status of each entry:
   d   - Directory
   @   - Symbolic link
   @ i - Symbolic link to tracked file.
+
 EOM
 _list_item() {
   if [[ -L $f ]]; then
@@ -407,9 +421,15 @@ list() {
 # ------------------------------------------------------------------- untracked
 
 desc untracked <<EOM
-Usage: $_me untracked
+Usage:
+  $_me untracked
+  $_me [<context>] untracked
+  $_me bin untracked
+  $_me home untracked.
 
-List all untracked dotfiles from in the home directory.
+List all untracked dotfiles in the original directory of the current context \
+('bin' or 'home'). If no context is passed, the context defaults to 'home' \
+(ie, dotfiles).
 
 Indicator prefixes display information about the type and status of each entry:
   d   - Directory
@@ -433,9 +453,15 @@ untracked() {
 # --------------------------------------------------------------------- tracked
 
 desc tracked <<EOM
-Usage: $_me tracked
+Usage:
+  $_me tracked
+  $_me [<context>] tracked
+  $_me bin tracked
+  $_me home tracked
 
-List all tracked dotfiles from in the home directory.
+List all tracked dotfiles from in the original directory of the current \
+context ('bin' or 'home'). If no context is passed, the context defaults \
+to 'home' (ie, dotfiles).
 
 Indicator prefixes display information about the type and status of each entry:
   @ i - Symbolic link to tracked file.
@@ -454,9 +480,15 @@ tracked() {
 # ------------------------------------------------------------------------- add
 
 desc add <<EOM
-Usage: $_me add <filename>
+Usage:
+  $_me add <filename>
+  $_me [<context>] add <filename>
+  $_me bin add <filename>
+  $_me home add <filename>
 
-Add the specified dotfile to the dotfiles repository and link.
+Add the specified file to the tracked directory for the context ('bin' or \
+'home') and link. If no context is passed, the context defaults to 'home' \
+(ie, dotfiles).
 EOM
 add() {
   [[ -n "$debug" ]] && printf "add() \$1: %s\n" "$1"
@@ -489,9 +521,15 @@ add() {
 # --------------------------------------------------------------------- restore
 
 desc restore <<EOM
-Usage: $_me restore <filename>
+Usage:
+  $_me restore <filename>
+  $_me [<context>] restore <filename>
+  $_me bin restore <filename>
+  $_me home restore <filename>
 
-Unlink the specified file and move from the dotfiles repository back to $HOME"
+Unlink the specified file and move from the tracked location in the repository \
+back to original location specified by the context ('bin' or 'home'). If no \
+context is passed, the context defaults to 'home' (ie, dotfiles).
 EOM
 restore() {
   [[ -n "$debug" ]] && printf "restore() \$1: %s\n" "$1"
@@ -522,9 +560,15 @@ restore() {
 # ---------------------------------------------------------------------- status
 
 desc status <<EOM
-Usage: $_me status
+Usage:
+  $_me status
+  $_me [<context>] status
+  $_me bin status
+  $_me home status
 
-List status of added dotfiles relative to the corresponding tracked file.
+List status of files in original directory of the current context ('bin' or \
+'home')relative to the corresponding tracked file. If no context is passed, \
+the context defaults to 'home' (ie, dotfiles).
 
 Indicator prefixes display information about the status of each entry:
   i   - Identical, indicating a valid symbolic link to the tracked file
@@ -549,11 +593,20 @@ status() {
 # ------------------------------------------------------------------------ link
 
 desc link <<EOM
-Usage: $_me link <filename>
+Usage:
+  $_me link [<filename>]
+  $_me [<context>] link [<filename>]
+  $_me bin link [<filename>]
+  $_me home link [<filename>]
 
-Link dotfiles to home directory. Existing files skipped.
+Create a link in the original directory for the context ('bin' or 'home') that \
+references the corresponding item in the tracked directory. If no context is \
+passed, the context defaults to 'home' (ie, dotfiles).
 
-If a filename is passed to the link task, then it only acts on that file.
+Any files or symlinks in the original directory that exist already are skipped.
+
+By default the task links all files that exist in the tracked directory. If a \
+filename is passed to the link task, then it only acts on that file.
 EOM
 _link_item() {
   if [[ -e $original_file ]]; then
@@ -580,11 +633,18 @@ link() {
 # ---------------------------------------------------------------------- unlink
 
 desc clean <<EOM
-Usage: $_me unlink <filename>
+Usage:
+  $_me unlink [<filename>]
+  $_me [<context>] unlink [<filename>]
+  $_me bin unlink [<filename>]
+  $_me home unlink [<filename>]
 
-Remove dotfile links in home directory with status 'i'
+Remove symlinks in the original directory for the context ('bin' or 'home'). \
+If no context is passed, the context defaults to 'home' (ie, dotfiles).
 
-If a filename is passed to the unlink task, then it only acts on that file.
+By default, the task removes all of the symlinks pointing to items in tracked \
+directory. If a filename is passed to the unlink task, then it only acts on \
+symlinks to that file.
 EOM
 _unlink_item() {
   if ( [[ -L $original_file ]] && \
@@ -609,16 +669,18 @@ unlink() {
 # Utilties ####################################################################
 
 desc edit <<EOM
-Usage: $_me edit
+Usage:
+  $_me edit
 
-Opens the the dotfiles directory in your \$EDITOR, currently set to '$EDITOR'.
+Opens the the \$DOTFILES directory in your \$EDITOR, currently set to '$EDITOR'.
 EOM
 edit() {
   $EDITOR "$DOTFILES"
 }
 
 desc dir <<EOM
-Usage: $_me dir
+Usage:
+  $_me dir
 
 Prints the current value of \$DOTFILES
 EOM
@@ -629,7 +691,8 @@ dir() {
 # Help ########################################################################
 
 desc help <<EOM
-Usage: $_me help [<task>]
+Usage:
+  $_me help [<task>]
 
 Display help information for the dotfiles command or a specified task.
 EOM
@@ -666,7 +729,8 @@ EOM
 # Task List ###################################################################
 
 desc tasks <<EOM
-Usage: $_me tasks [--raw]
+Usage:
+  $_me tasks [--raw]
 
 Display the list of available tasks.
 EOM
