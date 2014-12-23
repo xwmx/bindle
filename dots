@@ -47,6 +47,9 @@ raw_options=$*
 task_options=()
 task_arguments=()
 
+context=
+debug=
+
 while [ $# -gt 0 ]; do
   opt="$1"
   shift
@@ -54,12 +57,25 @@ while [ $# -gt 0 ]; do
     -h|--help)
       task="help"
       ;;
+    --debug)
+      debug=1
+      ;;
     -*|--*)
       task_options+=("$opt")
       ;;
+    bin|home)
+      # If anrgument prior to the task name is either 'bin' or 'home', set that
+      # as the context. Otherwise, if the task has already been set, then any
+      # matches are assumed to be task arguments.
+      if [[ -z $task ]]; then
+        context="$opt"
+      else
+        task_arguments+=("$opt")
+      fi
+      ;;
     *)
-      # The first non-option argument is assumed to be the task name. All
-      # subsequent arguments are added to $task_arguments.
+      # The first non-context argument encountered is assumed to be the task
+      # name, and all subsequent arguments are set as task arguments.
       if [[ -n $task ]]; then
         task_arguments+=("$opt")
       else
@@ -68,6 +84,13 @@ while [ $# -gt 0 ]; do
       ;;
   esac
 done
+
+if [[ -z $context ]]; then
+  context="home"
+fi
+
+[[ -n "$debug" ]] && printf "\$context: %s\n" "$context"
+[[ -n "$debug" ]] && printf "\$task: %s\n" "$task"
 
 ###############################################################################
 # Environment
@@ -78,6 +101,7 @@ done
 # Set to the command's basename.
 _me=$(basename "$0")
 
+[[ -n "$debug" ]] && printf "\$_me: %s\n" "$_me"
 
 # Ensure that $DOTFILES is set in the environment.
 if [[ -z $DOTFILES ]]; then
@@ -86,13 +110,26 @@ fi
 
 # $tracked_dir
 #
-# Set to a 'home' directory adjacent to this command's enclosing directory.
-tracked_dir=$DOTFILES/home
+# Set to either 'home' or 'bin' within the dotfiles repository, depending on
+# the context.
+if [[ "$context" == "bin" ]]; then
+  tracked_dir=$DOTFILES/bin
+else
+  tracked_dir=$DOTFILES/home
+fi
+
+[[ -n "$debug" ]] && printf "\$tracked_dir: %s\n" "$tracked_dir"
 
 # $original_dir
 #
-# Set to $HOME in the environment.
-original_dir=$HOME
+# Set to either '$HOME/bin' or '$HOME', depending on the context.
+if [[ "$context" == "bin" ]]; then
+  original_dir=$HOME/bin
+else
+  original_dir=$HOME
+fi
+
+[[ -n "$debug" ]] && printf "\$original_dir: %s\n" "$original_dir"
 
 ###############################################################################
 # Utility functions
@@ -127,14 +164,23 @@ EOM
 # Usage: _each_file directory function
 _each_file() {
   per_file_function=$2
-  for f in $1/.*
+  if [[ "$context" == "home" ]]; then
+    search_files="$1/.*"
+  else
+    search_files="$1/*"
+  fi
+  for f in $search_files
   do
     filename=$(basename "$f")
     tracked_file=$tracked_dir/$filename
     original_file=$original_dir/$filename
-    if ! ( [[ "$filename" =~ ^\.?\.$ ]] ); then
-      # Subfunctions can access the variables in this function, so it's not
-      # necessary to pass them as arguments.
+    if [[ "$context" == "home" ]]; then
+      if ! ( [[ "$filename" =~ ^\.?\.$ ]] ); then
+        # Subfunctions can access the variables in this function, so it's not
+        # necessary to pass them as arguments.
+        $per_file_function
+      fi
+    else
       $per_file_function
     fi
   done
@@ -410,18 +456,25 @@ Usage: $_me add filename
 Add the specified dotfile to the dotfiles repository and link.
 EOM
 add() {
+  [[ -n "$debug" ]] && printf "add() \$1: %s\n" "$1"
+
   if [[ $# = 0 ]]; then
     printf "Must specify a valid file or directory name.\n" && exit 1
-  elif [[ ! -e $1 ]]; then
-    printf "File or directory does not exist.\n" && exit 1
   else
     filename=$(basename "$1")
+
     original_file=$original_dir/$filename
+    [[ -n "$debug" ]] && printf "add() \$original_file: %s\n" "$original_file"
+
     tracked_file=$tracked_dir/$filename
-    if [[ ! -e $tracked_file ]]; then
-      printf "File does not exist.\n"
-    elif [[ ! -L $original_file ]]; then
-      printf "File is not a symlink.\n"
+    [[ -n "$debug" ]] && printf "add() \$tracked_file: %s\n" "$tracked_file"
+
+    if [[ ! -e $original_file ]]; then
+      printf "File or directory does not exist.\n" && exit 1
+    elif [[ -e $tracked_file ]]; then
+      printf "File has already been added.\n"
+    elif [[ -L $original_file ]]; then
+      printf "Original is already a symlink.\n"
     else
       mv "$original_file" "$tracked_dir"
       printf "Linking %s => %s\n" "$tracked_file" "$original_file"
@@ -438,14 +491,19 @@ Usage: $_me restore filename
 Unlink the specified file and move from the dotfiles repository back to $HOME"
 EOM
 restore() {
+  [[ -n "$debug" ]] && printf "restore() \$1: %s\n" "$1"
+
   if [[ $# = 0 ]]; then
     printf "Must specify a valid file or directory name.\n" && exit 1
-  elif [[ ! -e $1 ]]; then
-    printf "File or directory does not exist.\n" && exit 1
   else
     filename=$(basename "$1")
+
     original_file=$original_dir/$filename
+    [[ -n "$debug" ]] && printf "restore() \$original_file: %s\n" "$original_file"
+
     tracked_file=$tracked_dir/$filename
+    [[ -n "$debug" ]] && printf "restore() \$tracked_file: %s\n" "$tracked_file"
+
     if [[ ! -e $tracked_file ]]; then
       printf "File does not exist.\n"
     elif [[ ! -L $original_file ]]; then
