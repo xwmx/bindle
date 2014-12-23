@@ -22,15 +22,15 @@
 # EOM
 # _example() {
 #   echo $f
-#   echo $source_file
+#   echo $tracked_file
 #   echo $filename
-#   echo $target_file
+#   echo $original_file
 # }
 # example() {
 #   echo ">> Listing each dotfile in repository"
 #   _each_dotfile _example
 #   echo ">> Listing each dotfile in HOME"
-#   _each_target_dotfile _example
+#   _each_original_dotfile _example
 # }
 
 
@@ -49,15 +49,15 @@ if [[ -z $DOTFILES ]]; then
   printf "\$DOTFILES must be set to your dotfiles directory\n" && exit 1
 fi
 
-# $source_dir
+# $tracked_dir
 #
 # Set to a 'home' directory adjacent to this command's enclosing directory.
-source_dir=$DOTFILES/home
+tracked_dir=$DOTFILES/home
 
-# $target_dir
+# $original_dir
 #
 # Set to $HOME in the environment.
-target_dir=$HOME
+original_dir=$HOME
 
 
 ###############################################################################
@@ -132,8 +132,8 @@ _each_file() {
   for f in $1/.*
   do
     filename=$(basename "$f")
-    source_file=$source_dir/$filename
-    target_file=$target_dir/$filename
+    tracked_file=$tracked_dir/$filename
+    original_file=$original_dir/$filename
     if ! ( [[ "$filename" =~ ^\.?\.$ ]] ); then
       # Subfunctions can access the variables in this function, so it's not
       # necessary to pass them as arguments.
@@ -186,22 +186,22 @@ EOM
 
 # _each_dotfile()
 #
-# Iterate over the files in the source directory and execute the specified
+# Iterate over the files in the tracked directory and execute the specified
 # function.
 #
 # Usage: _each_dotfile function
 _each_dotfile() {
-  _each_file "$source_dir" "$1"
+  _each_file "$tracked_dir" "$1"
 }
 
-# _each_target_dotfile()
+# _each_original_dotfile()
 #
-# Iterate over the files in the target directory and execute the specified
+# Iterate over the files in the original directory and execute the specified
 # function.
 #
-# Usage: _each_target_dotfile function
-_each_target_dotfile() {
-  _each_file "$target_dir" "$1"
+# Usage: _each_original_dotfile function
+_each_original_dotfile() {
+  _each_file "$original_dir" "$1"
 }
 
 # _function_exists()
@@ -325,7 +325,7 @@ Indicator prefixes display information about the type and status of each entry:
 EOM
 _list_item() {
   if [[ -L $f ]]; then
-    if [[ "$(readlink "$f")" == "$source_file" ]]; then
+    if [[ "$(readlink "$f")" == "$tracked_file" ]]; then
       printf "@  i   %s\n" "$filename"
     else
       printf "@      %s\n" "$filename"
@@ -343,17 +343,17 @@ list() {
   elif [[ "$1" == "tracked" ]]; then
     tracked
   elif [[ "$1" =~ ^\.(.*) ]]; then
-    f="$target_dir/$1"
+    f="$original_dir/$1"
     if [[ -e "$f" ]]; then
       filename=$(basename "$f")
-      source_file=$source_dir/$filename
-      target_file=$target_dir/$filename
+      tracked_file=$tracked_dir/$filename
+      original_file=$original_dir/$filename
       _list_item
     else
       printf "File not found.\n" && exit 1
     fi
   else
-    _each_target_dotfile _list_item
+    _each_original_dotfile _list_item
   fi
 }
 
@@ -370,7 +370,7 @@ Indicator prefixes display information about the type and status of each entry:
 EOM
 _untracked_item() {
   if [[ -L $f ]];then
-    if ! ( [[ "$(readlink "$f")" == "$source_file" ]] ); then
+    if ! ( [[ "$(readlink "$f")" == "$tracked_file" ]] ); then
       printf "@      %s\n" "$filename"
     fi
   elif [[ -d $f ]]; then
@@ -380,7 +380,7 @@ _untracked_item() {
   fi
 }
 untracked() {
-  _each_target_dotfile _untracked_item
+  _each_original_dotfile _untracked_item
 }
 
 # --------------------------------------------------------------------- tracked
@@ -395,13 +395,13 @@ Indicator prefixes display information about the type and status of each entry:
 EOM
 _tracked_item() {
   if ( [[ -L $f ]] && \
-       [[ "$(readlink "$f")" == "$source_file" ]]
+       [[ "$(readlink "$f")" == "$tracked_file" ]]
   ); then
     printf "@  i   %s\n" "$filename"
   fi
 }
 tracked() {
-  _each_target_dotfile _tracked_item
+  _each_original_dotfile _tracked_item
 }
 
 # ------------------------------------------------------------------------- add
@@ -418,16 +418,16 @@ add() {
     printf "File or directory does not exist.\n" && exit 1
   else
     filename=$(basename "$1")
-    target_file=$target_dir/$filename
-    source_file=$source_dir/$filename
-    if [[ ! -e $source_file ]]; then
+    original_file=$original_dir/$filename
+    tracked_file=$tracked_dir/$filename
+    if [[ ! -e $tracked_file ]]; then
       printf "File does not exist.\n"
-    elif [[ ! -L $target_file ]]; then
+    elif [[ ! -L $original_file ]]; then
       printf "File is not a symlink.\n"
     else
-      mv "$target_file" "$source_dir"
-      printf "Linking %s => %s\n" "$source_file" "$target_file"
-      ln -s "$source_file" "$target_file"
+      mv "$original_file" "$tracked_dir"
+      printf "Linking %s => %s\n" "$tracked_file" "$original_file"
+      ln -s "$tracked_file" "$original_file"
     fi
   fi
 }
@@ -446,16 +446,16 @@ restore() {
     printf "File or directory does not exist.\n" && exit 1
   else
     filename=$(basename "$1")
-    target_file=$target_dir/$filename
-    source_file=$source_dir/$filename
-    if [[ ! -e $source_file ]]; then
+    original_file=$original_dir/$filename
+    tracked_file=$tracked_dir/$filename
+    if [[ ! -e $tracked_file ]]; then
       printf "File does not exist.\n"
-    elif [[ ! -L $target_file ]]; then
+    elif [[ ! -L $original_file ]]; then
       printf "File is not a symlink.\n"
     else
-      rm "$target_file"
-      mv "$source_file" "$target_file"
-      printf "Restored: %s => %s\n" "$source_file" "$target_file"
+      rm "$original_file"
+      mv "$tracked_file" "$original_file"
+      printf "Restored: %s => %s\n" "$tracked_file" "$original_file"
     fi
   fi
 }
@@ -473,11 +473,11 @@ Indicator prefixes display information about the status of each entry:
     x - No file exists
 EOM
 _status_item() {
-  if ( [[ -L $target_file ]] && \
-       [[ "$(readlink "$target_file")" == "$f" ]]
+  if ( [[ -L $original_file ]] && \
+       [[ "$(readlink "$original_file")" == "$f" ]]
   ); then
     printf "i   %s\n" "$filename"
-  elif [[ -e $target_file ]]; then
+  elif [[ -e $original_file ]]; then
     printf " e  %s\n" "$filename"
   else
     printf "  x %s\n" "$filename"
@@ -497,20 +497,20 @@ Link dotfiles to home directory. Existing files skipped.
 If a filename is passed to the link task, then it only acts on that file.
 EOM
 _link_item() {
-  if [[ -e $target_file ]]; then
+  if [[ -e $original_file ]]; then
     printf "Exists: %s\n" "$filename"
   else
-    printf "Linking %s => %s\n" "$f" "$target_file"
-    ln -s "$f" "$target_file"
+    printf "Linking %s => %s\n" "$f" "$original_file"
+    ln -s "$f" "$original_file"
   fi
 }
 link() {
   if [[ -n "$1" ]]; then
-    f="$source_dir/$1"
+    f="$tracked_dir/$1"
     filename=$(basename "$1")
-    source_file=$source_dir/$filename
-    target_file=$target_dir/$filename
-    if [[ -e "$source_file" ]]; then
+    tracked_file=$tracked_dir/$filename
+    original_file=$original_dir/$filename
+    if [[ -e "$tracked_file" ]]; then
       _link_item
     fi
   else
@@ -528,19 +528,19 @@ Remove dotfile links in home directory with status 'i'
 If a filename is passed to the unlink task, then it only acts on that file.
 EOM
 _unlink_item() {
-  if ( [[ -L $target_file ]] && \
-       [[ "$(readlink "$target_file")" == "$f" ]]
+  if ( [[ -L $original_file ]] && \
+       [[ "$(readlink "$original_file")" == "$f" ]]
   ); then
-    printf "Removing link: %s\n" "$target_file"
-    rm "$target_file"
+    printf "Removing link: %s\n" "$original_file"
+    rm "$original_file"
   fi
 }
 unlink() {
   if [[ -n "$1" ]]; then
-    f="$source_dir/$1"
+    f="$tracked_dir/$1"
     filename=$(basename "$1")
-    source_file=$source_dir/$filename
-    target_file=$target_dir/$filename
+    tracked_file=$tracked_dir/$filename
+    original_file=$original_dir/$filename
     _unlink_item
   else
     _each_dotfile _unlink_item
