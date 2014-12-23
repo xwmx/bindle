@@ -34,6 +34,11 @@
 #   echo ">> Listing each dotfile in HOME"
 #   _each_original_file _example
 # }
+#
+# © William Melody, 2014 - hi@williammelody.com
+#
+# Inspired and some portions adapted from Manuel by Shane Kilkelly:
+# https://github.com/ShaneKilkelly/manuel
 
 ###############################################################################
 # Options
