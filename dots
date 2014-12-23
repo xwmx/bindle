@@ -28,7 +28,7 @@
 # }
 # example() {
 #   echo ">> Listing each dotfile in repository"
-#   _each_dotfile _example
+#   _each_tracked_dotfile _example
 #   echo ">> Listing each dotfile in HOME"
 #   _each_original_dotfile _example
 # }
@@ -184,13 +184,13 @@ EOM
   fi
 }
 
-# _each_dotfile()
+# _each_tracked_dotfile()
 #
 # Iterate over the files in the tracked directory and execute the specified
 # function.
 #
-# Usage: _each_dotfile function
-_each_dotfile() {
+# Usage: _each_tracked_dotfile function
+_each_tracked_dotfile() {
   _each_file "$tracked_dir" "$1"
 }
 
@@ -484,7 +484,7 @@ _status_item() {
   fi
 }
 status() {
-  _each_dotfile _status_item
+  _each_tracked_dotfile _status_item
 }
 
 # ------------------------------------------------------------------------ link
@@ -514,7 +514,7 @@ link() {
       _link_item
     fi
   else
-    _each_dotfile _link_item
+    _each_tracked_dotfile _link_item
   fi
 }
 
@@ -543,7 +543,7 @@ unlink() {
     original_file=$original_dir/$filename
     _unlink_item
   else
-    _each_dotfile _unlink_item
+    _each_tracked_dotfile _unlink_item
   fi
 }
 
