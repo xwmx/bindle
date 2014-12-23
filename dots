@@ -92,6 +92,9 @@ fi
 
 [[ -n "$debug" ]] && printf "\$context: %s\n" "$context"
 [[ -n "$debug" ]] && printf "\$task: %s\n" "$task"
+[[ -n "$debug" ]] && printf "\$raw_options: %s\n" "$raw_options"
+[[ -n "$debug" ]] && printf "\$task_options: %s\n" "${task_options[*]}"
+[[ -n "$debug" ]] && printf "\$task_arguments: %s\n" "${task_arguments[*]}"
 
 ###############################################################################
 # Environment
