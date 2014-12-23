@@ -47,9 +47,6 @@ raw_options=$*
 task_options=()
 task_arguments=()
 
-context=
-debug=
-
 while [ $# -gt 0 ]; do
   opt="$1"
   shift
