@@ -113,7 +113,7 @@ _me=$(basename "$0")
 
 # Ensure that $DOTFILES is set in the environment.
 if [[ -z $DOTFILES ]]; then
-  printf "\$DOTFILES must be set to your dotfiles directory\n" && exit 1
+  DOTFILES="$HOME/.dotfiles"
 fi
 
 # $tracked_dir
