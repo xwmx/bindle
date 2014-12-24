@@ -281,6 +281,73 @@ _contains() {
 # Tasks
 ###############################################################################
 
+# init ########################################################################
+
+desc init <<EOM
+Usage:
+  $_me init
+
+Create initial repository file structure and \$HOME/bin if it doesn't exist yet.
+EOM
+init() {
+  # Create $HOME/bin if it doesn't exist.
+  [ ! -e "$HOME/bin" ] && mkdir "$HOME/bin"
+
+  # dotfile
+  if [ ! -e "$DOTFILES" ]; then
+    mkdir "$DOTFILES"
+    mkdir "$DOTFILES/bin"
+    touch "$DOTFILES/bin/.gitkeep"
+    mkdir "$DOTFILES/home"
+    # No .gitkeep since all dotfiles in this directory are linked and tracked.
+    mkdir "$DOTFILES/local"
+    touch "$DOTFILES/local/.gitkeep"
+    mkdir "$DOTFILES/script"
+    mkdir "$DOTFILES/script/install"
+    touch "$DOTFILES/script/install/.gitkeep"
+    mkdir "$DOTFILES/script/configure"
+    touch "$DOTFILES/script/configure/.gitkeep"
+    mkdir "$DOTFILES/script/customize"
+    touch "$DOTFILES/script/customize/.gitkeep"
+
+    # Create the .gitignore file.
+    printf "\
+# Ignore the local directory, but track .gitkeep so it's included in the repo.
+/local/*
+!/local/.gitkeep
+
+# Only track .ssh/config. Everything else in .ssh is private
+/home/.ssh/*
+!/home/.ssh/config
+" >> "$DOTFILES/.gitignore"
+
+    # initialize the dotfiles repo
+    cd "$DOTFILES"
+    git init
+
+    # Print post message
+    printf "\
+         _       _
+        | |     | |
+      __| | ___ | |_ ___
+     / _\` |/ _ \\| __/ __|
+    | (_| | (_) | |_\\__ \\
+     \\__,_|\\___/ \\__|___/
+
+Your dotfile git repo has been initialized at the following location:
+
+%s
+
+To finish installation, add the following to your shell configuration (.bashrc, \
+.bash_profile, .zshrc, or similar):
+
+if [ -d \"\$HOME/bin\" ]; then
+  PATH=\"\$HOME/bin:\$PATH\"
+fi
+" "$DOTFILES"
+  fi
+}
+
 # git #########################################################################
 
 # ------------------------------------------------------------------------- git
