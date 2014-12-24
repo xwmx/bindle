@@ -303,6 +303,26 @@ git() {
   "$git_bin" "$git_options"
 }
 
+desc commit <<EOM
+Usage:
+  $_me commit [<message>]
+
+Commit the current changes to git. If a message is provided, it will be used \
+as the commit message. Otherwise, git will open your default editor.
+EOM
+commit() {
+  cd "$DOTFILES"
+  # Must get and call $bin_path to avoid calling the `git()` function above.
+  git_bin=$(which git)
+  if [[ -n "$1" ]]; then
+    $git_bin add .
+    $git_bin commit -a -m "$1"
+  else
+    $git_bin add .
+    $git_bin commit -a
+  fi
+}
+
 # ----------------------------------------------------------- update_submodules
 
 desc update_submodules <<EOM
