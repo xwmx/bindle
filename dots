@@ -370,6 +370,8 @@ git() {
   "$git_bin" "$git_options"
 }
 
+# ---------------------------------------------------------------------- commit
+
 desc commit <<EOM
 Usage:
   $_me commit [<message>]
@@ -387,6 +389,40 @@ commit() {
   else
     $git_bin add .
     $git_bin commit -a
+  fi
+}
+
+# ------------------------------------------------------------------------ pull
+
+desc pull <<EOM
+Usage:
+  $_me pull
+
+Pull latest changes from the remote repository.
+EOM
+pull() {
+  cd "$DOTFILES"
+  # Must get and call $bin_path to avoid calling the `git()` function above.
+  git_bin=$(which git)
+  if [[ -n "$1" ]]; then
+    $git_bin pull
+  fi
+}
+
+# ------------------------------------------------------------------------ push
+
+desc push <<EOM
+Usage:
+  $_me push
+
+Push local commits to the remote repository.
+EOM
+push() {
+  cd "$DOTFILES"
+  # Must get and call $bin_path to avoid calling the `git()` function above.
+  git_bin=$(which git)
+  if [[ -n "$1" ]]; then
+    $git_bin push
   fi
 }
 
