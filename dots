@@ -400,7 +400,10 @@ Update git submodules. An alias for the git command:
   git submodule foreach git pull
 EOM
 update_submodules() {
-  git submodule foreach git pull
+  cd "$DOTFILES"
+  # Must get and call $bin_path to avoid calling the `git()` function above.
+  git_bin=$(which git)
+  $git_bin submodule foreach git pull
 }
 
 # Scripts #####################################################################
