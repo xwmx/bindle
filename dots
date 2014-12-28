@@ -131,27 +131,6 @@ _debug && printf "\$original_dir: %s\n" "$original_dir"
 # Utility Functions
 ###############################################################################
 
-# desc()
-#
-# Usage:
-#   desc task "description"
-#
-# Create a description for a specified task name. The task description text can
-# be passed as the second argument or as standard input.
-#
-# To make the description text available to other functions, desc() assigns the
-# text to a variable with the format $_desc_function_name
-desc() {
-  [[ -z $1 ]] && printf "desc: No task name specified.\n" && exit 1
-  if [[ -n $2 ]]; then
-    read -d '' "_desc_$1" <<EOM
-$2
-EOM
-  else
-    read -d '' "_desc_$1"
-  fi
-}
-
 # _each_file()
 #
 # Iterate over the files in the specified directory and execute the specified
@@ -263,6 +242,80 @@ _contains() {
   local e
   for e in "${@:2}"; do [[ "$e" == "$1" ]] && return 0; done
   return 1
+}
+
+###############################################################################
+# Help and desc
+###############################################################################
+
+# desc()
+#
+# Usage:
+#   desc task "description"
+#
+# Create a description for a specified task name. The task description text can
+# be passed as the second argument or as standard input.
+#
+# To make the description text available to other functions, desc() assigns the
+# text to a variable with the format $_desc_function_name
+desc() {
+  [[ -z $1 ]] && printf "desc: No task name specified.\n" && exit 1
+  if [[ -n $2 ]]; then
+    read -d '' "_desc_$1" <<EOM
+$2
+EOM
+  else
+    read -d '' "_desc_$1"
+  fi
+}
+
+# _print_desc()
+#
+# Usage:
+#   _print_desc <task>
+#
+# Prints the description for a given task, provided the description has been
+# set using the desc() function.
+_print_desc() {
+  var="_desc_$1"
+  if [[ -n ${!var} ]]; then
+    printf "%s\n" "${!var}"
+  else
+   printf "No additional information for \`%s\`\n" "$1"
+  fi
+}
+
+# Help ########################################################################
+
+desc help <<EOM
+Usage:
+  $_me help [<task>]
+
+Display help information for the dotfiles command or a specified task.
+EOM
+help() {
+  if [[ $# = 0 ]]; then
+    cat <<EOM
+         _       _
+        | |     | |
+      __| | ___ | |_ ___
+     / _\` |/ _ \\| __/ __|
+    | (_| | (_) | |_\\__ \\
+     \\__,_|\\___/ \\__|___/
+
+Tasks for managing OS X dotfiles and environment config.
+
+Usage:
+  $_me task [<task-arguments>] [--debug]
+
+Help:
+  $_me help [<task>]
+
+$(tasks)
+EOM
+ else
+  _print_desc "$1"
+ fi
 }
 
 ###############################################################################
@@ -830,44 +883,6 @@ Prints the current value of \$DOTFILES
 EOM
 dir() {
   printf "%s\n" "$DOTFILES"
-}
-
-# Help ########################################################################
-
-desc help <<EOM
-Usage:
-  $_me help [<task>]
-
-Display help information for the dotfiles command or a specified task.
-EOM
-help() {
-  if [[ $# = 0 ]]; then
-    cat <<EOM
-         _       _
-        | |     | |
-      __| | ___ | |_ ___
-     / _\` |/ _ \\| __/ __|
-    | (_| | (_) | |_\\__ \\
-     \\__,_|\\___/ \\__|___/
-
-Tasks for managing OS X dotfiles and environment config.
-
-Usage:
-  $_me task [<task-arguments>] [--debug]
-
-Help:
-  $_me help [<task>]
-
-$(tasks)
-EOM
- else
-   var="_desc_$1"
-   if [[ -n ${!var} ]]; then
-     printf "%s\n" "${!var}"
-   else
-    printf "No additional information for \`%s\`\n" "$1"
-   fi
- fi
 }
 
 # Task List ###################################################################
