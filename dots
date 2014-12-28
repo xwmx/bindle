@@ -245,7 +245,7 @@ _contains() {
 }
 
 ###############################################################################
-# Help and desc
+# desc
 ###############################################################################
 
 # desc()
@@ -285,6 +285,10 @@ _print_desc() {
   fi
 }
 
+###############################################################################
+# Default Tasks
+###############################################################################
+
 # Help ########################################################################
 
 desc help <<EOM
@@ -316,6 +320,35 @@ EOM
  else
   _print_desc "$1"
  fi
+}
+
+# Task List ###################################################################
+
+desc tasks <<EOM
+Usage:
+  $_me tasks [--raw]
+
+Display the list of available tasks.
+EOM
+tasks() {
+  function_list=($(declare -F))
+  task_list=()
+  for t in "${function_list[@]}"
+  do
+    if ! ( [[ $t == "declare" ]] || \
+           [[ $t == "-f" ]] || \
+           [[ "$t" =~ ^_(.*) ]] || \
+           [[ "$t" == "desc" ]]
+    ); then
+      task_list+=("$t")
+    fi
+  done
+  if _contains "--raw" "${task_options[@]}"; then
+    printf "%s " "${task_list[@]}"
+  else
+    printf "Available tasks:\n"
+    printf "  %s\n" "${task_list[@]}"
+  fi
 }
 
 ###############################################################################
@@ -883,35 +916,6 @@ Prints the current value of \$DOTFILES
 EOM
 dir() {
   printf "%s\n" "$DOTFILES"
-}
-
-# Task List ###################################################################
-
-desc tasks <<EOM
-Usage:
-  $_me tasks [--raw]
-
-Display the list of available tasks.
-EOM
-tasks() {
-  function_list=($(declare -F))
-  task_list=()
-  for t in "${function_list[@]}"
-  do
-    if ! ( [[ $t == "declare" ]] || \
-           [[ $t == "-f" ]] || \
-           [[ "$t" =~ ^_(.*) ]] || \
-           [[ "$t" == "desc" ]]
-    ); then
-      task_list+=("$t")
-    fi
-  done
-  if _contains "--raw" "${task_options[@]}"; then
-    printf "%s " "${task_list[@]}"
-  else
-    printf "Available tasks:\n"
-    printf "  %s\n" "${task_list[@]}"
-  fi
 }
 
 ###############################################################################
