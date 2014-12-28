@@ -41,6 +41,19 @@
 # https://github.com/ShaneKilkelly/manuel
 
 ###############################################################################
+# debug shortcut
+###############################################################################
+
+# _debug()
+#
+# Shortcut for testing against the existence of a $debug variable. Primarily
+# intended to be used before a printf statement.
+#
+# Usage:
+#   _debug && printf "Debug info"
+_debug() { [[ -n "$debug" ]]; }
+
+###############################################################################
 # Options
 ###############################################################################
 
@@ -94,11 +107,11 @@ if [[ -z $context ]]; then
   context="home"
 fi
 
-[[ -n "$debug" ]] && printf "\$context: %s\n" "$context"
-[[ -n "$debug" ]] && printf "\$task: %s\n" "$task"
-[[ -n "$debug" ]] && printf "\$raw_options: %s\n" "$raw_options"
-[[ -n "$debug" ]] && printf "\$task_options: %s\n" "${task_options[*]}"
-[[ -n "$debug" ]] && printf "\$task_arguments: %s\n" "${task_arguments[*]}"
+_debug && printf "\$context: %s\n" "$context"
+_debug && printf "\$task: %s\n" "$task"
+_debug && printf "\$raw_options: %s\n" "$raw_options"
+_debug && printf "\$task_options: %s\n" "${task_options[*]}"
+_debug && printf "\$task_arguments: %s\n" "${task_arguments[*]}"
 
 ###############################################################################
 # Environment
@@ -109,7 +122,7 @@ fi
 # Set to the command's basename.
 _me=$(basename "$0")
 
-[[ -n "$debug" ]] && printf "\$_me: %s\n" "$_me"
+_debug && printf "\$_me: %s\n" "$_me"
 
 # Ensure that $DOTFILES is set in the environment.
 if [[ -z $DOTFILES ]]; then
@@ -126,7 +139,7 @@ else
   tracked_dir=$DOTFILES/home
 fi
 
-[[ -n "$debug" ]] && printf "\$tracked_dir: %s\n" "$tracked_dir"
+_debug && printf "\$tracked_dir: %s\n" "$tracked_dir"
 
 # $original_dir
 #
@@ -137,7 +150,7 @@ else
   original_dir=$HOME
 fi
 
-[[ -n "$debug" ]] && printf "\$original_dir: %s\n" "$original_dir"
+_debug && printf "\$original_dir: %s\n" "$original_dir"
 
 ###############################################################################
 # Utility functions
@@ -622,7 +635,7 @@ Add the specified file to the tracked directory for the context ('bin' or \
 (ie, dotfiles).
 EOM
 add() {
-  [[ -n "$debug" ]] && printf "add() \$1: %s\n" "$1"
+  _debug && printf "add() \$1: %s\n" "$1"
 
   if [[ $# = 0 ]]; then
     printf "Must specify a valid file or directory name.\n" && exit 1
@@ -630,10 +643,10 @@ add() {
     filename=$(basename "$1")
 
     original_file=$original_dir/$filename
-    [[ -n "$debug" ]] && printf "add() \$original_file: %s\n" "$original_file"
+    _debug && printf "add() \$original_file: %s\n" "$original_file"
 
     tracked_file=$tracked_dir/$filename
-    [[ -n "$debug" ]] && printf "add() \$tracked_file: %s\n" "$tracked_file"
+    _debug && printf "add() \$tracked_file: %s\n" "$tracked_file"
 
     if [[ ! -e $original_file ]]; then
       printf "File or directory does not exist.\n" && exit 1
@@ -663,7 +676,7 @@ back to original location specified by the context ('bin' or 'home'). If no \
 context is passed, the context defaults to 'home' (ie, dotfiles).
 EOM
 restore() {
-  [[ -n "$debug" ]] && printf "restore() \$1: %s\n" "$1"
+  _debug && printf "restore() \$1: %s\n" "$1"
 
   if [[ $# = 0 ]]; then
     printf "Must specify a valid file or directory name.\n" && exit 1
@@ -671,10 +684,10 @@ restore() {
     filename=$(basename "$1")
 
     original_file=$original_dir/$filename
-    [[ -n "$debug" ]] && printf "restore() \$original_file: %s\n" "$original_file"
+    _debug && printf "restore() \$original_file: %s\n" "$original_file"
 
     tracked_file=$tracked_dir/$filename
-    [[ -n "$debug" ]] && printf "restore() \$tracked_file: %s\n" "$tracked_file"
+    _debug && printf "restore() \$tracked_file: %s\n" "$tracked_file"
 
     if [[ ! -e $tracked_file ]]; then
       printf "File does not exist.\n"
