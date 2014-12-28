@@ -10,38 +10,13 @@
 #
 # A local configuration framework.
 #
-# Development Notes:
-#
-# Example task group:
-#
-# desc example ""         - Optional. A short description for the task.
-# _example_item() { : }   - Optional. The task to be run for each dotfile.
-# example() { : }         - The task as it appears to the user
-#
-#
-# desc example <<EOM
-#   Example help text. Options specified with http://docopt.org/
-# EOM
-# _example() {
-#   echo $f
-#   echo $tracked_file
-#   echo $filename
-#   echo $original_file
-# }
-# example() {
-#   echo ">> Listing each dotfile in repository"
-#   _each_tracked_file _example
-#   echo ">> Listing each dotfile in HOME"
-#   _each_original_file _example
-# }
-#
 # © William Melody, 2014 - hi@williammelody.com
 #
 # Inspired and some portions adapted from Manuel by Shane Kilkelly:
 # https://github.com/ShaneKilkelly/manuel
 
 ###############################################################################
-# debug shortcut
+# Debug
 ###############################################################################
 
 # _debug()
@@ -153,7 +128,7 @@ fi
 _debug && printf "\$original_dir: %s\n" "$original_dir"
 
 ###############################################################################
-# Utility functions
+# Utility Functions
 ###############################################################################
 
 # desc()
@@ -292,6 +267,31 @@ _contains() {
 
 ###############################################################################
 # Tasks
+# =====........................................................................
+#
+# Task group structure:
+#
+# desc example ""         - Optional. A short description for the task.
+# _example_item() { : }   - Optional. The task to be run for each dotfile.
+# example() { : }         - The task as it appears to the user
+#
+#
+# desc example <<EOM
+#   Example help text. Options specified with http://docopt.org/
+# EOM
+# _example() {
+#   echo $f
+#   echo $tracked_file
+#   echo $filename
+#   echo $original_file
+# }
+# example() {
+#   echo ">> Listing each dotfile in repository"
+#   _each_tracked_file _example
+#   echo ">> Listing each dotfile in HOME"
+#   _each_original_file _example
+# }
+
 ###############################################################################
 
 # init ########################################################################
