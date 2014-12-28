@@ -128,6 +128,36 @@ fi
 _debug && printf "\$original_dir: %s\n" "$original_dir"
 
 ###############################################################################
+# Main
+###############################################################################
+
+# _main()
+#
+# Usage:
+#   _main
+#
+# The primary function for starting the program.
+#
+# NOTE: must be called at end of program after all tasks have been defined.
+_main() {
+  # If $task is blank, then set to help
+  if [[ -z $task ]]; then
+    task="help"
+  fi
+
+  # Get the list of defined tasks.
+  defined_tasks=($(tasks --raw))
+
+  # Run the task and pass the task arguments.
+  if ( _contains "$task" "${defined_tasks[@]}" ); then
+    $task "${task_arguments[@]}"
+  else
+    printf "Unknown task: %s\n" "$task"
+    exit 1
+  fi
+}
+
+###############################################################################
 # Utility Functions
 ###############################################################################
 
@@ -919,22 +949,8 @@ dir() {
 }
 
 ###############################################################################
-# Main
+# Run Program
 ###############################################################################
 
-# If $task is blank, then set to help
-if [[ -z $task ]]; then
-  task="help"
-fi
-
-# Get the list of defined tasks.
-defined_tasks=($(tasks --raw))
-
-# Run the task and pass the task arguments.
-if ( _contains "$task" "${defined_tasks[@]}" ); then
-  $task "${task_arguments[@]}"
-else
-  printf "Unknown task: %s\n" "$task"
-  exit 1
-fi
-
+# Calling the _main function after everything has been defined.
+_main
