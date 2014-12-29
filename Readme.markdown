@@ -183,5 +183,5 @@ Use the help command to view the specifics about each command.
 
 `dots` includes several other commands for performing operations on
 files and inspecting the current state of the repository. All commands
-can be viewed by running `dots tasks` and you can use `dots help command-name`
-to view the help for each command.
+can be viewed by running `dots commands` and you can use
+`dots help command-name` to view the help for each command.

@@ -32,46 +32,46 @@ _debug() { [[ -n "$debug" ]]; }
 # Options
 ###############################################################################
 
-# Get raw options for any tasks that expect them.
+# Get raw options for any commands that expect them.
 raw_options=$*
 
-# Initialize task options and arguments arrays.
+# Initialize command options and arguments arrays.
 #
-# These contain any options and arguments that will be used by the tasks.
-# Tasks handle their own argument and option checks using the created arrays.
-task_options=()
-task_arguments=()
+# These contain any options and arguments that will be used by the commands.
+# Commands handle their own argument and option checks using the created arrays.
+command_options=()
+command_arguments=()
 
 while [ $# -gt 0 ]; do
   opt="$1"
   shift
   case "$opt" in
     -h|--help)
-      task="help"
+      cmd="help"
       ;;
     --debug)
       debug=1
       ;;
     -*|--*)
-      task_options+=("$opt")
+      command_options+=("$opt")
       ;;
     bin|home)
-      # If an argument prior to the task name is either 'bin' or 'home', set
-      # that as the context. Otherwise, if the task has already been set, then
-      # any matches are assumed to be task arguments.
-      if [[ -z $task ]]; then
+      # If an argument prior to the command name is either 'bin' or 'home', set
+      # that as the context. Otherwise, if the command has already been set,
+      # then any matches are assumed to be command arguments.
+      if [[ -z $cmd ]]; then
         context="$opt"
       else
-        task_arguments+=("$opt")
+        command_arguments+=("$opt")
       fi
       ;;
     *)
-      # The first non-context argument encountered is assumed to be the task
-      # name, and all subsequent arguments are set as task arguments.
-      if [[ -n $task ]]; then
-        task_arguments+=("$opt")
+      # The first non-context argument encountered is assumed to be the command
+      # name, and all subsequent arguments are set as command arguments.
+      if [[ -n $cmd ]]; then
+        command_arguments+=("$opt")
       else
-        task=$opt
+        cmd=$opt
       fi
       ;;
   esac
@@ -83,10 +83,10 @@ if [[ -z $context ]]; then
 fi
 
 _debug && printf "\$context: %s\n" "$context"
-_debug && printf "\$task: %s\n" "$task"
+_debug && printf "\$cmd: %s\n" "$cmd"
 _debug && printf "\$raw_options: %s\n" "$raw_options"
-_debug && printf "\$task_options: %s\n" "${task_options[*]}"
-_debug && printf "\$task_arguments: %s\n" "${task_arguments[*]}"
+_debug && printf "\$command_options: %s\n" "${command_options[*]}"
+_debug && printf "\$command_arguments: %s\n" "${command_arguments[*]}"
 
 ###############################################################################
 # Environment
@@ -94,7 +94,7 @@ _debug && printf "\$task_arguments: %s\n" "${task_arguments[*]}"
 
 # $_me
 #
-# Set to the command's basename.
+# Set to the program's basename.
 _me=$(basename "$0")
 
 _debug && printf "\$_me: %s\n" "$_me"
@@ -138,21 +138,21 @@ _debug && printf "\$original_dir: %s\n" "$original_dir"
 #
 # The primary function for starting the program.
 #
-# NOTE: must be called at end of program after all tasks have been defined.
+# NOTE: must be called at end of program after all commands have been defined.
 _main() {
-  # If $task is blank, then set to help
-  if [[ -z $task ]]; then
-    task="help"
+  # If $cmd is blank, then set to help
+  if [[ -z $cmd ]]; then
+    cmd="help"
   fi
 
-  # Get the list of defined tasks.
-  defined_tasks=($(tasks --raw))
+  # Get the list of defined commands.
+  defined_commands=($(commands --raw))
 
-  # Run the task and pass the task arguments.
-  if ( _contains "$task" "${defined_tasks[@]}" ); then
-    $task "${task_arguments[@]}"
+  # Run the command and pass the command arguments.
+  if ( _contains "$cmd" "${defined_commands[@]}" ); then
+    $cmd "${command_arguments[@]}"
   else
-    printf "Unknown task: %s\n" "$task"
+    printf "Unknown command: %s\n" "$cmd"
     exit 1
   fi
 }
@@ -209,7 +209,7 @@ _runner() {
   subdir=$1
   subdir_path=$DOTFILES/script/$subdir
   script_file=$subdir_path/$2
-  if _contains "--all" "${task_options[@]}"; then
+  if _contains "--all" "${command_options[@]}"; then
     for f in $subdir_path/*
     do
       _run_script "$f"
@@ -281,15 +281,15 @@ _contains() {
 # desc()
 #
 # Usage:
-#   desc task "description"
+#   desc command "description"
 #
-# Create a description for a specified task name. The task description text can
-# be passed as the second argument or as standard input.
+# Create a description for a specified command name. The command description
+# text can be passed as the second argument or as standard input.
 #
 # To make the description text available to other functions, desc() assigns the
 # text to a variable with the format $_desc_function_name
 desc() {
-  [[ -z $1 ]] && printf "desc: No task name specified.\n" && exit 1
+  [[ -z $1 ]] && printf "desc: No command name specified.\n" && exit 1
   if [[ -n $2 ]]; then
     read -d '' "_desc_$1" <<EOM
 $2
@@ -302,9 +302,9 @@ EOM
 # _print_desc()
 #
 # Usage:
-#   _print_desc <task>
+#   _print_desc <command>
 #
-# Prints the description for a given task, provided the description has been
+# Prints the description for a given command, provided the description has been
 # set using the desc() function.
 _print_desc() {
   var="_desc_$1"
@@ -316,16 +316,16 @@ _print_desc() {
 }
 
 ###############################################################################
-# Default Tasks
+# Default Commands
 ###############################################################################
 
 # Help ########################################################################
 
 desc help <<EOM
 Usage:
-  $_me help [<task>]
+  $_me help [<command>]
 
-Display help information for the dotfiles command or a specified task.
+Display help information for the dotfiles command or a specified command
 EOM
 help() {
   if [[ $# = 0 ]]; then
@@ -337,59 +337,59 @@ help() {
     | (_| | (_) | |_\\__ \\
      \\__,_|\\___/ \\__|___/
 
-Tasks for managing OS X dotfiles and environment config.
+A local configuration tool and framework.
 
 Usage:
-  $_me task [<task-arguments>] [--debug]
+  $_me command [<command-arguments>] [--debug]
 
 Help:
-  $_me help [<task>]
+  $_me help [<command>]
 
-$(tasks)
+$(commands)
 EOM
  else
   _print_desc "$1"
  fi
 }
 
-# Task List ###################################################################
+# Command List ################################################################
 
-desc tasks <<EOM
+desc commands <<EOM
 Usage:
-  $_me tasks [--raw]
+  $_me commands [--raw]
 
-Display the list of available tasks.
+Display the list of available commands.
 EOM
-tasks() {
+commands() {
   function_list=($(declare -F))
-  task_list=()
-  for t in "${function_list[@]}"
+  command_list=()
+  for c in "${function_list[@]}"
   do
-    if ! ( [[ $t == "declare" ]] || \
-           [[ $t == "-f" ]] || \
-           [[ "$t" =~ ^_(.*) ]] || \
-           [[ "$t" == "desc" ]]
+    if ! ( [[ $c == "declare" ]] || \
+           [[ $c == "-f" ]] || \
+           [[ "$c" =~ ^_(.*) ]] || \
+           [[ "$c" == "desc" ]]
     ); then
-      task_list+=("$t")
+      command_list+=("$c")
     fi
   done
-  if _contains "--raw" "${task_options[@]}"; then
-    printf "%s " "${task_list[@]}"
+  if _contains "--raw" "${command_options[@]}"; then
+    printf "%s " "${command_list[@]}"
   else
-    printf "Available tasks:\n"
-    printf "  %s\n" "${task_list[@]}"
+    printf "Available commands:\n"
+    printf "  %s\n" "${command_list[@]}"
   fi
 }
 
 ###############################################################################
-# Tasks
+# Commands
 # =====........................................................................
 #
-# Task group structure:
+# Example command group structure:
 #
-# desc example ""         - Optional. A short description for the task.
-# _example_item() { : }   - Optional. The task to be run for each dotfile.
-# example() { : }         - The task as it appears to the user
+# desc example ""         - Optional. A short description for the command.
+# _example_item() { : }   - Optional. A child function to be run for each item.
+# example() { : }         - The command called by the user.
 #
 #
 # desc example <<EOM
@@ -633,7 +633,7 @@ List all files in the original directory of the current context ('bin' or \
 dotfiles).
 
 If 'tracked' or 'untracked' as passed as arguments to 'list', then those \
-tasks are run.
+commands are run.
 
 If a filename is passed as an argument, then a listing is printed for only \
 that item.
@@ -865,8 +865,8 @@ passed, the context defaults to 'home' (ie, dotfiles).
 
 Any files or symlinks in the original directory that exist already are skipped.
 
-By default the task links all files that exist in the tracked directory. If a \
-filename is passed to the link task, then it only acts on that file.
+By default the command links all files that exist in the tracked directory. \
+If a filename is passed to the link command, then it only acts on that file.
 EOM
 _link_item() {
   if [[ -e $original_file ]]; then
@@ -902,9 +902,9 @@ Usage:
 Remove symlinks in the original directory for the context ('bin' or 'home'). \
 If no context is passed, the context defaults to 'home' (ie, dotfiles).
 
-By default, the task removes all of the symlinks pointing to items in tracked \
-directory. If a filename is passed to the unlink task, then it only acts on \
-symlinks to that file.
+By default, the command removes all of the symlinks pointing to items in \
+tracked directory. If a filename is passed to the unlink command, then it \
+only acts on symlinks to that file.
 EOM
 _unlink_item() {
   if ( [[ -L $original_file ]] && \
