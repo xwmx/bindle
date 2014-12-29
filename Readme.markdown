@@ -40,6 +40,7 @@ structure:
 
     ├── .gitignore
     ├── home/
+    ├── bin/
     ├── local/
     └── script/
         ├── configure/
