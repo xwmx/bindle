@@ -31,9 +31,12 @@ You can view the help information by running `dots` with no arguments.
 ### init
 
 If you don't currently have a local repository tracking your dotfiles,
-you can create one using the `dots init` command, which will initialize
-a git repository at `$HOME/.dotfiles` with the following structure:
+you can create one using
 
+    dots init
+
+This will initialize a git repository at `$HOME/.dotfiles` with the following
+structure:
 
     ├── .gitignore
     ├── home/
@@ -129,9 +132,13 @@ that contains commands for installing programs via a system-wide package
 manager like [homebrew](http://brew.sh/) or a language-specific one like
 [LuaRocks](http://luarocks.org/).
 
-To run an install script, use a command like:
+To run an install script, use the `dots install` command. For example:
 
     dots install gems.sh
+
+You can also run all of the install scripts by using the `--all` flag:
+
+    dots install --all
 
 For more information, see `dots help install`
 
@@ -140,9 +147,15 @@ For more information, see `dots help install`
 `configure` is intended for scripts that run perform system
 configuration operations, like setting OS X preferences.
 
-To run a configuration script, use something like:
+To run a configure script, use the `dots configure` command. For example:
 
     dots configure osx.sh
+
+You can also run all of the configure scripts by using the `--all` flag:
+
+    dots configure --all
+
+For more information, see `dots help configure`
 
 ##### customize
 
@@ -150,8 +163,15 @@ To run a configuration script, use something like:
 configuration or anything else on the system. In other words, 'hacks'.
 For example, I use it for changing icons on installed applications.
 
+To run a customize script, use the `dots customize` command. For example:
+
     dots customize app_icons.py
 
+You can also run all of the customize scripts by using the `--all` flag:
+
+    dots customize --all
+
+For more information, see `dots help customize`
 
 #### .gitignore
 
