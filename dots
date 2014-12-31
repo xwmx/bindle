@@ -114,8 +114,6 @@ _me=$(basename "$0")
 
 _debug && printf "\$_me: %s\n" "$_me"
 
-# Ensure that $DOTFILES is set in the environment.
-
 # $tracked_dir
 #
 # Set to either 'home' or 'bin' within the dotfiles repository, depending on
