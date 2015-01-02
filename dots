@@ -20,7 +20,7 @@
 # Globals
 ###############################################################################
 
-DOTS_VERSION="1.0.0"
+DOTS_VERSION="1.1.0-alpha"
 
 # Set dotfiles if not already set.
 if [[ -z $DOTFILES ]]; then
