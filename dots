@@ -207,9 +207,11 @@ _each_file() {
 #
 # Usage: _runner subdirectory ( --all | <list> | <script_name> )
 _run_script() {
-  if [[ -e "$1" ]]; then
+  if [[ -f "$1" ]]; then
     printf ">> Running %s\n" "$(basename "$1")"
     $1
+  elif [[ -d "$1" ]]; then
+    printf "'%s' is a directory.\n" "$1" && exit 1
   else
     printf "'%s' not found.\n" "$1" && exit 1
   fi
@@ -228,7 +230,9 @@ _runner() {
     if [[ "$2" == "list" ]]; then
       for f in $subdir_path/*
       do
-        basename "$f"
+        if [[ -f "$f" ]]; then
+          basename "$f"
+        fi
       done
     else
       _run_script "$script_file"
