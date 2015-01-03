@@ -14,14 +14,24 @@
 # © William Melody - hi@williammelody.com
 
 ###############################################################################
+# .dotsrc
+###############################################################################
+
+# If a dotsrc file exists in $HOME, source it.
+dotsrc="$HOME/.dotsrc"
+if [[ -e "$dotsrc" ]]; then
+  source "$dotsrc"
+fi
+
+###############################################################################
 # Globals
 ###############################################################################
 
 DOTS_VERSION="1.1.0-alpha"
 
 # Set dotfiles if not already set.
-if [[ -z $DOTFILES ]]; then
-  DOTFILES="$HOME/.dotfiles"
+if [[ -z $DOTSPATH ]]; then
+  DOTSPATH="$HOME/.dots"
 fi
 
 ###############################################################################
@@ -116,9 +126,9 @@ _debug && printf "\$_me: %s\n" "$_me"
 # Set to either 'home' or 'bin' within the dotfiles repository, depending on
 # the context.
 if [[ "$context" == "bin" ]]; then
-  tracked_dir=$DOTFILES/bin
+  tracked_dir=$DOTSPATH/bin
 else
-  tracked_dir=$DOTFILES/home
+  tracked_dir=$DOTSPATH/home
 fi
 
 _debug && printf "\$tracked_dir: %s\n" "$tracked_dir"
@@ -216,7 +226,7 @@ _run_script() {
 _runner() {
   [[ -z $1 ]] && printf "_runner: No subdirectory specified.\n" && exit 1
   subdir=$1
-  subdir_path=$DOTFILES/script/$subdir
+  subdir_path=$DOTSPATH/script/$subdir
   script_file=$subdir_path/$2
   if _contains "--all" "${command_options[@]}"; then
     for f in $subdir_path/*
@@ -451,21 +461,21 @@ init() {
   [ ! -e "$HOME/bin" ] && mkdir "$HOME/bin"
 
   # dotfile
-  if [ ! -e "$DOTFILES" ]; then
-    mkdir "$DOTFILES"
-    mkdir "$DOTFILES/bin"
-    touch "$DOTFILES/bin/.gitkeep"
-    mkdir "$DOTFILES/home"
+  if [ ! -e "$DOTSPATH" ]; then
+    mkdir "$DOTSPATH"
+    mkdir "$DOTSPATH/bin"
+    touch "$DOTSPATH/bin/.gitkeep"
+    mkdir "$DOTSPATH/home"
     # No .gitkeep since all dotfiles in this directory are linked and tracked.
-    mkdir "$DOTFILES/local"
-    touch "$DOTFILES/local/.gitkeep"
-    mkdir "$DOTFILES/script"
-    mkdir "$DOTFILES/script/install"
-    touch "$DOTFILES/script/install/.gitkeep"
-    mkdir "$DOTFILES/script/configure"
-    touch "$DOTFILES/script/configure/.gitkeep"
-    mkdir "$DOTFILES/script/customize"
-    touch "$DOTFILES/script/customize/.gitkeep"
+    mkdir "$DOTSPATH/local"
+    touch "$DOTSPATH/local/.gitkeep"
+    mkdir "$DOTSPATH/script"
+    mkdir "$DOTSPATH/script/install"
+    touch "$DOTSPATH/script/install/.gitkeep"
+    mkdir "$DOTSPATH/script/configure"
+    touch "$DOTSPATH/script/configure/.gitkeep"
+    mkdir "$DOTSPATH/script/customize"
+    touch "$DOTSPATH/script/customize/.gitkeep"
 
     # Create the .gitignore file.
     printf "\
@@ -476,10 +486,10 @@ init() {
 # Only track .ssh/config. Everything else in .ssh is private
 /home/.ssh/*
 !/home/.ssh/config
-" >> "$DOTFILES/.gitignore"
+" >> "$DOTSPATH/.gitignore"
 
     # initialize the dotfiles repo
-    cd "$DOTFILES"
+    cd "$DOTSPATH"
     git init
 
     # Print post message
@@ -501,7 +511,7 @@ To finish installation, add the following to your shell configuration (.bashrc, 
 if [ -d \"\$HOME/bin\" ]; then
   PATH=\"\$HOME/bin:\$PATH\"
 fi
-" "$DOTFILES"
+" "$DOTSPATH"
   fi
 }
 
@@ -513,10 +523,10 @@ desc git <<EOM
 Usage:
   $_me git command [<options>]
 
-Run a git command within the \$DOTFILES directory.
+Run a git command within the \$DOTSPATH directory.
 EOM
 git() {
-  cd "$DOTFILES"
+  cd "$DOTSPATH"
 
   # Must get and call $bin_path to avoid calling this function again.
   git_bin=$(which git)
@@ -537,7 +547,7 @@ Commit the current changes to git. If a message is provided, it will be used \
 as the commit message. Otherwise, git will open your default editor.
 EOM
 commit() {
-  cd "$DOTFILES"
+  cd "$DOTSPATH"
   # Must get and call $bin_path to avoid calling the `git()` function above.
   git_bin=$(which git)
   if [[ -n "$1" ]]; then
@@ -558,7 +568,7 @@ Usage:
 Pull latest changes from the remote repository.
 EOM
 pull() {
-  cd "$DOTFILES"
+  cd "$DOTSPATH"
   # Must get and call $bin_path to avoid calling the `git()` function above.
   git_bin=$(which git)
   if [[ -n "$1" ]]; then
@@ -575,7 +585,7 @@ Usage:
 Push local commits to the remote repository.
 EOM
 push() {
-  cd "$DOTFILES"
+  cd "$DOTSPATH"
   # Must get and call $bin_path to avoid calling the `git()` function above.
   git_bin=$(which git)
   if [[ -n "$1" ]]; then
@@ -593,7 +603,7 @@ Update git submodules. An alias for the git command:
   git submodule foreach git pull
 EOM
 update_submodules() {
-  cd "$DOTFILES"
+  cd "$DOTSPATH"
   # Must get and call $bin_path to avoid calling the `git()` function above.
   git_bin=$(which git)
   $git_bin submodule foreach git pull
@@ -610,7 +620,7 @@ Usage:
 Run the specified package script.
 
 Package scripts can be added to:
-  $DOTFILES/script/install/
+  $DOTSPATH/script/install/
 EOM
 install() {
   _runner "install" "$1"
@@ -625,7 +635,7 @@ Usage:
 Run the specified package update script.
 
 Configuration scripts can be added to:
-  $DOTFILES/script/configure/
+  $DOTSPATH/script/configure/
 EOM
 configure() {
   _runner "configure" "$1"
@@ -639,7 +649,7 @@ Usage: $_me customize ( --all | <customization_script> )
 Run the specified customization script.
 
 Customization scripts can be added to:
-  $DOTFILES/script/customize/
+  $DOTSPATH/script/customize/
 EOM
 customize() {
   _runner "customize" "$1"
@@ -994,20 +1004,20 @@ desc edit <<EOM
 Usage:
   $_me edit
 
-Opens the the \$DOTFILES directory in your \$EDITOR, currently set to '$EDITOR'.
+Opens the the \$DOTSPATH directory in your \$EDITOR, currently set to '$EDITOR'.
 EOM
 edit() {
-  $EDITOR "$DOTFILES"
+  $EDITOR "$DOTSPATH"
 }
 
 desc dir <<EOM
 Usage:
   $_me dir
 
-Prints the current value of \$DOTFILES
+Prints the current value of \$DOTSPATH
 EOM
 dir() {
-  printf "%s\n" "$DOTFILES"
+  printf "%s\n" "$DOTSPATH"
 }
 
 ###############################################################################
