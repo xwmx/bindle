@@ -952,7 +952,7 @@ rename() {
 
 # ---------------------------------------------------------------------- unlink
 
-desc clean <<EOM
+desc unlink <<EOM
 Usage:
   $_me unlink [<filename>]
   $_me [<context>] unlink [<filename>]
