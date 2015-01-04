@@ -918,6 +918,38 @@ link() {
   fi
 }
 
+# ---------------------------------------------------------------------- rename
+
+desc rename <<EOM
+Usage:
+  $_me [<context>] rename <old_filename> <new_filename>
+
+Rename a tracked file and its corresponding link.
+EOM
+rename() {
+  old_file=$tracked_dir/$1
+  _debug && printf "rename() \$old_file: %s\n" "$old_file"
+  new_file=$tracked_dir/$2
+  _debug && printf "rename() \$new_file: %s\n" "$new_file"
+
+  if [[ -z "$1" ]]; then
+    printf "Filename not provided.\n"
+  elif [[ -z "$2" ]]; then
+    printf "New name not provided.\n"
+  elif ! ( [[ -e "$old_file" ]] ); then
+    printf "File not found.\n"
+  elif ( [[ -e "$new_file" ]] ); then
+    printf "A file already exists with the new filename.\n"
+  else
+    _debug && printf "unlink %s\n" "$1"
+    unlink "$1"
+    _debug && printf "mv %s %s\n" "$old_file" "$new_file"
+    mv "$old_file" "$new_file"
+    _debug && printf "link %s\n" "$2"
+    link "$2"
+  fi
+}
+
 # ---------------------------------------------------------------------- unlink
 
 desc clean <<EOM
