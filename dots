@@ -977,12 +977,14 @@ rename() {
   elif ( [[ -e "$new_file" ]] ); then
     printf "A file already exists with the new filename.\n"
   else
-    _debug && printf "unlink %s\n" "$1"
     unlink "$1"
-    _debug && printf "mv %s %s\n" "$old_file" "$new_file"
+    _debug && printf "unlink %s\n" "$1"
+
     mv "$old_file" "$new_file"
-    _debug && printf "link %s\n" "$2"
+    _debug && printf "mv %s %s\n" "$old_file" "$new_file"
+
     link "$2"
+    _debug && printf "link %s\n" "$2"
   fi
 }
 
