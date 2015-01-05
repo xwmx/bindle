@@ -7,8 +7,8 @@
 
 # dots
 
-`dots` is a tool and framework for managing the configuration of individual
-\*nix systems, such as an OS X or Ubuntu laptop.
+`dots` is a configuration management tool for your personal unix-like
+computer.
 
 The core goal of `dots` is to provide an easy way to manage dotfiles, per-user
 binaries, packages, and configuration scripts using an approach that's easy to
