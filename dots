@@ -571,9 +571,8 @@ pull() {
   cd "$DOTSPATH"
   # Must get and call $bin_path to avoid calling the `git()` function above.
   git_bin=$(which git)
-  if [[ -n "$1" ]]; then
-    $git_bin pull
-  fi
+  $git_bin pull
+  _debug && printf "%s pull\n" "$git_bin"
 }
 
 # ------------------------------------------------------------------------ push
@@ -588,9 +587,8 @@ push() {
   cd "$DOTSPATH"
   # Must get and call $bin_path to avoid calling the `git()` function above.
   git_bin=$(which git)
-  if [[ -n "$1" ]]; then
-    $git_bin push
-  fi
+  $git_bin push
+  _debug && printf "%s push\n" "$git_bin"
 }
 
 # ----------------------------------------------------------- update_submodules
