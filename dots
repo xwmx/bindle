@@ -472,6 +472,26 @@ _init_dotsrc() {
 export DOTSPATH=\"%s\"
 " "$1" >> "$HOME/.dotsrc"
 }
+_init_directory_structure() {
+  if [[ -n "$1" ]]; then
+    mkdir "$1"
+    mkdir "$1/bin"
+    touch "$1/bin/.gitkeep"
+    mkdir "$1/home"
+    # No .gitkeep since all dotfiles in this directory are linked and tracked.
+    mkdir "$1/local"
+    touch "$1/local/.gitkeep"
+    mkdir "$1/script"
+    mkdir "$1/script/install"
+    touch "$1/script/install/.gitkeep"
+    mkdir "$1/script/configure"
+    touch "$1/script/configure/.gitkeep"
+    mkdir "$1/script/customize"
+    touch "$1/script/customize/.gitkeep"
+  else
+    printf "Repository directory not specified.\n"
+  fi
+}
 init() {
   # Create $HOME/bin if it doesn't exist.
   if [[ ! -e "$HOME/bin" ]]; then
@@ -480,26 +500,13 @@ init() {
 
   if [[ -n $1 ]]; then
     DOTSPATH="$1"
-    _init_dotsrc "$DOTSPATH"
+    #_init_dotsrc "$DOTSPATH"
   fi
   _debug && printf "init() \$DOTSPATH: %s\n" "$DOTSPATH"
 
   # dotfile
   if [ ! -e "$DOTSPATH" ]; then
-    mkdir "$DOTSPATH"
-    mkdir "$DOTSPATH/bin"
-    touch "$DOTSPATH/bin/.gitkeep"
-    mkdir "$DOTSPATH/home"
-    # No .gitkeep since all dotfiles in this directory are linked and tracked.
-    mkdir "$DOTSPATH/local"
-    touch "$DOTSPATH/local/.gitkeep"
-    mkdir "$DOTSPATH/script"
-    mkdir "$DOTSPATH/script/install"
-    touch "$DOTSPATH/script/install/.gitkeep"
-    mkdir "$DOTSPATH/script/configure"
-    touch "$DOTSPATH/script/configure/.gitkeep"
-    mkdir "$DOTSPATH/script/customize"
-    touch "$DOTSPATH/script/customize/.gitkeep"
+    _init_directory_structure "$DOTSPATH"
 
     # Create the .gitignore file.
     printf "\
