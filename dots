@@ -511,6 +511,16 @@ _init_gitignore() {
     printf "Repository directory not specified.\n"
   fi
 }
+_init_git_repository() {
+  if [[ -n "$1" ]]; then
+    cd "$1"
+    # Must get and call $bin_path to avoid calling the `dots git` function.
+    git_bin=$(which git)
+    $git_bin init
+  else
+    printf "Repository directory not specified.\n"
+  fi
+}
 init() {
   # Create $HOME/bin if it doesn't exist.
   if [[ ! -e "$HOME/bin" ]]; then
@@ -527,12 +537,7 @@ init() {
   if [ ! -e "$DOTSPATH" ]; then
     _init_directory_structure "$DOTSPATH"
     _init_gitignore "$DOTSPATH"
-
-    # initialize the dotfiles repo
-    cd "$DOTSPATH"
-    # Must get and call $bin_path to avoid calling the `dots git` function.
-    git_bin=$(which git)
-    $git_bin init
+    _init_git_repository "$DOTSPATH"
 
     # Print post message
     printf "\
