@@ -890,27 +890,33 @@ status() {
 
 desc link <<EOM
 Usage:
-  $_me link [<filename>]
-  $_me [<context>] link [<filename>]
-  $_me bin link [<filename>]
-  $_me home link [<filename>]
+  $_me link [<filename>] [--overwrite]
+  $_me [<context>] link [<filename>] [--overwrite]
+  $_me bin link [<filename>] [--overwrite]
+  $_me home link [<filename>] [--overwrite]
 
 Create a link in the original directory for the context ('bin' or 'home') that \
 references the corresponding item in the tracked directory. If no context is \
 passed, the context defaults to 'home' (ie, dotfiles).
 
-Any files or symlinks in the original directory that exist already are skipped.
+Any files or symlinks in the original directory that exist already are skipped \
+unless the --overwrite option is used, in which case any existing files are \
+deleted and links are then created as usual.
 
 By default the command links all files that exist in the tracked directory. \
 If a filename is passed to the link command, then it only acts on that file.
 EOM
 _link_item() {
   if [[ -e $original_file ]]; then
-    printf "Exists: %s\n" "$filename"
-  else
-    printf "Linking %s => %s\n" "$f" "$original_file"
-    ln -s "$f" "$original_file"
+    if _contains "--overwrite" "${command_options[@]}"; then
+      rm "$original_file"
+    else
+      printf "Exists: %s\n" "$filename"
+      return 1
+    fi
   fi
+  printf "Linking %s => %s\n" "$f" "$original_file"
+  ln -s "$f" "$original_file"
 }
 link() {
   if [[ -n "$1" ]]; then
