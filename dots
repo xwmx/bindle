@@ -458,7 +458,9 @@ Create initial repository file structure and \$HOME/bin if it doesn't exist yet.
 EOM
 init() {
   # Create $HOME/bin if it doesn't exist.
-  [ ! -e "$HOME/bin" ] && mkdir "$HOME/bin"
+  if [[ ! -e "$HOME/bin" ]]; then
+    mkdir "$HOME/bin"
+  fi
 
   # dotfile
   if [ ! -e "$DOTSPATH" ]; then
