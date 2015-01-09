@@ -521,25 +521,8 @@ _init_git_repository() {
     printf "Repository directory not specified.\n"
   fi
 }
-init() {
-  # Create $HOME/bin if it doesn't exist.
-  if [[ ! -e "$HOME/bin" ]]; then
-    mkdir "$HOME/bin"
-  fi
-
-  if [[ -n $1 ]]; then
-    DOTSPATH="$1"
-    _init_dotsrc "$DOTSPATH"
-  fi
-  _debug && printf "init() \$DOTSPATH: %s\n" "$DOTSPATH"
-
-  # dotfile
-  if [ ! -e "$DOTSPATH" ]; then
-    _init_directory_structure "$DOTSPATH"
-    _init_gitignore "$DOTSPATH"
-    _init_git_repository "$DOTSPATH"
-
-    # Print post message
+_init_post_message() {
+  if [[ -n "$1" ]]; then
     printf "\
          _       _
         | |     | |
@@ -558,7 +541,28 @@ To finish installation, add the following to your shell configuration (.bashrc, 
 if [ -d \"\$HOME/bin\" ]; then
   PATH=\"\$HOME/bin:\$PATH\"
 fi
-" "$DOTSPATH"
+" "$1"
+  else
+    printf "Repository directory not specified.\n"
+  fi
+}
+init() {
+  # Create $HOME/bin if it doesn't exist.
+  if [[ ! -e "$HOME/bin" ]]; then
+    mkdir "$HOME/bin"
+  fi
+
+  if [[ -n $1 ]]; then
+    DOTSPATH="$1"
+    _init_dotsrc "$DOTSPATH"
+  fi
+  _debug && printf "init() \$DOTSPATH: %s\n" "$DOTSPATH"
+
+  if [ ! -e "$DOTSPATH" ]; then
+    _init_directory_structure "$DOTSPATH"
+    _init_gitignore "$DOTSPATH"
+    _init_git_repository "$DOTSPATH"
+    _init_post_message "$DOTSPATH"
   fi
 }
 
