@@ -552,6 +552,7 @@ init() {
     mkdir "$HOME/bin"
   fi
 
+  # When the first argument is present, use it to set the custom $DOTSPATH.
   if [[ -n $1 ]]; then
     DOTSPATH="$1"
     _init_dotsrc "$DOTSPATH"
