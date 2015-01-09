@@ -452,15 +452,37 @@ commands() {
 
 desc init <<EOM
 Usage:
-  $_me init
+  $_me init [dotspath]
 
 Create initial repository file structure and \$HOME/bin if it doesn't exist yet.
+
+When provided with an argument, the initial repository is created at the \
+specified path and a configuration file is created at \$HOME/.dotsrc with \
+that location set as the \$DOTSPATH.
 EOM
+_init_dotsrc() {
+  printf "\
+# .dotsrc
+#
+# Configuration file for dots
+#
+# https://github.com/alphabetum/dots
+
+# Set dots directory
+export DOTSPATH=\"%s\"
+" "$1" >> "$HOME/.dotsrc"
+}
 init() {
   # Create $HOME/bin if it doesn't exist.
   if [[ ! -e "$HOME/bin" ]]; then
     mkdir "$HOME/bin"
   fi
+
+  if [[ -n $1 ]]; then
+    DOTSPATH="$1"
+    _init_dotsrc "$DOTSPATH"
+  fi
+  _debug && printf "init() \$DOTSPATH: %s\n" "$DOTSPATH"
 
   # dotfile
   if [ ! -e "$DOTSPATH" ]; then
@@ -492,7 +514,9 @@ init() {
 
     # initialize the dotfiles repo
     cd "$DOTSPATH"
-    git init
+    # Must get and call $bin_path to avoid calling the `dots git` function.
+    git_bin=$(which git)
+    $git_bin init
 
     # Print post message
     printf "\
