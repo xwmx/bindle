@@ -461,7 +461,8 @@ specified path and a configuration file is created at \$HOME/.dotsrc with \
 that location set as the \$DOTSPATH.
 EOM
 _init_dotsrc() {
-  printf "\
+  if [[ -n "$1" ]]; then
+    printf "\
 # .dotsrc
 #
 # Configuration file for dots
@@ -471,6 +472,9 @@ _init_dotsrc() {
 # Set dots directory
 export DOTSPATH=\"%s\"
 " "$1" >> "$HOME/.dotsrc"
+  else
+    printf "Repository location not specified.\n"
+  fi
 }
 _init_directory_structure() {
   if [[ -n "$1" ]]; then
@@ -500,7 +504,7 @@ init() {
 
   if [[ -n $1 ]]; then
     DOTSPATH="$1"
-    #_init_dotsrc "$DOTSPATH"
+    _init_dotsrc "$DOTSPATH"
   fi
   _debug && printf "init() \$DOTSPATH: %s\n" "$DOTSPATH"
 
