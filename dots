@@ -496,6 +496,21 @@ _init_directory_structure() {
     printf "Repository directory not specified.\n"
   fi
 }
+_init_gitignore() {
+  if [[ -n "$1" ]]; then
+    printf "\
+# Ignore the local directory, but track .gitkeep so it's included in the repo.
+/local/*
+!/local/.gitkeep
+
+# Only track .ssh/config. Everything else in .ssh is private
+/home/.ssh/*
+!/home/.ssh/config
+" >> "$1/.gitignore"
+  else
+    printf "Repository directory not specified.\n"
+  fi
+}
 init() {
   # Create $HOME/bin if it doesn't exist.
   if [[ ! -e "$HOME/bin" ]]; then
@@ -511,17 +526,7 @@ init() {
   # dotfile
   if [ ! -e "$DOTSPATH" ]; then
     _init_directory_structure "$DOTSPATH"
-
-    # Create the .gitignore file.
-    printf "\
-# Ignore the local directory, but track .gitkeep so it's included in the repo.
-/local/*
-!/local/.gitkeep
-
-# Only track .ssh/config. Everything else in .ssh is private
-/home/.ssh/*
-!/home/.ssh/config
-" >> "$DOTSPATH/.gitignore"
+    _init_gitignore "$DOTSPATH"
 
     # initialize the dotfiles repo
     cd "$DOTSPATH"
