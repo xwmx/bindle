@@ -538,6 +538,7 @@ _init_with_source() {
 _init_dotsrc() {
   _command_options_include "--skip-dotsrc" && return 0
   if [[ -n "$1" ]]; then
+    printf ">> Adding ~/.dotsrc configuration file.\n"
     printf "\
 # .dotsrc
 #
