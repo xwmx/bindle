@@ -464,6 +464,11 @@ repository URL, the initial repository is created at the specified path and a \
 configuration file is created at \$HOME/.dotsrc with that location set as \
 the \$DOTSPATH.
 EOM
+# _init_with_source()
+#
+# Clone a specified URL to a specified path.
+#
+# called by: init()
 _init_with_source() {
   _debug printf "_init_with_source() \$1: %s\n" "$1"
   _debug printf "_init_with_source() \$2: %s\n" "$2"
