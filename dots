@@ -602,7 +602,7 @@ init() {
   # $init_souce: will be set to a source git repository URL if available.
   init_source=
   # A URL-matching regex to check arguments for a source git repository.
-  _regex='(https?|ftp|file)://[-A-Za-z0-9\+&@#/%?=~_|!:,.;]*[-A-Za-z0-9\+&@#/%=~_|]'
+  _regex='(https?|git|ssh|file)://[-A-Za-z0-9\+&@#/%?=~_|!:,.;]*[-A-Za-z0-9\+&@#/%=~_|]'
 
   # Create $HOME/bin if it doesn't exist.
   if [[ ! -e "$HOME/bin" ]]; then
