@@ -1182,12 +1182,23 @@ rename() {
 
 desc edit <<EOM
 Usage:
-  $_me edit
+  $_me edit [<filename>]
+  $_me [<context>] edit [<filename>]
+  $_me bin edit [<filename>]
+  $_me home edit [<filename>]
 
-Opens the the \$DOTSPATH directory in your \$EDITOR, currently set to '$EDITOR'.
+Open a tracked file or, when no filename is specified, the entire tracked
+repository in you \$EDITOR, currently set to '$EDITOR'.
 EOM
 edit() {
-  $EDITOR "$DOTSPATH"
+  if [[ -n "$1" ]]; then
+    f="$tracked_dir/$1"
+    filename=$(basename "$1")
+    tracked_file=$tracked_dir/$filename
+    $EDITOR "$tracked_file"
+  else
+    $EDITOR "$DOTSPATH"
+  fi
 }
 
 desc dir <<EOM
