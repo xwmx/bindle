@@ -460,6 +460,11 @@ When provided with an argument, the initial repository is created at the \
 specified path and a configuration file is created at \$HOME/.dotsrc with \
 that location set as the \$DOTSPATH.
 EOM
+# _init_dotsrc()
+#
+# Create a file at $HOME/.dotsrc for configuration settings.
+#
+# called by: init()
 _init_dotsrc() {
   if [[ -n "$1" ]]; then
     printf "\
@@ -476,6 +481,11 @@ export DOTSPATH=\"%s\"
     printf "Repository location not specified.\n"
   fi
 }
+# _init_directory_structure()
+#
+# Create an initial directory structure at $DOTSPATH
+#
+# called by: init()
 _init_directory_structure() {
   if [[ -n "$1" ]]; then
     mkdir "$1"
@@ -496,6 +506,11 @@ _init_directory_structure() {
     printf "Repository directory not specified.\n"
   fi
 }
+# _init_gitignore()
+#
+# Add the default .gitignore to $DOTSPATH/.gitignore
+#
+# called by: init()
 _init_gitignore() {
   if [[ -n "$1" ]]; then
     printf "\
@@ -511,6 +526,11 @@ _init_gitignore() {
     printf "Repository directory not specified.\n"
   fi
 }
+# _init_git_repository()
+#
+# Initialize the git repository at $DOTSPATH
+#
+# called by: init()
 _init_git_repository() {
   if [[ -n "$1" ]]; then
     cd "$1"
@@ -521,6 +541,11 @@ _init_git_repository() {
     printf "Repository directory not specified.\n"
   fi
 }
+# _init_post_message()
+#
+# Print information about what just happened and some next steps.
+#
+# called by: init()
 _init_post_message() {
   if [[ -n "$1" ]]; then
     printf "\
@@ -546,6 +571,9 @@ fi
     printf "Repository directory not specified.\n"
   fi
 }
+# init()
+#
+# Initialize a new repository.
 init() {
   # Create $HOME/bin if it doesn't exist.
   if [[ ! -e "$HOME/bin" ]]; then
