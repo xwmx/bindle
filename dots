@@ -597,7 +597,6 @@ fi
 #
 # Initialize a new repository.
 init() {
-
   # Initialize variables
   #
   # $init_souce: will be set to a source git repository URL if available.
@@ -654,7 +653,6 @@ Run a git command within the \$DOTSPATH directory.
 EOM
 git() {
   cd "$DOTSPATH"
-
   # Must get and call $bin_path to avoid calling this function again.
   git_bin=$(which git)
   # Use raw options to get the option string, minus the `git` command.
