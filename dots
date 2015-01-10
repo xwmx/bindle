@@ -452,17 +452,17 @@ commands() {
 
 desc init <<EOM
 Usage:
-  $_me init [<dotspath> [<source_repository>]]
+  $_me init [<source_repository>] [<dotspath>]
 
 Create initial repository file structure and \$HOME/bin if it doesn't exist yet.
 
-When provided with full path as the first argument, the initial repository is
-created at the specified path and a configuration file is created at \
-\$HOME/.dotsrc with that location set as the \$DOTSPATH.
+When provided with a URL as the first argument or a second argument the git \
+repository at that URL is cloned and used as the tracking repository.
 
-When provided with a URL as either the lone argument or a second argument \
-after a dotspath, the git repository at that URL is cloned and used as the \
-tracking repository.
+When provided with full path as the lone argument or second argument after a \
+repository URL, the initial repository is created at the specified path and a \
+configuration file is created at \$HOME/.dotsrc with that location set as \
+the \$DOTSPATH.
 EOM
 _init_with_source() {
   _debug && printf "_init_with_source() \$1: %s\n" "$1"
@@ -606,10 +606,11 @@ init() {
   if [[ -n "$1" ]]; then
     if [[ "$1" =~ $_regex ]]; then
       init_source="$1"
-    else
-      if ( [[ -n "$2" ]] && [[ "$2" =~ $_regex ]] ); then
-        init_source="$2"
+      if [[ -n "$2" ]]; then
+        DOTSPATH="$2"
+        _init_dotsrc "$DOTSPATH"
       fi
+    else
       DOTSPATH="$1"
       _init_dotsrc "$DOTSPATH"
     fi
