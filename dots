@@ -452,14 +452,31 @@ commands() {
 
 desc init <<EOM
 Usage:
-  $_me init [dotspath]
+  $_me init [<dotspath> [<source_repository>]]
 
 Create initial repository file structure and \$HOME/bin if it doesn't exist yet.
 
-When provided with an argument, the initial repository is created at the \
-specified path and a configuration file is created at \$HOME/.dotsrc with \
-that location set as the \$DOTSPATH.
+When provided with full path as the first argument, the initial repository is
+created at the specified path and a configuration file is created at \
+\$HOME/.dotsrc with that location set as the \$DOTSPATH.
+
+When provided with a URL as either the lone argument or a second argument \
+after a dotspath, the git repository at that URL is cloned and used as the \
+tracking repository.
 EOM
+_init_with_source() {
+  _debug && printf "_init_with_source() \$1: %s\n" "$1"
+  _debug && printf "_init_with_source() \$2: %s\n" "$2"
+  if [[ -z "$1" ]]; then
+    printf "Repository directory not specified.\n"
+  elif [[ -z "$2" ]]; then
+    printf "Source URL not specified.\n"
+  else
+    # Must get and call $bin_path to avoid calling the `dots git` function.
+    git_bin=$(which git)
+    $git_bin clone "$2" "$1"
+  fi
+}
 # _init_dotsrc()
 #
 # Create a file at $HOME/.dotsrc for configuration settings.
@@ -575,22 +592,39 @@ fi
 #
 # Initialize a new repository.
 init() {
+
+  # initialize variables
+  init_source=
+  _regex='(https?|ftp|file)://[-A-Za-z0-9\+&@#/%?=~_|!:,.;]*[-A-Za-z0-9\+&@#/%=~_|]'
+
   # Create $HOME/bin if it doesn't exist.
   if [[ ! -e "$HOME/bin" ]]; then
     mkdir "$HOME/bin"
   fi
 
-  # When the first argument is present, use it to set the custom $DOTSPATH.
-  if [[ -n $1 ]]; then
-    DOTSPATH="$1"
-    _init_dotsrc "$DOTSPATH"
+  # Handle arguments.
+  if [[ -n "$1" ]]; then
+    if [[ "$1" =~ $_regex ]]; then
+      init_source="$1"
+    else
+      if ( [[ -n "$2" ]] && [[ "$2" =~ $_regex ]] ); then
+        init_source="$2"
+      fi
+      DOTSPATH="$1"
+      _init_dotsrc "$DOTSPATH"
+    fi
   fi
   _debug && printf "init() \$DOTSPATH: %s\n" "$DOTSPATH"
+  _debug && printf "init() \$init_source: %s\n" "$init_source"
 
-  if [ ! -e "$DOTSPATH" ]; then
-    _init_directory_structure "$DOTSPATH"
-    _init_gitignore "$DOTSPATH"
-    _init_git_repository "$DOTSPATH"
+  if [[ ! -e "$DOTSPATH" ]]; then
+    if [[ -n "$init_source" ]]; then
+      _init_with_source "$DOTSPATH" "$init_source"
+    else
+      _init_directory_structure "$DOTSPATH"
+      _init_gitignore "$DOTSPATH"
+      _init_git_repository "$DOTSPATH"
+    fi
     _init_post_message "$DOTSPATH"
   fi
 }
