@@ -144,6 +144,18 @@ fi
 
 _debug printf "\$original_dir: %s\n" "$original_dir"
 
+# $_git_bin
+#
+# Must perform git operationss via $_git_bin to avoid calling the `dots git`
+# function.
+_git_bin=$(which git)
+if [[ -z "$_git_bin" ]]; then
+  printf "\
+The \`git\` executable can not be found. Since \`dots\` depends on git, \
+please install git and make sure it has been added to your \$PATH.\n"
+  exit 1
+fi
+
 ###############################################################################
 # Main
 ###############################################################################
@@ -502,26 +514,20 @@ _init_with_source() {
   _debug printf "_init_with_source() \$1: %s\n" "$1"
   _debug printf "_init_with_source() \$2: %s\n" "$2"
 
-  # Must get and call $bin_path to avoid calling the `dots git` function.
-  git_bin=$(which git)
-
   if [[ -z "$1" ]]; then
     printf "Repository directory not specified.\n"
     exit 1
   elif [[ -z "$2" ]]; then
     printf "Source URL not specified.\n"
     exit 1
-  elif [[ -z "$git_bin" ]]; then
-    printf "Git is not installed. Please install git and try again.\n"
-    exit 1
   else
-    $git_bin clone "$2" "$1"
+    $_git_bin clone "$2" "$1"
   fi
 
   if _command_options_include "--initialize-submodules"; then
     cd "$1"
-    $git_bin submodule init
-    $git_bin submodule update --init --recursive
+    $_git_bin submodule init
+    $_git_bin submodule update --init --recursive
   fi
 }
 # _init_dotsrc()
@@ -599,9 +605,7 @@ _init_gitignore() {
 _init_git_repository() {
   if [[ -n "$1" ]]; then
     cd "$1"
-    # Must get and call $bin_path to avoid calling the `dots git` function.
-    git_bin=$(which git)
-    $git_bin init
+    $_git_bin init
   else
     printf "Repository directory not specified.\n"
   fi
@@ -696,13 +700,11 @@ Run a git command within the \$DOTSPATH directory.
 EOM
 git() {
   cd "$DOTSPATH"
-  # Must get and call $bin_path to avoid calling this function again.
-  git_bin=$(which git)
   # Use raw options to get the option string, minus the `git` command.
   git_options=$(printf "%s" "$raw_options" | sed -e 's/^git //')
 
   # call the environment's git with the git options
-  "$git_bin" "$git_options"
+  $_git_bin "$git_options"
 }
 
 # ---------------------------------------------------------------------- commit
@@ -716,14 +718,12 @@ as the commit message. Otherwise, git will open your default editor.
 EOM
 commit() {
   cd "$DOTSPATH"
-  # Must get and call $bin_path to avoid calling the `git()` function above.
-  git_bin=$(which git)
   if [[ -n "$1" ]]; then
-    $git_bin add .
-    $git_bin commit -a -m "$1"
+    $_git_bin add .
+    $_git_bin commit -a -m "$1"
   else
-    $git_bin add .
-    $git_bin commit -a
+    $_git_bin add .
+    $_git_bin commit -a
   fi
 }
 
@@ -737,10 +737,8 @@ Pull latest changes from the remote repository.
 EOM
 pull() {
   cd "$DOTSPATH"
-  # Must get and call $bin_path to avoid calling the `git()` function above.
-  git_bin=$(which git)
-  $git_bin pull
-  _debug printf "%s pull\n" "$git_bin"
+  $_git_bin pull
+  _debug printf "%s pull\n" "$_git_bin"
 }
 
 # ------------------------------------------------------------------------ push
@@ -753,10 +751,8 @@ Push local commits to the remote repository.
 EOM
 push() {
   cd "$DOTSPATH"
-  # Must get and call $bin_path to avoid calling the `git()` function above.
-  git_bin=$(which git)
-  $git_bin push
-  _debug printf "%s push\n" "$git_bin"
+  $_git_bin push
+  _debug printf "%s push\n" "$_git_bin"
 }
 
 # ----------------------------------------------------------- update_submodules
@@ -770,9 +766,7 @@ Update git submodules. An alias for the git command:
 EOM
 update_submodules() {
   cd "$DOTSPATH"
-  # Must get and call $bin_path to avoid calling the `git()` function above.
-  git_bin=$(which git)
-  $git_bin submodule foreach git pull
+  $_git_bin submodule foreach git pull
 }
 
 # Scripts #####################################################################
