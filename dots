@@ -1005,10 +1005,10 @@ status() {
 
 desc link <<EOM
 Usage:
-  $_me link [<filename>] [--overwrite]
-  $_me [<context>] link [<filename>] [--overwrite]
-  $_me bin link [<filename>] [--overwrite]
-  $_me home link [<filename>] [--overwrite]
+  $_me link [<filename>] [--overwrite [--with-backup]]
+  $_me [<context>] link [<filename>] [--overwrite [--with-backup]]
+  $_me bin link [<filename>] [--overwrite [--with-backup]]
+  $_me home link [<filename>] [--overwrite [--with-backup]]
 
 Create a link in the original directory for the context ('bin' or 'home') that \
 references the corresponding item in the tracked directory. If no context is \
@@ -1018,13 +1018,26 @@ Any files or symlinks in the original directory that exist already are skipped \
 unless the --overwrite option is used, in which case any existing files are \
 deleted and links are then created as usual.
 
+When the --with-backup flag is uses in combination with --overwrite, any \
+overwritten files are first renamed with a .bak extension. If a file with the \
+same name plus .bak extension exists, it is skipped altogether.
+
 By default the command links all files that exist in the tracked directory. \
 If a filename is passed to the link command, then it only acts on that file.
 EOM
 _link_item() {
   if [[ -e $original_file ]]; then
     if _contains "--overwrite" "${command_options[@]}"; then
-      rm "$original_file"
+      if _contains "--with-backup" "${command_options[@]}"; then
+        if [[ -e "$original_file".bak ]]; then
+          printf "Exists with .bak: %s, %s\n" "$filename" "$filename".bak
+          return 1
+        else
+          mv "$original_file" "$original_file".bak
+        fi
+      else
+        rm "$original_file"
+      fi
     else
       printf "Exists: %s\n" "$filename"
       return 1
