@@ -44,8 +44,8 @@ fi
 # intended to be used before a printf statement.
 #
 # Usage:
-#   _debug && printf "Debug info"
-_debug() { [[ -n "$debug" ]]; }
+#   _debug printf "Debug info"
+_debug() { [[ -n "$debug" ]] && "$@"; }
 
 ###############################################################################
 # Options
@@ -104,11 +104,11 @@ if [[ -z $context ]]; then
   context="home"
 fi
 
-_debug && printf "\$context: %s\n" "$context"
-_debug && printf "\$cmd: %s\n" "$cmd"
-_debug && printf "\$raw_options: %s\n" "$raw_options"
-_debug && printf "\$command_options: %s\n" "${command_options[*]}"
-_debug && printf "\$command_arguments: %s\n" "${command_arguments[*]}"
+_debug printf "\$context: %s\n" "$context"
+_debug printf "\$cmd: %s\n" "$cmd"
+_debug printf "\$raw_options: %s\n" "$raw_options"
+_debug printf "\$command_options: %s\n" "${command_options[*]}"
+_debug printf "\$command_arguments: %s\n" "${command_arguments[*]}"
 
 ###############################################################################
 # Environment
@@ -119,7 +119,7 @@ _debug && printf "\$command_arguments: %s\n" "${command_arguments[*]}"
 # Set to the program's basename.
 _me=$(basename "$0")
 
-_debug && printf "\$_me: %s\n" "$_me"
+_debug printf "\$_me: %s\n" "$_me"
 
 # $tracked_dir
 #
@@ -131,7 +131,7 @@ else
   tracked_dir=$DOTSPATH/home
 fi
 
-_debug && printf "\$tracked_dir: %s\n" "$tracked_dir"
+_debug printf "\$tracked_dir: %s\n" "$tracked_dir"
 
 # $original_dir
 #
@@ -142,7 +142,7 @@ else
   original_dir=$HOME
 fi
 
-_debug && printf "\$original_dir: %s\n" "$original_dir"
+_debug printf "\$original_dir: %s\n" "$original_dir"
 
 ###############################################################################
 # Main
@@ -465,8 +465,8 @@ configuration file is created at \$HOME/.dotsrc with that location set as \
 the \$DOTSPATH.
 EOM
 _init_with_source() {
-  _debug && printf "_init_with_source() \$1: %s\n" "$1"
-  _debug && printf "_init_with_source() \$2: %s\n" "$2"
+  _debug printf "_init_with_source() \$1: %s\n" "$1"
+  _debug printf "_init_with_source() \$2: %s\n" "$2"
   if [[ -z "$1" ]]; then
     printf "Repository directory not specified.\n"
   elif [[ -z "$2" ]]; then
@@ -615,8 +615,8 @@ init() {
       _init_dotsrc "$DOTSPATH"
     fi
   fi
-  _debug && printf "init() \$DOTSPATH: %s\n" "$DOTSPATH"
-  _debug && printf "init() \$init_source: %s\n" "$init_source"
+  _debug printf "init() \$DOTSPATH: %s\n" "$DOTSPATH"
+  _debug printf "init() \$init_source: %s\n" "$init_source"
 
   if [[ ! -e "$DOTSPATH" ]]; then
     if [[ -n "$init_source" ]]; then
@@ -687,7 +687,7 @@ pull() {
   # Must get and call $bin_path to avoid calling the `git()` function above.
   git_bin=$(which git)
   $git_bin pull
-  _debug && printf "%s pull\n" "$git_bin"
+  _debug printf "%s pull\n" "$git_bin"
 }
 
 # ------------------------------------------------------------------------ push
@@ -703,7 +703,7 @@ push() {
   # Must get and call $bin_path to avoid calling the `git()` function above.
   git_bin=$(which git)
   $git_bin push
-  _debug && printf "%s push\n" "$git_bin"
+  _debug printf "%s push\n" "$git_bin"
 }
 
 # ----------------------------------------------------------- update_submodules
@@ -902,7 +902,7 @@ Add the specified file to the tracked directory for the context ('bin' or \
 (ie, dotfiles).
 EOM
 add() {
-  _debug && printf "add() \$1: %s\n" "$1"
+  _debug printf "add() \$1: %s\n" "$1"
 
   if [[ $# = 0 ]]; then
     printf "Must specify a valid file or directory name.\n" && exit 1
@@ -910,10 +910,10 @@ add() {
     filename=$(basename "$1")
 
     original_file=$original_dir/$filename
-    _debug && printf "add() \$original_file: %s\n" "$original_file"
+    _debug printf "add() \$original_file: %s\n" "$original_file"
 
     tracked_file=$tracked_dir/$filename
-    _debug && printf "add() \$tracked_file: %s\n" "$tracked_file"
+    _debug printf "add() \$tracked_file: %s\n" "$tracked_file"
 
     if [[ ! -e $original_file ]]; then
       printf "File or directory does not exist.\n" && exit 1
@@ -943,7 +943,7 @@ back to original location specified by the context ('bin' or 'home'). If no \
 context is passed, the context defaults to 'home' (ie, dotfiles).
 EOM
 restore() {
-  _debug && printf "restore() \$1: %s\n" "$1"
+  _debug printf "restore() \$1: %s\n" "$1"
 
   if [[ $# = 0 ]]; then
     printf "Must specify a valid file or directory name.\n" && exit 1
@@ -951,10 +951,10 @@ restore() {
     filename=$(basename "$1")
 
     original_file=$original_dir/$filename
-    _debug && printf "restore() \$original_file: %s\n" "$original_file"
+    _debug printf "restore() \$original_file: %s\n" "$original_file"
 
     tracked_file=$tracked_dir/$filename
-    _debug && printf "restore() \$tracked_file: %s\n" "$tracked_file"
+    _debug printf "restore() \$tracked_file: %s\n" "$tracked_file"
 
     if [[ ! -e $tracked_file ]]; then
       printf "File does not exist.\n"
@@ -1106,9 +1106,9 @@ Rename a tracked file and its corresponding link.
 EOM
 rename() {
   old_file=$tracked_dir/$1
-  _debug && printf "rename() \$old_file: %s\n" "$old_file"
+  _debug printf "rename() \$old_file: %s\n" "$old_file"
   new_file=$tracked_dir/$2
-  _debug && printf "rename() \$new_file: %s\n" "$new_file"
+  _debug printf "rename() \$new_file: %s\n" "$new_file"
 
   if [[ -z "$1" ]]; then
     printf "Filename not provided.\n"
@@ -1120,13 +1120,13 @@ rename() {
     printf "A file already exists with the new filename.\n"
   else
     unlink "$1"
-    _debug && printf "unlink %s\n" "$1"
+    _debug printf "unlink %s\n" "$1"
 
     mv "$old_file" "$new_file"
-    _debug && printf "mv %s %s\n" "$old_file" "$new_file"
+    _debug printf "mv %s %s\n" "$old_file" "$new_file"
 
     link "$2"
-    _debug && printf "link %s\n" "$2"
+    _debug printf "link %s\n" "$2"
   fi
 }
 
