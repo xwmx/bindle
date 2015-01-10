@@ -452,7 +452,8 @@ commands() {
 
 desc init <<EOM
 Usage:
-  $_me init [<source_repository>] [<dotspath>] [--initialize-submodules]
+  $_me init [<source_repository>] [<dotspath>] [--initialize-submodules] \
+[--skip-dotsrc]
 
 Create initial repository file structure and \$HOME/bin if it doesn't exist yet.
 
@@ -466,6 +467,9 @@ the \$DOTSPATH.
 
 When the --initialize-submodules flag is used with a source repository URL,
 any submodules in the repository are initialized and recursively updated.
+
+When the --skip-dotsrc flag is used with a custom dotspath, the .dotsrc file \
+is not created.
 EOM
 # _init_with_source()
 #
@@ -497,6 +501,7 @@ _init_with_source() {
 #
 # called by: init()
 _init_dotsrc() {
+  _contains "--skip-dotsrc" "${command_options[@]}" && return 0
   if [[ -n "$1" ]]; then
     printf "\
 # .dotsrc
