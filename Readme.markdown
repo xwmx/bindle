@@ -35,7 +35,7 @@ you can create one using
 
     dots init
 
-This will initialize a git repository at `$HOME/.dotfiles` with the following
+This will initialize a git repository at `$HOME/.dots` with the following
 structure:
 
     ├── .gitignore
@@ -48,9 +48,10 @@ structure:
         └── install/
 
 You can change the location used for storing dotfiles by adding a
-`$DOTFILES` variable to your environment set to the desired location:
+`.dotsrc` file at `$HOME/.dotsrc` and setting the `$DOTSPATH` variable to the
+desired location:
 
-    export DOTFILES="$HOME/configuration"
+    export DOTSPATH="$HOME/configuration"
 
 `dots init` also creates a directory for local scripts at `$HOME/bin` if one
 does not already exist.
