@@ -22,7 +22,15 @@ example of a configuration managed with `dots`.
 
 ## Usage
 
+### Installation
+
 To get started, add the `dots` script to your path.
+
+#### Homebrew
+
+To install with homebrew, you can use the `brew tap` command:
+
+    brew install alphabetum/taps/dots
 
 ### Help
 
