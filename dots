@@ -507,8 +507,10 @@ _init_with_source() {
 
   if [[ -z "$1" ]]; then
     printf "Repository directory not specified.\n"
+    exit 1
   elif [[ -z "$2" ]]; then
     printf "Source URL not specified.\n"
+    exit 1
   elif [[ -z "$git_bin" ]]; then
     printf "Git is not installed. Please install git and try again.\n"
     exit 1
