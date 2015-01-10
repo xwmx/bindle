@@ -501,13 +501,18 @@ EOM
 _init_with_source() {
   _debug printf "_init_with_source() \$1: %s\n" "$1"
   _debug printf "_init_with_source() \$2: %s\n" "$2"
+
+  # Must get and call $bin_path to avoid calling the `dots git` function.
+  git_bin=$(which git)
+
   if [[ -z "$1" ]]; then
     printf "Repository directory not specified.\n"
   elif [[ -z "$2" ]]; then
     printf "Source URL not specified.\n"
+  elif [[ -z "$git_bin" ]]; then
+    printf "Git is not installed. Please install git and try again.\n"
+    exit 1
   else
-    # Must get and call $bin_path to avoid calling the `dots git` function.
-    git_bin=$(which git)
     $git_bin clone "$2" "$1"
   fi
 
