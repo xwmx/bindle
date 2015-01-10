@@ -743,7 +743,7 @@ install() {
 
 desc configure <<EOM
 Usage:
-  $_me configure ( --all| <configuration_script> )
+  $_me configure ( --all | <configuration_script> )
 
 Run the specified package update script.
 
