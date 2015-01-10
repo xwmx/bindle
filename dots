@@ -598,8 +598,11 @@ fi
 # Initialize a new repository.
 init() {
 
-  # initialize variables
+  # Initialize variables
+  #
+  # $init_souce: will be set to a source git repository URL if available.
   init_source=
+  # A URL-matching regex to check arguments for a source git repository.
   _regex='(https?|ftp|file)://[-A-Za-z0-9\+&@#/%?=~_|!:,.;]*[-A-Za-z0-9\+&@#/%=~_|]'
 
   # Create $HOME/bin if it doesn't exist.
@@ -608,6 +611,9 @@ init() {
   fi
 
   # Handle arguments.
+  #
+  # Expected behavior:
+  #   init [<source_repository>] [<dotspath>]
   if [[ -n "$1" ]]; then
     if [[ "$1" =~ $_regex ]]; then
       init_source="$1"
@@ -623,6 +629,7 @@ init() {
   _debug printf "init() \$DOTSPATH: %s\n" "$DOTSPATH"
   _debug printf "init() \$init_source: %s\n" "$init_source"
 
+  # Initialize either from source or with fresh directory structure.
   if [[ ! -e "$DOTSPATH" ]]; then
     if [[ -n "$init_source" ]]; then
       _init_with_source "$DOTSPATH" "$init_source"
