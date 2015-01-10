@@ -452,7 +452,7 @@ commands() {
 
 desc init <<EOM
 Usage:
-  $_me init [<source_repository>] [<dotspath>]
+  $_me init [<source_repository>] [<dotspath>] [--initialize-submodules]
 
 Create initial repository file structure and \$HOME/bin if it doesn't exist yet.
 
@@ -463,6 +463,9 @@ When provided with full path as the lone argument or second argument after a \
 repository URL, the initial repository is created at the specified path and a \
 configuration file is created at \$HOME/.dotsrc with that location set as \
 the \$DOTSPATH.
+
+When the --initialize-submodules flag is used with a source repository URL,
+any submodules in the repository are initialized and recursively updated.
 EOM
 # _init_with_source()
 #
@@ -480,6 +483,12 @@ _init_with_source() {
     # Must get and call $bin_path to avoid calling the `dots git` function.
     git_bin=$(which git)
     $git_bin clone "$2" "$1"
+  fi
+
+  if _contains "--initialize-submodules" "${command_options[@]}"; then
+    cd "$1"
+    $git_bin submodule init
+    $git_bin submodule update --init --recursive
   fi
 }
 # _init_dotsrc()
@@ -1168,3 +1177,4 @@ dir() {
 
 # Calling the _main function after everything has been defined.
 _main
+    git_bin=$(which git)
