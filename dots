@@ -27,7 +27,7 @@ fi
 # Globals
 ###############################################################################
 
-DOTS_VERSION="2.0.1"
+DOTS_VERSION="2.0.2"
 
 # Set dotfiles if not already set.
 if [[ -z $DOTSPATH ]]; then
