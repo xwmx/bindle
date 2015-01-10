@@ -146,7 +146,7 @@ _debug printf "\$original_dir: %s\n" "$original_dir"
 
 # $_git_bin
 #
-# Must perform git operationss via $_git_bin to avoid calling the `dots git`
+# Must perform git operations via $_git_bin to avoid calling the `dots git`
 # function.
 _git_bin=$(which git)
 if [[ -z "$_git_bin" ]]; then
