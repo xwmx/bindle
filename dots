@@ -228,7 +228,7 @@ _runner() {
   subdir=$1
   subdir_path=$DOTSPATH/script/$subdir
   script_file=$subdir_path/$2
-  if _contains "--all" "${command_options[@]}"; then
+  if _command_options_include "--all"; then
     for f in $subdir_path/*
     do
       _run_script "$f"
@@ -293,6 +293,28 @@ _contains() {
   local e
   for e in "${@:2}"; do [[ "$e" == "$1" ]] && return 0; done
   return 1
+}
+
+# _commnd_options_include()
+#
+# Takes a possible command option and determines whether it is included in
+# the command option list.
+#
+# Usage:
+#   _command_options_include "--an-option"
+_command_options_include() {
+  _contains "$1" "${command_options[@]}"
+}
+
+# _commnd_arguments_include()
+#
+# Takes a possible command argument and determines whether it is included in
+# the command argument list.
+#
+# Usage:
+#   _command_arguments_include "an_argument"
+_command_arguments_include() {
+  _contains "$1" "${command_arguments[@]}"
 }
 
 ###############################################################################
@@ -411,7 +433,7 @@ commands() {
       command_list+=("$c")
     fi
   done
-  if _contains "--raw" "${command_options[@]}"; then
+  if _command_options_include "--raw"; then
     printf "%s " "${command_list[@]}"
   else
     printf "Available commands:\n"
@@ -489,7 +511,7 @@ _init_with_source() {
     $git_bin clone "$2" "$1"
   fi
 
-  if _contains "--initialize-submodules" "${command_options[@]}"; then
+  if _command_options_include "--initialize-submodules"; then
     cd "$1"
     $git_bin submodule init
     $git_bin submodule update --init --recursive
@@ -501,7 +523,7 @@ _init_with_source() {
 #
 # called by: init()
 _init_dotsrc() {
-  _contains "--skip-dotsrc" "${command_options[@]}" && return 0
+  _command_options_include "--skip-dotsrc" && return 0
   if [[ -n "$1" ]]; then
     printf "\
 # .dotsrc
@@ -1051,8 +1073,8 @@ If a filename is passed to the link command, then it only acts on that file.
 EOM
 _link_item() {
   if [[ -e $original_file ]]; then
-    if _contains "--overwrite" "${command_options[@]}"; then
-      if _contains "--with-backup" "${command_options[@]}"; then
+    if _command_options_include "--overwrite" ; then
+      if _command_options_include "--with-backup"; then
         if [[ -e "$original_file".bak ]]; then
           printf "Exists with .bak: %s, %s\n" "$filename" "$filename".bak
           return 1
