@@ -976,6 +976,13 @@ add() {
     if [[ ! -e $original_file ]]; then
       printf "File or directory does not exist.\n"
       exit 1
+    elif ( \
+      [[ "$filename" == "/"  ]] || \
+      [[ "$filename" == "."  ]] || \
+      [[ "$filename" == ".." ]] \
+    ); then
+      printf "Invalid filename: %s\n" "$filename"
+      exit 1
     elif [[ -e $tracked_file ]]; then
       if _command_options_include "--force"; then
         rm -r "$tracked_file"
