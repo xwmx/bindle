@@ -437,10 +437,11 @@ commands() {
   command_list=()
   for c in "${function_list[@]}"
   do
-    if ! ( [[ $c == "declare" ]] || \
-           [[ $c == "-f" ]] || \
-           [[ "$c" =~ ^_(.*) ]] || \
-           [[ "$c" == "desc" ]]
+    if ! ( \
+      [[ "$c" == "declare" ]] || \
+      [[ "$c" == "-f"      ]] || \
+      [[ "$c" =~ ^_(.*)    ]] || \
+      [[ "$c" == "desc"    ]]
     ); then
       command_list+=("$c")
     fi
