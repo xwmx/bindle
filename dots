@@ -940,20 +940,26 @@ tracked() {
 
 desc add <<EOM
 Usage:
-  $_me add <filename>
-  $_me [<context>] add <filename>
-  $_me bin add <filename>
-  $_me home add <filename>
+  $_me add <filename> [--force]
+  $_me [<context>] add <filename> [--force]
+  $_me bin add <filename> [--force]
+  $_me home add <filename> [--force]
 
 Add the specified file to the tracked directory for the context ('bin' or \
 'home') and link. If no context is passed, the context defaults to 'home' \
 (ie, dotfiles).
+
+If a file or folder with the same name already exists in the repository, the \
+the operation exits unless the --force flag is used, in which case the \
+command overwrites the file or directory in the repository with the file from \
+\$HOME.
 EOM
 add() {
   _debug printf "add() \$1: %s\n" "$1"
 
   if [[ $# = 0 ]]; then
-    printf "Must specify a valid file or directory name.\n" && exit 1
+    printf "Must specify a valid file or directory name.\n"
+    exit 1
   else
     filename=$(basename "$1")
 
@@ -963,13 +969,28 @@ add() {
     tracked_file=$tracked_dir/$filename
     _debug printf "add() \$tracked_file: %s\n" "$tracked_file"
 
+    # Because the if / else is complicated, guarding against errors by only
+    # proceeding when this variable has been set.
+    safe_to_proceed=
+
     if [[ ! -e $original_file ]]; then
-      printf "File or directory does not exist.\n" && exit 1
+      printf "File or directory does not exist.\n"
+      exit 1
     elif [[ -e $tracked_file ]]; then
-      printf "File has already been added.\n"
+      if _command_options_include "--force"; then
+        rm "$tracked_file"
+        safe_to_proceed=1
+      else
+        printf "File has already been added.\n"
+        exit 1
+      fi
     elif [[ -L $original_file ]]; then
       printf "Original is already a symlink.\n"
+      exit 1
     else
+      safe_to_proceed=1
+    fi
+    if [[ -n "$safe_to_proceed" ]]; then
       mv "$original_file" "$tracked_dir"
       printf "Linking %s => %s\n" "$tracked_file" "$original_file"
       ln -s "$tracked_file" "$original_file"
