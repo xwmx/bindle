@@ -10,12 +10,25 @@
 `dots` is a configuration management tool for your personal unix-like
 computer.
 
+## Goals & Philosophy
+
 The core goal of `dots` is to provide an easy way to manage dotfiles, per-user
 binaries, packages, and configuration scripts using an approach that's easy to
 reason about while using as few dependencies as possible. As a result,
 the project structure is intended to reflect the original locations of
 the files and the commands try to be as close to simple task automation
 or the underlying git commands as possible.
+
+`dots` is intended to compliment rather than entirely relace manual
+configuration and versioning. Sometimes a local configuration might not change
+for months or even a couple years, so relearning a tool every time you
+want to make a configuration change could be unnecessary overhead. `dots` was
+designed around a logical repository directory structure designed for use
+without the command, rather than the other way around.
+
+In order to be as portable as possible while still being easy to develop,
+`dots` is written in Bash and should work with the default Bash version
+on any modern unix-like system (specifically, Bash 3 and higher).
 
 See [alphabetum/dotfiles](https://github.com/alphabetum/dotfiles) for an
 example of a configuration managed with `dots`.
@@ -28,7 +41,7 @@ To get started, add the `dots` script to your path.
 
 #### Homebrew
 
-To install with homebrew, you can use the `brew tap` command:
+To install with homebrew, use the following command:
 
     brew install alphabetum/taps/dots
 
@@ -46,6 +59,7 @@ you can create one using
 This will initialize a git repository at `$HOME/.dots` with the following
 structure:
 
+    ~/.dots
     ├── .gitignore
     ├── home/
     ├── bin/
@@ -59,7 +73,7 @@ You can change the location used for storing dotfiles by adding a
 `.dotsrc` file at `$HOME/.dotsrc` and setting the `$DOTSPATH` variable to the
 desired location:
 
-    export DOTSPATH="$HOME/configuration"
+    export DOTSPATH="/a/custom/path"
 
 `dots init` also creates a directory for local scripts at `$HOME/bin` if one
 does not already exist.
@@ -130,8 +144,8 @@ to track and don't want in the default directories.
 #### script
 
 `script` contains three subdirectories for contriguration scripts.
-Scripts in this directory can be written in any language and can be run
-either individually or in aggregate. `dots` makes no assumptions about
+Scripts or programs in this directory can be written in any language and can
+be run either individually or in aggregate. `dots` makes no assumptions about
 any of the scripts in these directories and will simply run them.
 
 ##### install
@@ -207,11 +221,23 @@ on the `$DOTFILES` repository. Among these are:
 - `dots update_submodules`
 - `dots git`
 
-Use the help command to view the specifics about each command.
+Use the help command (`dots help <command-name>`) to learn more about
+these.
 
 #### Other Commands
 
 `dots` includes several other commands for performing operations on
 files and inspecting the current state of the repository. All commands
-can be viewed by running `dots commands` and you can use
-`dots help command-name` to view the help for each command.
+can be viewed by running:
+
+    `dots commands`
+
+To view the help and usage information for any command, use:
+
+    `dots help <command-name>`
+
+## More Resources
+
+- [alphabetum/dotfiles](https://github.com/alphabetum/dotfiles)
+- [alphabetum/dotfile-research](https://github.com/alphabetum/dotfile-research)
+
