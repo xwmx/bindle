@@ -485,6 +485,8 @@ commands() {
 
 # init ########################################################################
 
+# ------------------------------------------------------------------------ init
+
 desc init <<EOM
 Usage:
   $_me init [<source_repository>] [<dotspath>] [--initialize-submodules] \
