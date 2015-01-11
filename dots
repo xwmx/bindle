@@ -978,7 +978,7 @@ add() {
       exit 1
     elif [[ -e $tracked_file ]]; then
       if _command_options_include "--force"; then
-        rm "$tracked_file"
+        rm -r "$tracked_file"
         safe_to_proceed=1
       else
         printf "File has already been added.\n"
