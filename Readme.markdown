@@ -23,8 +23,8 @@ or the underlying git commands as possible.
 configuration and versioning. Sometimes a local configuration might not change
 for months or even a couple years, so relearning a tool every time you
 want to make a configuration change could be unnecessary overhead. `dots` was
-designed around a logical repository directory structure designed for use
-without the command, rather than the other way around.
+designed around a logical repository directory structure that works
+great with or without the `dots` program.
 
 In order to be as portable as possible while still being easy to develop,
 `dots` is written in Bash and should work with the default Bash version
@@ -230,11 +230,11 @@ these.
 files and inspecting the current state of the repository. All commands
 can be viewed by running:
 
-    `dots commands`
+    dots commands
 
 To view the help and usage information for any command, use:
 
-    `dots help <command-name>`
+    dots help <command-name>
 
 ## More Resources
 
