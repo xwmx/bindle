@@ -980,7 +980,7 @@ add() {
     elif ( \
       [[ "$filename" == "/"  ]] || \
       [[ "$filename" == "."  ]] || \
-      [[ "$filename" == ".." ]] \
+      [[ "$filename" == ".." ]]
     ); then
       printf "Invalid filename: %s\n" "$filename"
       exit 1
