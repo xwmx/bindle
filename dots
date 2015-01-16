@@ -988,7 +988,24 @@ add() {
       exit 1
     elif [[ -e $tracked_file ]]; then
       if _command_options_include "--force"; then
-        rm -r "$tracked_file"
+        printf "Overwriting %s\n" "$tracked_file"
+        while true; do
+          read -p "Are you sure you want to proceed? [y/n] " yn
+          case $yn in
+            [Yy]* )
+              printf "Removing %s\n" "$tracked_file"
+              rm -r "$tracked_file"
+              break
+              ;;
+            [Nn]* )
+              printf "Exiting...\n"
+              exit
+              ;;
+            * )
+              printf "Please answer yes or no.\n"
+              ;;
+          esac
+        done
         safe_to_proceed=1
       else
         printf "File has already been added.\n"
