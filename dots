@@ -775,6 +775,27 @@ update_submodules() {
 
 # Scripts #####################################################################
 
+# ------------------------------------------------------------------- bootstrap
+
+desc bootstrap <<EOM
+Usage:
+  $_me bootstrap ( <list> | <script_name> )
+
+Run the specified bootstrap script.
+
+Bootstrap scripts can be added to:
+  $DOTSPATH/script/bootstrap/
+EOM
+bootstrap() {
+  # Don't permit use of the --all flag, since it's unlikely that the user
+  # intends to run all bootstrap scripts.
+  if ( _command_options_include "--all" ); then
+    _print_desc "bootstrap"
+  else
+    _runner "bootstrap" "$1"
+  fi
+}
+
 # --------------------------------------------------------------------- install
 
 desc install <<EOM

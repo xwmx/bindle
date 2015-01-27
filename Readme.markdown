@@ -148,6 +148,20 @@ Scripts or programs in this directory can be written in any language and can
 be run either individually or in aggregate. `dots` makes no assumptions about
 any of the scripts in these directories and will simply run them.
 
+##### bootstrap
+
+`bootstrap` should contain scripts for bootstrapping the user account
+and user-controlled parts of the system. For example, bootstrap scripts
+could set up some default folders and/or call a series of `install`,
+`configure`, and `customize` scripts. Generally, a bootstrap script
+should only be called once, during an initial setup.
+
+To run a bootstrap script, use the `dots bootstrap` command. For example:
+
+    dots bootstrap ubuntu
+
+For more information, see `dots help bootstrap`
+
 ##### install
 
 `install` should contain scripts for installing programs, ideally via
