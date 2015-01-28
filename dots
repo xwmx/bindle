@@ -13,6 +13,15 @@
 # Copyright (c) 2015 William Melody • hi@williammelody.com
 
 ###############################################################################
+# Strict Mode
+###############################################################################
+
+# Set IFS to just newline and tab at the start
+#
+# http://www.dwheeler.com/essays/filenames-in-shell.html
+IFS="$(printf '\n\t')"
+
+###############################################################################
 # .dotsrc
 ###############################################################################
 
@@ -166,6 +175,38 @@ please install git and make sure it has been added to your \$PATH.\n"
 fi
 
 ###############################################################################
+# Load Commands
+###############################################################################
+
+# Initialize defined_commands array.
+defined_commands=()
+
+# _load_commands()
+#
+# Loads all of the commands sourced in the environment.
+#
+# Usage:
+#   _load_commands
+_load_commands() {
+  _debug printf "_load_commands(): entering...\n"
+  _debug printf "_load_commands() declare -F:\n%s\n" "$(declare -F)"
+  function_list=($(declare -F))
+  for c in "${function_list[@]}"
+  do
+    function_name=$(printf "%s" "$c" | awk '{ print $3 }')
+    _debug printf "_load_commands() \$function_name: %s\n" "$function_name"
+    if ! ( [[ "$function_name" =~ ^_(.*) ]] || \
+           [[ "$function_name" == "desc" ]]
+    ); then
+      defined_commands+=("$function_name")
+    fi
+  done
+  _debug printf \
+    "commands() \$defined_commands:\n%s\n" \
+    "${defined_commands[*]:-}"
+}
+
+###############################################################################
 # Main
 ###############################################################################
 
@@ -186,8 +227,8 @@ _main() {
     cmd="help"
   fi
 
-  # Get the list of defined commands.
-  defined_commands=($(commands --raw))
+  # Load all of the commands.
+  _load_commands
 
   # Run the command and pass the command arguments.
   if ( _contains "$cmd" "${defined_commands[*]}" ); then
@@ -452,24 +493,11 @@ Usage:
 Display the list of available commands.
 EOM
 commands() {
-  function_list=($(declare -F))
-  command_list=()
-  for c in "${function_list[@]}"
-  do
-    if ! ( \
-      [[ "$c" == "declare" ]] || \
-      [[ "$c" == "-f"      ]] || \
-      [[ "$c" =~ ^_(.*)    ]] || \
-      [[ "$c" == "desc"    ]]
-    ); then
-      command_list+=("$c")
-    fi
-  done
   if _command_options_include "--raw"; then
-    printf "%s " "${command_list[@]}"
+    printf "%s\n" "${defined_commands[@]:-}"
   else
     printf "Available commands:\n"
-    printf "  %s\n" "${command_list[@]}"
+    printf "  %s\n" "${defined_commands[@]:-}"
   fi
 }
 
