@@ -16,6 +16,31 @@
 # Strict Mode
 ###############################################################################
 
+# Treat unset variables and parameters other than the special parameters ‘@’ or
+# ‘*’ as an error when performing parameter expansion. An error message will be
+# written to the standard error, and a non-interactive shell will exit.
+#
+# This requires using parameter expansion to test for unset variables.
+#
+# http://www.gnu.org/software/bash/manual/bashref.html#Shell-Parameter-Expansion
+#
+# Examples
+# ========
+#
+# Array:
+#
+#   ${some_array[@]:-}
+#   ${some_array[*]:-}
+#   ${some_array[0]:-}
+#
+# Postitional variables:
+#
+#   ${1:-alternative} # when a default value can be sepecified
+#   ${2:-}            # when the desired alternative is a blank / null
+#
+# Short form: set -u
+#set -o nounset
+
 # Exit immediately if a pipeline returns non-zero.
 #
 # NOTE: this has issues. When using read -rd '' with a heredoc, the exit
