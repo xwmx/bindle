@@ -39,7 +39,7 @@
 #   ${2:-}            # when the desired alternative is a blank / null
 #
 # Short form: set -u
-#set -o nounset
+set -o nounset
 
 # Exit immediately if a pipeline returns non-zero.
 #
