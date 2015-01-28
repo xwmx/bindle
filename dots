@@ -44,7 +44,13 @@ fi
 #
 # Usage:
 #   _debug printf "Debug info"
-_debug() { [[ -n "$debug" ]] && "$@"; }
+_debug() {
+  if [[ "${debug:-"0"}" -eq 1 ]]; then
+    printf "🐛  "
+    "$@"
+    printf "――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――\n"
+  fi
+}
 
 ###############################################################################
 # Options
@@ -59,6 +65,8 @@ raw_options=$*
 # Commands handle their own argument and option checks using the created arrays.
 command_options=()
 command_arguments=()
+
+debug=0
 
 while [ $# -gt 0 ]; do
   opt="$1"
