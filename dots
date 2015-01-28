@@ -178,15 +178,15 @@ while [ $# -gt 0 ]; do
 done
 
 # If no context was set from the options, default to 'home'.
-if [[ -z $context ]]; then
+if [[ -z "${context:-}" ]]; then
   context="home"
 fi
 
 _debug printf "\$context: %s\n" "$context"
 _debug printf "\$cmd: %s\n" "$cmd"
 _debug printf "\$raw_options: %s\n" "$raw_options"
-_debug printf "\$command_options: %s\n" "${command_options[*]}"
-_debug printf "\$command_arguments: %s\n" "${command_arguments[*]}"
+_debug printf "\$command_options: %s\n" "${command_options[*]:-}"
+_debug printf "\$command_arguments: %s\n" "${command_arguments[*]:-}"
 
 ###############################################################################
 # Environment
@@ -291,8 +291,8 @@ _main() {
   _load_commands
 
   # Run the command and pass the command arguments.
-  if ( _contains "$cmd" "${defined_commands[*]}" ); then
-    $cmd "${command_arguments[@]}"
+  if ( _contains "$cmd" "${defined_commands[*]:-}" ); then
+    $cmd "${command_arguments[@]:-}"
   else
     printf "Unknown command: %s\n" "$cmd"
     exit 1
@@ -499,7 +499,7 @@ _contains() {
 # Usage:
 #   _command_options_include "--an-option"
 _command_options_include() {
-  _contains "$1" "${command_options[*]}"
+  _contains "$1" "${command_options[*]:-}"
 }
 
 # _commnd_arguments_include()
@@ -510,7 +510,7 @@ _command_options_include() {
 # Usage:
 #   _command_arguments_include "an_argument"
 _command_arguments_include() {
-  _contains "$1" "${command_arguments[*]}"
+  _contains "$1" "${command_arguments[*]:-}"
 }
 
 ###############################################################################
