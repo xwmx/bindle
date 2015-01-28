@@ -16,6 +16,36 @@
 # Strict Mode
 ###############################################################################
 
+# Exit immediately if a pipeline returns non-zero.
+#
+# NOTE: this has issues. When using read -rd '' with a heredoc, the exit
+# status is non-zero, even though there isn't an error, and this setting
+# then causes the script to exit. read -rd '' is synonymous to read -d $'\0',
+# which means read until it finds a NUL byte, but it reaches the EOF (end of
+# heredoc) without finding one and exits with a 1 status. Therefore, when
+# reading from heredocs with set -e, there are three potential solutions:
+#
+# Solution 1. set +e / set -e again:
+#
+# set +e
+# read -rd '' variable <<EOF
+# EOF
+# set -e
+#
+# Solution 2. <<EOF || true:
+#
+# read -rd '' variable <<EOF || true
+# EOF
+#
+# Solution 3. Don't use set -e or set -o errexit at all.
+#
+# More information:
+#
+# https://www.mail-archive.com/bug-bash@gnu.org/msg12170.html
+#
+# Short form: set -e
+set -o errexit
+
 # Return value of a pipeline is the value of the last (rightmost) command to
 # exit with a non-zero status, or zero if all commands in the pipeline exit
 # successfully.
@@ -408,15 +438,34 @@ _command_arguments_include() {
 #
 # To make the description text available to other functions, desc() assigns the
 # text to a variable with the format $_desc_function_name
+#
+# NOTE:
+#
+# The `read` form of assignment is used for a balance of ease of
+# implementation and simplicity. There is an alternative assignment form
+# that could be used here:
+#
+# var="$(cat <<'EOM'
+# some message
+# EOM
+# )
+#
+# However, this form appears to require trailing space after backslases to
+# preserve newlines, which is unexpected. Using `read` simply requires
+# escaping backslashes, which is more common.
 desc() {
+  set +e
   [[ -z $1 ]] && printf "desc: No command name specified.\n" && exit 1
-  if [[ -n $2 ]]; then
+  if [[ -n ${2:-} ]]; then
     read -d '' "_desc_$1" <<EOM
 $2
 EOM
+    _debug printf "desc() set with argument: _desc_%s\n" "$1"
   else
     read -d '' "_desc_$1"
+    _debug printf "desc() set with pipe: _desc_%s\n" "$1"
   fi
+  set -e
 }
 
 # _print_desc()
@@ -428,7 +477,7 @@ EOM
 # set using the desc() function.
 _print_desc() {
   var="_desc_$1"
-  if [[ -n ${!var} ]]; then
+  if [[ -n ${!var:-} ]]; then
     printf "%s\n" "${!var}"
   else
    printf "No additional information for \`%s\`\n" "$1"
