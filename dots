@@ -16,6 +16,11 @@
 # Strict Mode
 ###############################################################################
 
+# Return value of a pipeline is the value of the last (rightmost) command to
+# exit with a non-zero status, or zero if all commands in the pipeline exit
+# successfully.
+set -o pipefail
+
 # Set IFS to just newline and tab at the start
 #
 # http://www.dwheeler.com/essays/filenames-in-shell.html
