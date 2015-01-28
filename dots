@@ -65,7 +65,9 @@ raw_options=$*
 # Commands handle their own argument and option checks using the created arrays.
 command_options=()
 command_arguments=()
-
+# Initialize $cmd and $_use_debug, which can continue to be blank depending on
+# what the program needs.
+cmd=""
 _use_debug=0
 
 while [ $# -gt 0 ]; do
