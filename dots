@@ -178,6 +178,9 @@ fi
 #
 # NOTE: must be called at end of program after all commands have been defined.
 _main() {
+  _debug printf "main(): entering...\n"
+  _debug printf "main() \$cmd (upon entering): %s\n" "$cmd"
+
   # If $cmd is blank, then set to help
   if [[ -z $cmd ]]; then
     cmd="help"
