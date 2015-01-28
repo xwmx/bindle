@@ -906,12 +906,21 @@ Usage:
 Run a git command within the \$DOTSPATH directory.
 EOM
 git() {
+  # Perform git operations in the $DOTSPATH directory.
   cd "$DOTSPATH"
-  # Use raw options to get the option string, minus the `git` command.
-  git_options=$(printf "%s" "$raw_options" | sed -e 's/^git //')
 
-  # call the environment's git with the git options
-  $_git_bin "$git_options"
+  # Set $IFS to default for better argument handling.
+  IFS="$DEFAULT_IFS"
+
+  # Use raw options to get the option string, with some parts stripped.
+  git_options=($(printf "%s" "$raw_options" | \
+    tr '\n' ' ' | \
+    sed -e 's/--debug//' | \
+    sed -e 's/^git //'     \
+  ))
+
+  # call the environment's git with the git options passed as an array.
+  $_git_bin "${git_options[@]}"
 }
 
 # ---------------------------------------------------------------------- commit
