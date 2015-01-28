@@ -417,7 +417,7 @@ Usage:
 Display help information for the dotfiles command or a specified command
 EOM
 help() {
-  if [[ $# = 0 ]]; then
+  if [[ ${#command_arguments[@]:-"0"} = 0 ]]; then
     cat <<EOM
          _       _
         | |     | |
