@@ -45,7 +45,7 @@ fi
 # Usage:
 #   _debug printf "Debug info"
 _debug() {
-  if [[ "${debug:-"0"}" -eq 1 ]]; then
+  if [[ "${_use_debug:-"0"}" -eq 1 ]]; then
     printf "🐛  "
     "$@"
     printf "――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――\n"
@@ -66,7 +66,7 @@ raw_options=$*
 command_options=()
 command_arguments=()
 
-debug=0
+_use_debug=0
 
 while [ $# -gt 0 ]; do
   opt="$1"
@@ -79,7 +79,7 @@ while [ $# -gt 0 ]; do
       cmd="version"
       ;;
     --debug)
-      debug=1
+      _use_debug=1
       ;;
     -*|--*)
       command_options+=("$opt")
