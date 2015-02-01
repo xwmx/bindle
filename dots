@@ -646,8 +646,8 @@ _function_exists() {
 # Usage:
 #   _contains "$item" "${list[*]}"
 _contains() {
-  _test_list=(${*:2})
-  for _test_element in "${_test_list[@]:-}"
+  local test_list=(${*:2})
+  for _test_element in "${test_list[@]:-}"
   do
     _debug printf "_contains() \$_test_element: %s\n" "$_test_element"
     if [[ "$_test_element" == "$1" ]]; then
