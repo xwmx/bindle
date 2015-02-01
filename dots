@@ -711,7 +711,7 @@ _command_arguments_include() {
 # escaping backslashes, which is more common.
 desc() {
   set +e
-  [[ -z $1 ]] && printf "desc: No command name specified.\n" && exit 1
+  [[ -z $1 ]] && _die printf "desc: No command name specified.\n"
   if [[ -n ${2:-} ]]; then
     read -d '' "_desc_$1" <<EOM
 $2
@@ -732,7 +732,7 @@ EOM
 # Prints the description for a given command, provided the description has been
 # set using the desc() function.
 _print_desc() {
-  var="_desc_$1"
+  local var="_desc_$1"
   if [[ -n ${!var:-} ]]; then
     printf "%s\n" "${!var}"
   else
