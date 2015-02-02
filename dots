@@ -541,17 +541,17 @@ _debug printf \
 #
 # Usage: _each_file directory function
 _each_file() {
-  per_file_function=$2
+  local per_file_function=$2
   if [[ "$context" == "home" ]]; then
-    search_files="$1/.*"
+    local search_files="$1/.*"
   else
-    search_files="$1/*"
+    local search_files="$1/*"
   fi
   for f in $search_files
   do
-    filename=$(basename "$f")
-    tracked_file=$tracked_dir/$filename
-    original_file=$original_dir/$filename
+    local filename=$(basename "$f")
+    local tracked_file=$tracked_dir/$filename
+    local original_file=$original_dir/$filename
     if [[ "$context" == "home" ]]; then
       if ! ( [[ "$filename" =~ ^\.?\.$ ]] ); then
         # Subfunctions can access the variables in this function, so it's not
@@ -581,9 +581,9 @@ _run_script() {
 }
 _runner() {
   [[ -z $1 ]] && printf "_runner: No subdirectory specified.\n" && exit 1
-  subdir=$1
-  subdir_path=$DOTSPATH/script/$subdir
-  script_file=$subdir_path/$2
+  local subdir=$1
+  local subdir_path=$DOTSPATH/script/$subdir
+  local script_file=$subdir_path/$2
   if _command_options_include "--all"; then
     for f in $subdir_path/*
     do
