@@ -748,12 +748,12 @@ _print_desc() {
 
 desc version <<EOM
 Usage:
-  $_me version
-  $_me --version
+  $_me ( version | --version )
 
-Display the current program version.
+Description:
+  Display the current program version.
 
-To save you the trouble, the current version is $DOTS_VERSION
+  To save you the trouble, the current version is $DOTS_VERSION
 EOM
 version() {
   printf "%s\n" "$DOTS_VERSION"
@@ -765,7 +765,8 @@ desc help <<EOM
 Usage:
   $_me help [<command>]
 
-Display help information for the dotfiles command or a specified command
+Description:
+  Display help information for $_me or a specified command.
 EOM
 help() {
   if [[ ${#command_arguments[@]:-"0"} = 0 ]]; then
@@ -782,7 +783,14 @@ A local configuration tool and framework.
 Version: $DOTS_VERSION
 
 Usage:
-  $_me command [<command-arguments>] [--debug]
+  $_me command [--debug] [--command-options] [<arguments>]
+  $_me -h | --help
+  $_me --version
+
+Options:
+  --debug    Print debug information.
+  -h --help  Display this help information.
+  --version  Display version information.
 
 Help:
   $_me help [<command>]
@@ -800,7 +808,11 @@ desc commands <<EOM
 Usage:
   $_me commands [--raw]
 
-Display the list of available commands.
+Options:
+  --raw  Display the command list without formatting.
+
+Description:
+  Display the list of available commands.
 EOM
 commands() {
   if _command_options_include "--raw"; then
