@@ -821,21 +821,22 @@ Usage:
   $_me init [<source_repository>] [<dotspath>] [--initialize-submodules] \
 [--skip-dotsrc]
 
-Create initial repository file structure and \$HOME/bin if it doesn't exist yet.
+Options:
+  --initialize-submodules  Initialize repository submodules when used with a
+                           source_repository argument.
+  --skip-dotsrc            Don't generate a dotsrc file.
 
-When provided with a URL as the first argument or a second argument the git \
-repository at that URL is cloned and used as the tracking repository.
+Description:
+  Create initial repository file structure and \$HOME/bin if it doesn't exist
+  yet.
 
-When provided with full path as the lone argument or second argument after a \
-repository URL, the initial repository is created at the specified path and a \
-configuration file is created at \$HOME/.dotsrc with that location set as \
-the \$DOTSPATH.
+  When provided with a URL as the first argument or a second argument the git
+  repository at that URL is cloned and used as the tracking repository.
 
-When the --initialize-submodules flag is used with a source repository URL,
-any submodules in the repository are initialized and recursively updated.
-
-When the --skip-dotsrc flag is used with a custom dotspath, the .dotsrc file \
-is not created.
+  When provided with full path as the lone argument or second argument after a
+  repository URL, the initial repository is created at the specified path and
+  a configuration file is created at \$HOME/.dotsrc with that location set as
+  the \$DOTSPATH.
 EOM
 # _init_with_source()
 #
@@ -1027,9 +1028,10 @@ init() {
 
 desc git <<EOM
 Usage:
-  $_me git command [<options>]
+  $_me git command [--options] [<arguments>]
 
-Run a git command within the \$DOTSPATH directory.
+Description:
+  Run a git command within the \$DOTSPATH directory.
 EOM
 git() {
   # Perform git operations in the $DOTSPATH directory.
@@ -1055,8 +1057,9 @@ desc commit <<EOM
 Usage:
   $_me commit [<message>]
 
-Commit the current changes to git. If a message is provided, it will be used \
-as the commit message. Otherwise, git will open your default editor.
+Description:
+  Commit the current changes to git. If a message is provided, it will be used
+  as the commit message. Otherwise, git will open your default editor.
 EOM
 commit() {
   cd "$DOTSPATH"
@@ -1075,7 +1078,8 @@ desc pull <<EOM
 Usage:
   $_me pull
 
-Pull latest changes from the remote repository.
+Description:
+  Pull latest changes from the remote repository.
 EOM
 pull() {
   cd "$DOTSPATH"
@@ -1089,7 +1093,8 @@ desc push <<EOM
 Usage:
   $_me push
 
-Push local commits to the remote repository.
+Description:
+  Push local commits to the remote repository.
 EOM
 push() {
   cd "$DOTSPATH"
@@ -1103,8 +1108,9 @@ desc update_submodules <<EOM
 Usage:
   $_me update_submodules
 
-Update git submodules. An alias for the git command:
-  git submodule foreach git pull
+Description:
+  Update git submodules. An alias for the git command:
+    git submodule foreach git pull
 EOM
 update_submodules() {
   cd "$DOTSPATH"
@@ -1117,12 +1123,13 @@ update_submodules() {
 
 desc bootstrap <<EOM
 Usage:
-  $_me bootstrap ( <list> | <script_name> )
+  $_me bootstrap ( list | <script_name> )
 
-Run the specified bootstrap script.
+Description:
+  Run the specified bootstrap script.
 
-Bootstrap scripts can be added to:
-  $DOTSPATH/script/bootstrap/
+  Bootstrap scripts can be added to:
+    $DOTSPATH/script/bootstrap/
 EOM
 bootstrap() {
   # Don't permit use of the --all flag, since it's unlikely that the user
@@ -1138,12 +1145,16 @@ bootstrap() {
 
 desc install <<EOM
 Usage:
-  $_me install ( --all | <list> | <script_name> )
+  $_me install ( --all | list | <script_name> )
 
-Run the specified package script.
+Options:
+  --all  Run all install scripts.
 
-Package scripts can be added to:
-  $DOTSPATH/script/install/
+Description:
+  Run the specified package script.
+
+  Package scripts can be added to:
+    $DOTSPATH/script/install/
 EOM
 install() {
   _runner "install" "$1"
@@ -1153,12 +1164,16 @@ install() {
 
 desc configure <<EOM
 Usage:
-  $_me configure ( --all | <configuration_script> )
+  $_me configure ( --all | list | <configuration_script> )
 
-Run the specified package update script.
+Options:
+  --all  Run all configure scripts.
 
-Configuration scripts can be added to:
-  $DOTSPATH/script/configure/
+Description:
+  Run the specified package update script.
+
+  Configuration scripts can be added to:
+    $DOTSPATH/script/configure/
 EOM
 configure() {
   _runner "configure" "$1"
@@ -1167,12 +1182,17 @@ configure() {
 # ------------------------------------------------------------------- customize
 
 desc customize <<EOM
-Usage: $_me customize ( --all | <customization_script> )
+Usage:
+  $_me customize ( --all | list | <customization_script> )
 
-Run the specified customization script.
+Options:
+  --all  Run all customize scripts.
 
-Customization scripts can be added to:
-  $DOTSPATH/script/customize/
+Description:
+  Run the specified customization script.
+
+  Customization scripts can be added to:
+    $DOTSPATH/script/customize/
 EOM
 customize() {
   _runner "customize" "$1"
@@ -1184,26 +1204,25 @@ customize() {
 
 desc list <<EOM
 Usage:
-  $_me list [<filename>]
-  $_me [<context>] list [<filename>]
-  $_me bin list [<filename>]
-  $_me home list [<filename>]
+  $_me list [<status>] [<filename>]
+  $_me bin list [<status>] [<filename>]
+  $_me home list [<status>] [<filename>]
 
-List all files in the original directory of the current context ('bin' or \
-'home'). If no context is passed, the context defaults to 'home' (ie, \
-dotfiles).
+Description:
+  List all files in the original directory of the current context ('bin' or
+  'home'). If no context is passed, the context defaults to 'home' (ie,
+  dotfiles).
 
-If 'tracked' or 'untracked' as passed as arguments to 'list', then those \
-commands are run.
+  If 'tracked' or 'untracked' as passed as arguments to 'list', then those
+  commands are run.
 
-If a filename is passed as an argument, then a listing is printed for only \
-that item.
+  If a filename is passed as an argument, then a listing is printed for only
+  that item.
 
-Indicator prefixes display information about the type and status of each entry:
-  d   - Directory
-  @   - Symbolic link
-  @ i - Symbolic link to tracked file.
-
+  Indicators display information about the type and status of each entry:
+    d   - Directory
+    @   - Symbolic link
+    @ i - Symbolic link to tracked file.
 EOM
 _list_item() {
   if [[ -L $f ]]; then
@@ -1246,15 +1265,16 @@ Usage:
   $_me untracked
   $_me [<context>] untracked
   $_me bin untracked
-  $_me home untracked.
+  $_me home untracked
 
-List all untracked dotfiles in the original directory of the current context \
-('bin' or 'home'). If no context is passed, the context defaults to 'home' \
-(ie, dotfiles).
+Description:
+  List all untracked dotfiles in the original directory of the current context
+  ('bin' or 'home'). If no context is passed, the context defaults to 'home'
+  (ie, dotfiles).
 
-Indicator prefixes display information about the type and status of each entry:
-  d   - Directory
-  @   - Symbolic link
+  Indicators display information about the type and status of each entry:
+    d   - Directory
+    @   - Symbolic link
 EOM
 _untracked_item() {
   if [[ -L $f ]];then
@@ -1280,12 +1300,13 @@ Usage:
   $_me bin tracked
   $_me home tracked
 
-List all tracked dotfiles from in the original directory of the current \
-context ('bin' or 'home'). If no context is passed, the context defaults \
-to 'home' (ie, dotfiles).
+Description:
+  List all tracked dotfiles from in the original directory of the current
+  context ('bin' or 'home'). If no context is passed, the context defaults
+  to 'home' (ie, dotfiles).
 
-Indicator prefixes display information about the type and status of each entry:
-  @ i - Symbolic link to tracked file.
+  Indicators display information about the type and status of each entry:
+    @ i - Symbolic link to tracked file.
 EOM
 _tracked_item() {
   if ( [[ -L $f ]] && \
@@ -1307,14 +1328,14 @@ Usage:
   $_me bin add <filename> [--force]
   $_me home add <filename> [--force]
 
-Add the specified file to the tracked directory for the context ('bin' or \
-'home') and link. If no context is passed, the context defaults to 'home' \
-(ie, dotfiles).
+Options:
+  --force  Overwrite files and folders in the repository that have the same
+           as the item(s) being added.
 
-If a file or folder with the same name already exists in the repository, the \
-the operation exits unless the --force flag is used, in which case the \
-command overwrites the file or directory in the repository with the file from \
-\$HOME.
+Description:
+  Add the specified file to the tracked directory for the context ('bin' or
+  'home') and link. If no context is passed, the context defaults to 'home'
+  (ie, dotfiles).
 EOM
 add() {
   _debug printf "add() \$1: %s\n" "$1"
@@ -1393,9 +1414,11 @@ Usage:
   $_me bin restore <filename>
   $_me home restore <filename>
 
-Unlink the specified file and move from the tracked location in the repository \
-back to original location specified by the context ('bin' or 'home'). If no \
-context is passed, the context defaults to 'home' (ie, dotfiles).
+Description:
+  Unlink the specified file and move from the tracked location in the
+  repository back to original location specified by the context ('bin' or
+  'home'). If no context is passed, the context defaults to 'home' (ie,
+  dotfiles).
 EOM
 restore() {
   _debug printf "restore() \$1: %s\n" "$1"
@@ -1432,14 +1455,15 @@ Usage:
   $_me bin status
   $_me home status
 
-List status of files in original directory of the current context ('bin' or \
-'home')relative to the corresponding tracked file. If no context is passed, \
-the context defaults to 'home' (ie, dotfiles).
+Description:
+  List status of files in original directory of the current context ('bin' or
+  'home')relative to the corresponding tracked file. If no context is passed,
+  the context defaults to 'home' (ie, dotfiles).
 
-Indicator prefixes display information about the status of each entry:
-  i   - Identical, indicating a valid symbolic link to the tracked file
-   e  - A file exists, but it not linked to tracked file
-    x - No file exists
+  Indicators display information about the status of each entry:
+    i   - Identical, indicating a valid symbolic link to the tracked file
+     e  - A file exists, but it not linked to tracked file
+      x - No file exists
 EOM
 _status_item() {
   if ( [[ -L $original_file ]] && \
@@ -1465,20 +1489,23 @@ Usage:
   $_me bin link [<filename>] [--overwrite [--with-backup]]
   $_me home link [<filename>] [--overwrite [--with-backup]]
 
-Create a link in the original directory for the context ('bin' or 'home') that \
-references the corresponding item in the tracked directory. If no context is \
-passed, the context defaults to 'home' (ie, dotfiles).
+Options:
+  --overwrite    Overwrite any files that exist in the directory where links
+                 are being created, meaning that any conflicting files will be
+                 deleted and links to the corresponding repository file will
+                 be created.
+  --with-backup  When used in combination with --overwrite, any overwritten
+                 files are first renamed with a '.bak' extension. If a file
+                 with the same name plus '.bak' extension already exists,
+                 nothing is done to this file and no link is created.
 
-Any files or symlinks in the original directory that exist already are skipped \
-unless the --overwrite option is used, in which case any existing files are \
-deleted and links are then created as usual.
+Description:
+  Create a link in the original directory for the context ('bin' or 'home')
+  that references the corresponding item in the tracked directory. If no context
+  is passed, the context defaults to 'home' (ie, dotfiles).
 
-When the --with-backup flag is uses in combination with --overwrite, any \
-overwritten files are first renamed with a .bak extension. If a file with the \
-same name plus .bak extension exists, it is skipped altogether.
-
-By default the command links all files that exist in the tracked directory. \
-If a filename is passed to the link command, then it only acts on that file.
+  By default the command links all files that exist in the tracked directory.
+  If a filename is passed to the link command, then it only acts on that file.
 EOM
 _link_item() {
   if [[ -e $original_file ]]; then
@@ -1524,12 +1551,13 @@ Usage:
   $_me bin unlink [<filename>]
   $_me home unlink [<filename>]
 
-Remove symlinks in the original directory for the context ('bin' or 'home'). \
-If no context is passed, the context defaults to 'home' (ie, dotfiles).
+Description:
+  Remove symlinks in the original directory for the context ('bin' or 'home').
+  If no context is passed, the context defaults to 'home' (ie, dotfiles).
 
-By default, the command removes all of the symlinks pointing to items in \
-tracked directory. If a filename is passed to the unlink command, then it \
-only acts on symlinks to that file.
+  By default, the command removes all of the symlinks pointing to items in
+  tracked directory. If a filename is passed to the unlink command, then it
+  only acts on symlinks to that file.
 EOM
 _unlink_item() {
   if ( [[ -L $original_file ]] && \
@@ -1557,7 +1585,8 @@ desc rename <<EOM
 Usage:
   $_me [<context>] rename <old_filename> <new_filename>
 
-Rename a tracked file and its corresponding link.
+Decription:
+  Rename a tracked file and its corresponding link.
 EOM
 rename() {
   old_file=$tracked_dir/$1
@@ -1596,8 +1625,9 @@ Usage:
   $_me bin edit [<filename>]
   $_me home edit [<filename>]
 
-Open a tracked file or, when no filename is specified, the entire tracked
-repository in you \$EDITOR, currently set to '$EDITOR'.
+Description:
+  Open a tracked file or, when no filename is specified, the entire tracked
+  repository in you \$EDITOR, currently set to '$EDITOR'.
 EOM
 edit() {
   if [[ -n "$1" ]]; then
@@ -1616,7 +1646,8 @@ desc dir <<EOM
 Usage:
   $_me dir
 
-Prints the current value of \$DOTSPATH
+Description:
+  Print the current value of \$DOTSPATH
 EOM
 dir() {
   printf "%s\n" "$DOTSPATH"
