@@ -896,6 +896,8 @@ _init_directory_structure() {
     mkdir "$1/local"
     touch "$1/local/.gitkeep"
     mkdir "$1/script"
+    mkdir "$1/script/bootstrap"
+    touch "$1/script/bootstrap/.gitkeep"
     mkdir "$1/script/install"
     touch "$1/script/install/.gitkeep"
     mkdir "$1/script/configure"
