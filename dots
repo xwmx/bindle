@@ -1116,11 +1116,11 @@ Usage:
 
 Description:
   Update git submodules. An alias for the git command:
-    git submodule foreach git pull
+    git submodule update --recursive --remote
 EOM
 update_submodules() {
   cd "$DOTSPATH"
-  $_git_bin submodule foreach git pull
+  $_git_bin submodule update --recursive --remote
 }
 
 # Scripts #####################################################################
