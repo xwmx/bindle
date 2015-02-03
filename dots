@@ -1204,15 +1204,15 @@ customize() {
 
 desc list <<EOM
 Usage:
-  $_me [bin | home] list [<status>] [<filename>]
+  $_me [bin | home] list [tracked | untracked | <filename>]
 
 Description:
   List all files in the original directory of the current context ('bin' or
   'home'). If neither 'bin' nor 'home' is specified, the context defaults to
   'home' (ie, dotfiles).
 
-  If 'tracked' or 'untracked' as passed as arguments to 'list', then those
-  commands are run.
+  If 'tracked' or 'untracked' as passed as arguments to 'list', then only the
+  files with those statuses are listed.
 
   If a filename is passed as an argument, then a listing is printed for only
   that item.
