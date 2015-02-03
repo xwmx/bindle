@@ -1204,14 +1204,12 @@ customize() {
 
 desc list <<EOM
 Usage:
-  $_me list [<status>] [<filename>]
-  $_me bin list [<status>] [<filename>]
-  $_me home list [<status>] [<filename>]
+  $_me [bin | home] list [<status>] [<filename>]
 
 Description:
   List all files in the original directory of the current context ('bin' or
-  'home'). If no context is passed, the context defaults to 'home' (ie,
-  dotfiles).
+  'home'). If neither 'bin' nor 'home' is specified, the context defaults to
+  'home' (ie, dotfiles).
 
   If 'tracked' or 'untracked' as passed as arguments to 'list', then those
   commands are run.
@@ -1262,15 +1260,12 @@ list() {
 
 desc untracked <<EOM
 Usage:
-  $_me untracked
-  $_me [<context>] untracked
-  $_me bin untracked
-  $_me home untracked
+  $_me [bin | home] untracked
 
 Description:
   List all untracked dotfiles in the original directory of the current context
-  ('bin' or 'home'). If no context is passed, the context defaults to 'home'
-  (ie, dotfiles).
+  ('bin' or 'home'). If neither 'bin' nor 'home' is specified, the context
+  defaults to 'home' (ie, dotfiles).
 
   Indicators display information about the type and status of each entry:
     d   - Directory
@@ -1295,15 +1290,12 @@ untracked() {
 
 desc tracked <<EOM
 Usage:
-  $_me tracked
-  $_me [<context>] tracked
-  $_me bin tracked
-  $_me home tracked
+  $_me [bin | home] tracked
 
 Description:
   List all tracked dotfiles from in the original directory of the current
-  context ('bin' or 'home'). If no context is passed, the context defaults
-  to 'home' (ie, dotfiles).
+  context ('bin' or 'home'). If neither 'bin' nor 'home' is specified, the
+  context defaults to 'home' (ie, dotfiles).
 
   Indicators display information about the type and status of each entry:
     @ i - Symbolic link to tracked file.
@@ -1323,10 +1315,7 @@ tracked() {
 
 desc add <<EOM
 Usage:
-  $_me add <filename> [--force]
-  $_me [<context>] add <filename> [--force]
-  $_me bin add <filename> [--force]
-  $_me home add <filename> [--force]
+  $_me [bin | home] add <filename> [--force]
 
 Options:
   --force  Overwrite files and folders in the repository that have the same
@@ -1334,8 +1323,8 @@ Options:
 
 Description:
   Add the specified file to the tracked directory for the context ('bin' or
-  'home') and link. If no context is passed, the context defaults to 'home'
-  (ie, dotfiles).
+  'home') and link. If neither 'bin' nor 'home' is specified, the context
+  defaults to 'home' (ie, dotfiles).
 EOM
 add() {
   _debug printf "add() \$1: %s\n" "$1"
@@ -1409,16 +1398,13 @@ add() {
 
 desc restore <<EOM
 Usage:
-  $_me restore <filename>
-  $_me [<context>] restore <filename>
-  $_me bin restore <filename>
-  $_me home restore <filename>
+  $_me [bin | home] restore <filename>
 
 Description:
   Unlink the specified file and move from the tracked location in the
   repository back to original location specified by the context ('bin' or
-  'home'). If no context is passed, the context defaults to 'home' (ie,
-  dotfiles).
+  'home'). If neither 'bin' nor 'home' is specified, the context  defaults to
+  'home' (ie, dotfiles).
 EOM
 restore() {
   _debug printf "restore() \$1: %s\n" "$1"
@@ -1450,15 +1436,12 @@ restore() {
 
 desc status <<EOM
 Usage:
-  $_me status
-  $_me [<context>] status
-  $_me bin status
-  $_me home status
+  $_me [bin | home] status
 
 Description:
   List status of files in original directory of the current context ('bin' or
-  'home')relative to the corresponding tracked file. If no context is passed,
-  the context defaults to 'home' (ie, dotfiles).
+  'home')relative to the corresponding tracked file. If neither 'bin' nor 'home'
+  is specified, the context defaults to 'home' (ie, dotfiles).
 
   Indicators display information about the status of each entry:
     i   - Identical, indicating a valid symbolic link to the tracked file
@@ -1484,10 +1467,7 @@ status() {
 
 desc link <<EOM
 Usage:
-  $_me link [<filename>] [--overwrite [--with-backup]]
-  $_me [<context>] link [<filename>] [--overwrite [--with-backup]]
-  $_me bin link [<filename>] [--overwrite [--with-backup]]
-  $_me home link [<filename>] [--overwrite [--with-backup]]
+  $_me [bin | home] link [<filename>] [--overwrite [--with-backup]]
 
 Options:
   --overwrite    Overwrite any files that exist in the directory where links
@@ -1501,8 +1481,8 @@ Options:
 
 Description:
   Create a link in the original directory for the context ('bin' or 'home')
-  that references the corresponding item in the tracked directory. If no context
-  is passed, the context defaults to 'home' (ie, dotfiles).
+  that references the corresponding item in the tracked directory. If neither
+  'bin' nor 'home' is specified, the context defaults to 'home' (ie, dotfiles).
 
   By default the command links all files that exist in the tracked directory.
   If a filename is passed to the link command, then it only acts on that file.
@@ -1546,14 +1526,12 @@ link() {
 
 desc unlink <<EOM
 Usage:
-  $_me unlink [<filename>]
-  $_me [<context>] unlink [<filename>]
-  $_me bin unlink [<filename>]
-  $_me home unlink [<filename>]
+  $_me [bin | home] unlink [<filename>]
 
 Description:
   Remove symlinks in the original directory for the context ('bin' or 'home').
-  If no context is passed, the context defaults to 'home' (ie, dotfiles).
+  If neither 'bin' nor 'home' is specified, the context defaults to 'home' (ie,
+  dotfiles).
 
   By default, the command removes all of the symlinks pointing to items in
   tracked directory. If a filename is passed to the unlink command, then it
@@ -1583,10 +1561,12 @@ unlink() {
 
 desc rename <<EOM
 Usage:
-  $_me [<context>] rename <old_filename> <new_filename>
+  $_me [bin | home] rename <old_filename> <new_filename>
 
 Decription:
-  Rename a tracked file and its corresponding link.
+  Rename a tracked file and its corresponding link in the specified context. If
+  neither 'bin' nor 'home' is specified, the context defaults to 'home' (ie,
+  dotfiles).
 EOM
 rename() {
   old_file=$tracked_dir/$1
@@ -1620,10 +1600,8 @@ rename() {
 
 desc edit <<EOM
 Usage:
-  $_me edit [<filename>]
-  $_me [<context>] edit [<filename>]
-  $_me bin edit [<filename>]
-  $_me home edit [<filename>]
+  $_me edit
+  $_me [bin | home] edit [<filename>]
 
 Description:
   Open a tracked file or, when no filename is specified, the entire tracked
