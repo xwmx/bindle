@@ -386,6 +386,11 @@ The \`git\` executable can not be found. Since \`dots\` depends on git, \
 please install git and make sure it has been added to your \$PATH.\n"
 fi
 
+# Set $EDITOR to blank if it's unbound in order to avoid unrelated errors.
+if [[ -z ${EDITOR:-} ]]; then
+  EDITOR=
+fi
+
 ###############################################################################
 # Load Commands
 ###############################################################################
@@ -1607,6 +1612,7 @@ Description:
   repository in you \$EDITOR, currently set to '$EDITOR'.
 EOM
 edit() {
+  [[ -z "$EDITOR" ]] && _die printf "\$EDITOR is not set.\n"
   if [[ -n "$1" ]]; then
     f="$tracked_dir/$1"
     filename=$(basename "$1")
