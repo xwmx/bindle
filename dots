@@ -278,12 +278,13 @@ unset options
 
 # Parse Options ###############################################################
 
-# Initialize command options and arguments arrays.
+# Initialize command_argv array
 #
-# These contain any options and arguments that will be used by the commands.
-# Commands handle their own argument and option checks using the created arrays.
-command_options=()
-command_arguments=()
+# This array contains all of the arguments that get passed along to each
+# command. This is essentially the same as the program arguments, minus those
+# that have been filtered out in the program option parsing loop. This array
+# is initialized with $0, which is the program's name.
+command_argv=("$0")
 # Initialize $cmd and $_use_debug, which can continue to be blank depending on
 # what the program needs.
 cmd=""
@@ -302,9 +303,6 @@ while [ $# -gt 0 ]; do
     --debug)
       _use_debug=1
       ;;
-    -*|--*)
-      command_options+=("$opt")
-      ;;
     bin|home)
       # If an argument prior to the command name is either 'bin' or 'home', set
       # that as the context. Otherwise, if the command has already been set,
@@ -312,14 +310,16 @@ while [ $# -gt 0 ]; do
       if [[ -z $cmd ]]; then
         context="$opt"
       else
-        command_arguments+=("$opt")
+        # Add any subsequent 'bin' or 'home' to command_argv since it's assumed
+        # to be a command argument.
+        command_argv+=("$opt")
       fi
       ;;
     *)
       # The first non-context argument encountered is assumed to be the command
       # name, and all subsequent arguments are set as command arguments.
       if [[ -n $cmd ]]; then
-        command_arguments+=("$opt")
+        command_argv+=("$opt")
       else
         cmd=$opt
       fi
@@ -332,11 +332,16 @@ if [[ -z "${context:-}" ]]; then
   context="home"
 fi
 
+# Set $command_parameters to $command_argv, minus the initial element, $0. This
+# provides an array that is equivalent to $* and $@ within each command
+# function, though the array is zero-indexed, which could lead to confusion.
+command_parameters=("${command_argv[@]:1}")
+
 _debug printf "\$context: %s\n" "$context"
 _debug printf "\$cmd: %s\n" "$cmd"
-_debug printf "\$raw_options: %s\n" "$raw_options"
-_debug printf "\$command_options: %s\n" "${command_options[*]:-}"
-_debug printf "\$command_arguments: %s\n" "${command_arguments[*]:-}"
+_debug printf "\$raw_options (one per line):\n%s\n" "$raw_options"
+_debug printf "\$command_argv: %s\n" "${command_argv[*]}"
+_debug printf "\$command_parameters: %s\n" "${command_parameters[*]:-}"
 
 ###############################################################################
 # Environment
@@ -457,14 +462,41 @@ _main() {
   # Load all of the commands.
   _load_commands
 
-  # Run the command and pass the command arguments.
+  # If the command is defined, run it, otherwise return an error.
   if ( _contains "$cmd" "${defined_commands[*]:-}" ); then
-    $cmd "${command_arguments[@]:-}"
+    # Pass all comment arguments to the program except for the first ($0).
+    $cmd "${command_parameters[@]:-}"
   else
-    printf "Unknown command: %s\n" "$cmd"
-    exit 1
+    _die printf "Unknown command: %s\n" "$cmd"
   fi
 }
+
+###############################################################################
+# Getters
+###############################################################################
+
+# _get_command_argv()
+#
+# Print the value of a command argument at the specified position. This is
+# simply an accessor for the command_argv array.
+#
+# Usage:
+#   $(_get_command_argv 1)
+_get_command_argv() {
+  local position="${1:-}"
+
+  if [[ -z "$position" ]]; then
+    _die printf "Error: _get_command_argv(): no value specified.\n"
+  else
+    printf \
+      "%s" \
+      "${command_argv[${position:-}]:-}" # return a blank if not present
+  fi
+}
+
+_debug printf \
+  "\$(_get_command_argv 1): %s\n" \
+  "$(_get_command_argv 1)"
 
 ###############################################################################
 # Utility Functions
@@ -520,7 +552,7 @@ _runner() {
   local subdir=$1
   local subdir_path=$DOTSPATH/script/$subdir
   local script_file=$subdir_path/$2
-  if _command_options_include "--all"; then
+  if _command_argv_includes "--all"; then
     for f in $subdir_path/*
     do
       _run_script "$f"
@@ -594,26 +626,18 @@ _contains() {
   return 1
 }
 
-# _commnd_options_include()
-#
-# Takes a possible command option and determines whether it is included in
-# the command option list.
-#
-# Usage:
-#   _command_options_include "--an-option"
-_command_options_include() {
-  _contains "$1" "${command_options[*]:-}"
-}
-
-# _commnd_arguments_include()
+# _command_argv_includes()
 #
 # Takes a possible command argument and determines whether it is included in
 # the command argument list.
 #
+# This is a shortcut for simple cases where a command wants to check for the
+# presence of options quickly without parsing the options again.
+#
 # Usage:
-#   _command_arguments_include "an_argument"
-_command_arguments_include() {
-  _contains "$1" "${command_arguments[*]:-}"
+#   _command_argv_includes "an_argument"
+_command_argv_includes() {
+  _contains "$1" "${command_argv[*]}"
 }
 
 ###############################################################################
@@ -705,7 +729,7 @@ Description:
   Display help information for $_me or a specified command.
 EOM
 help() {
-  if [[ ${#command_arguments[@]:-"0"} = 0 ]]; then
+  if [[ ${#command_argv[@]} = 1 ]]; then
     cat <<EOM
          _       _
         | |     | |
@@ -751,7 +775,7 @@ Description:
   Display the list of available commands.
 EOM
 commands() {
-  if _command_options_include "--raw"; then
+  if _command_argv_includes "--raw"; then
     printf "%s\n" "${defined_commands[@]:-}"
   else
     printf "Available commands:\n"
@@ -832,7 +856,7 @@ _init_with_source() {
     $_git_bin clone "$2" "$1"
   fi
 
-  if _command_options_include "--initialize-submodules"; then
+  if _command_argv_includes "--initialize-submodules"; then
     cd "$1"
     $_git_bin submodule init
     $_git_bin submodule update --init --recursive
@@ -844,7 +868,7 @@ _init_with_source() {
 #
 # called by: init()
 _init_dotsrc() {
-  _command_options_include "--skip-dotsrc" && return 0
+  _command_argv_includes "--skip-dotsrc" && return 0
   if [[ -n "$1" ]]; then
     printf ">> Adding ~/.dotsrc configuration file.\n"
     printf "\
@@ -1103,7 +1127,7 @@ EOM
 bootstrap() {
   # Don't permit use of the --all flag, since it's unlikely that the user
   # intends to run all bootstrap scripts.
-  if ( _command_options_include "--all" ); then
+  if ( _command_argv_includes "--all" ); then
     _print_desc "bootstrap"
   else
     _runner "bootstrap" "$1"
@@ -1322,7 +1346,7 @@ add() {
       printf "Invalid filename: %s\n" "$filename"
       exit 1
     elif [[ -e $tracked_file ]]; then
-      if _command_options_include "--force"; then
+      if _command_argv_includes "--force"; then
         printf "Overwriting %s\n" "$tracked_file"
         while true; do
           read -p "Are you sure you want to proceed? [y/n] " yn
@@ -1458,8 +1482,8 @@ If a filename is passed to the link command, then it only acts on that file.
 EOM
 _link_item() {
   if [[ -e $original_file ]]; then
-    if _command_options_include "--overwrite" ; then
-      if _command_options_include "--with-backup"; then
+    if _command_argv_includes "--overwrite" ; then
+      if _command_argv_includes "--with-backup"; then
         if [[ -e "$original_file".bak ]]; then
           printf "Exists with .bak: %s, %s\n" "$filename" "$filename".bak
           return 1
