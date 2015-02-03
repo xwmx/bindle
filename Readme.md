@@ -112,6 +112,12 @@ If you want to stop tracking a dotfile or directory, run `dots restore`:
 This removes the symbolic link in `$HOME` and copies the original file back to
 `$HOME` from `$DOTFILES/home`.
 
+##### Example
+
+An example `dots`-managed home directory:
+
+[alphabetum/dotfiles/home](https://github.com/alphabetum/dotfiles/tree/master/home)
+
 #### bin
 
 Contains all scripts from `$HOME/bin` that have been added to the
@@ -134,6 +140,12 @@ To save this change, run `dots commit` just like with dotfiles.
 To stop tracking an item, use `dots bin restore`:
 
     dots bin restore script-name
+
+##### Example
+
+An example `dots`-managed bin directory:
+
+[alphabetum/dotfiles/bin](https://github.com/alphabetum/dotfiles/tree/master/bin)
 
 #### local
 
@@ -210,6 +222,12 @@ You can also run all of the customize scripts by using the `--all` flag:
     dots customize --all
 
 For more information, see `dots help customize`
+
+##### Example
+
+An example `dots`-managed script directory:
+
+[alphabetum/dotfiles/script](https://github.com/alphabetum/dotfiles/tree/master/script)
 
 #### .gitignore
 
