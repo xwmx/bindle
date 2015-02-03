@@ -520,7 +520,9 @@ _each_file() {
     local tracked_file=$tracked_dir/$filename
     local original_file=$original_dir/$filename
     if [[ "$context" == "home" ]]; then
-      if ! ( [[ "$filename" =~ ^\.?\.$ ]] ); then
+      if ! ( [[ "$filename" =~ ^\.?\.$     ]] || \
+             [[ "$filename" == ".DS_Store" ]]
+      ); then
         # Subfunctions can access the variables in this function, so it's not
         # necessary to pass them as arguments.
         $per_file_function
