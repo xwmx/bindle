@@ -310,8 +310,6 @@ while [ $# -gt 0 ]; do
       if [[ -z $cmd ]]; then
         context="$opt"
       else
-        # Add any subsequent 'bin' or 'home' to command_argv since it's assumed
-        # to be a command argument.
         command_argv+=("$opt")
       fi
       ;;
