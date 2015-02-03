@@ -383,10 +383,9 @@ _debug printf "\$original_dir: %s\n" "$original_dir"
 # function.
 _git_bin=$(which git)
 if [[ -z "$_git_bin" ]]; then
-  printf "\
+  _die printf "\
 The \`git\` executable can not be found. Since \`dots\` depends on git, \
 please install git and make sure it has been added to your \$PATH.\n"
-  exit 1
 fi
 
 ###############################################################################
