@@ -542,13 +542,13 @@ _run_script() {
     printf ">> Running %s\n" "$(basename "$1")"
     $1
   elif [[ -d "$1" ]]; then
-    printf "'%s' is a directory.\n" "$1" && exit 1
+    _die printf "'%s' is a directory.\n" "$1"
   else
-    printf "'%s' not found.\n" "$1" && exit 1
+    _die printf "'%s' not found.\n" "$1"
   fi
 }
 _runner() {
-  [[ -z $1 ]] && printf "_runner: No subdirectory specified.\n" && exit 1
+  [[ -z $1 ]] && _die printf "_runner: No subdirectory specified.\n"
   local subdir=$1
   local subdir_path=$DOTSPATH/script/$subdir
   local script_file=$subdir_path/$2
@@ -569,13 +569,10 @@ _runner() {
       _run_script "$script_file"
     fi
   else
-    cat <<EOM
-Script must be specified. You can see available scripts by running the \
-following command:
-
-$_me $1 list
+    _die cat <<EOM
+Script must be specified. List available '$subdir' scripts by running:
+  $_me $1 list
 EOM
-    exit 1
   fi
 }
 
@@ -848,11 +845,9 @@ _init_with_source() {
   _debug printf "_init_with_source() \$2: %s\n" "$2"
 
   if [[ -z "$1" ]]; then
-    printf "Repository directory not specified.\n"
-    exit 1
+    _die printf "Repository directory not specified.\n"
   elif [[ -z "$2" ]]; then
-    printf "Source URL not specified.\n"
-    exit 1
+    _die printf "Source URL not specified.\n"
   else
     $_git_bin clone "$2" "$1"
   fi
@@ -1249,7 +1244,7 @@ list() {
       original_file=$original_dir/$filename
       _list_item
     else
-      printf "File not found.\n" && exit 1
+      _die printf "File not found.\n"
     fi
   else
     _each_original_file _list_item
@@ -1330,8 +1325,7 @@ add() {
   _debug printf "add() \$1: %s\n" "$1"
 
   if [[ $# = 0 ]]; then
-    printf "Must specify a valid file or directory name.\n"
-    exit 1
+    _die printf "Must specify a valid file or directory name.\n"
   else
     filename=$(basename "$1")
 
@@ -1346,15 +1340,13 @@ add() {
     safe_to_proceed=
 
     if [[ ! -e $original_file ]]; then
-      printf "File or directory does not exist.\n"
-      exit 1
+      _die printf "File or directory does not exist.\n"
     elif ( \
       [[ "$filename" == "/"  ]] || \
       [[ "$filename" == "."  ]] || \
       [[ "$filename" == ".." ]]
     ); then
-      printf "Invalid filename: %s\n" "$filename"
-      exit 1
+      _die printf "Invalid filename: %s\n" "$filename"
     elif [[ -e $tracked_file ]]; then
       if _command_argv_includes "--force"; then
         printf "Overwriting %s\n" "$tracked_file"
@@ -1377,12 +1369,10 @@ add() {
         done
         safe_to_proceed=1
       else
-        printf "File has already been added.\n"
-        exit 1
+        _die printf "File has already been added.\n"
       fi
     elif [[ -L $original_file ]]; then
-      printf "Original is already a symlink.\n"
-      exit 1
+      _die printf "Original is already a symlink.\n"
     else
       safe_to_proceed=1
     fi
@@ -1410,7 +1400,7 @@ restore() {
   _debug printf "restore() \$1: %s\n" "$1"
 
   if [[ $# = 0 ]]; then
-    printf "Must specify a valid file or directory name.\n" && exit 1
+    _die printf "Must specify a valid file or directory name.\n"
   else
     filename=$(basename "$1")
 
