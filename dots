@@ -1492,7 +1492,7 @@ _link_item() {
       if _command_argv_includes "--with-backup"; then
         if [[ -e "$original_file".bak ]]; then
           printf "Exists with .bak: %s, %s\n" "$filename" "$filename".bak
-          return 1
+          return 0
         else
           mv "$original_file" "$original_file".bak
         fi
@@ -1501,7 +1501,7 @@ _link_item() {
       fi
     else
       printf "Exists: %s\n" "$filename"
-      return 1
+      return 0
     fi
   fi
   printf "Linking %s => %s\n" "$f" "$original_file"
