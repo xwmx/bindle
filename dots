@@ -1001,6 +1001,10 @@ init() {
       _init_git_repository "$DOTSPATH"
     fi
     _init_post_message "$DOTSPATH"
+  else
+    _die printf "\
+A file or directory already exists at the dotfile repository path:
+%s\n" "$DOTSPATH"
   fi
 }
 
