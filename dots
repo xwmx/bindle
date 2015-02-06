@@ -815,10 +815,10 @@ Description:
   When provided with a URL as the first argument or a second argument the git
   repository at that URL is cloned and used as the tracking repository.
 
-  When provided with full path as the lone argument or second argument after a
-  repository URL, the initial repository is created at the specified path and
-  a configuration file is created at \$HOME/.dotsrc with that location set as
-  the \$DOTSPATH.
+  When provided with an absolute path as the lone argument or second argument
+  after a repository URL, the initial repository is created at the specified
+  path and a configuration file is created at \$HOME/.dotsrc with that location
+  set as the \$DOTSPATH.
 EOM
 # _init_with_source()
 #
