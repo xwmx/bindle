@@ -117,7 +117,7 @@ If you want to stop tracking a dotfile or directory, run `dots restore`:
 This removes the symbolic link in `$HOME` and copies the original file back to
 `$HOME` from `$DOTFILES/home`.
 
-##### Example
+###### Example
 
 An example `dots`-managed home directory:
 
@@ -146,7 +146,7 @@ To stop tracking an item, use `dots bin restore`:
 
     dots bin restore script-name
 
-##### Example
+###### Example
 
 An example `dots`-managed bin directory:
 
