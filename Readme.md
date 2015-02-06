@@ -70,6 +70,7 @@ structure:
     ├── bin/
     ├── local/
     └── script/
+        ├── bootstrap/
         ├── configure/
         ├── customize/
         └── install/
