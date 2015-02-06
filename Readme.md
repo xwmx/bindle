@@ -12,12 +12,17 @@ computer.
 
 ## Goals & Philosophy
 
-The core goal of `dots` is to provide an easy way to manage dotfiles, per-user
-binaries, packages, and configuration scripts using an approach that's easy to
-reason about while using as few dependencies as possible. As a result,
-the project structure is intended to reflect the original locations of
-the files and the commands try to be as close to simple task automation
-or the underlying git commands as possible.
+The core goal of `dots` is to provide an easy way to manage a single
+user's configuration, particularly:
+
+- dotfiles,
+- user binaries and scripts (ie, anything in `$HOME/bin`),
+- configuration scripts.
+
+In order to keep everything easy to understand while using as few
+dependencies as possible the project structure is intended to reflect the
+original locations of the files and the commands try to be as close to
+simple task automation or the underlying git commands as possible.
 
 `dots` is intended to compliment rather than entirely relace manual
 configuration and versioning. Sometimes a local configuration might not change
