@@ -160,6 +160,13 @@ Scripts or programs in this directory can be written in any language and can
 be run either individually or in aggregate. `dots` makes no assumptions about
 any of the scripts in these directories and will simply run them.
 
+###### Example
+
+An example `dots`-managed script directory:
+
+[alphabetum/dotfiles/script
+](https://github.com/alphabetum/dotfiles/tree/master/script)
+
 ##### bootstrap
 
 `bootstrap` should contain scripts for bootstrapping the user account
@@ -173,6 +180,13 @@ To run a bootstrap script, use the `dots bootstrap` command. For example:
     dots bootstrap ubuntu
 
 For more information, see `dots help bootstrap`
+
+###### Example
+
+An example `dots`-managed bootstrap directory with scripts:
+
+[alphabetum/dotfiles/script/bootstrap
+](https://github.com/alphabetum/dotfiles/tree/master/script/bootstrap)
 
 ##### install
 
@@ -192,6 +206,13 @@ You can also run all of the install scripts by using the `--all` flag:
 
 For more information, see `dots help install`
 
+###### Example
+
+An example `dots`-managed install directory with scripts:
+
+[alphabetum/dotfiles/script/install
+](https://github.com/alphabetum/dotfiles/tree/master/script/install)
+
 ##### configure
 
 `configure` is intended for scripts that run perform system
@@ -206,6 +227,13 @@ You can also run all of the configure scripts by using the `--all` flag:
     dots configure --all
 
 For more information, see `dots help configure`
+
+###### Example
+
+An example `dots`-managed configure directory with scripts:
+
+[alphabetum/dotfiles/script/configure
+](https://github.com/alphabetum/dotfiles/tree/master/script/configure)
 
 ##### customize
 
@@ -223,11 +251,12 @@ You can also run all of the customize scripts by using the `--all` flag:
 
 For more information, see `dots help customize`
 
-##### Example
+###### Example
 
-An example `dots`-managed script directory:
+An example `dots`-managed customize directory with scripts:
 
-[alphabetum/dotfiles/script](https://github.com/alphabetum/dotfiles/tree/master/script)
+[alphabetum/dotfiles/script/customize
+](https://github.com/alphabetum/dotfiles/tree/master/script/customize)
 
 #### .gitignore
 
