@@ -21,13 +21,13 @@ user's configuration, particularly:
 
 In order to keep everything easy to understand, the structure of a
 `dots`-managed repository reflects the original locations of the tracked
-files and the commands try to be as close to simple task automation
-of the underlying git commands as possible.
+files and the commands try to be as close to simple automation of the
+underlying git commands as possible.
 
 `dots` is intended to compliment rather than entirely relace manual
-configuration and versioning. Sometimes a local configuration might not change
-for months or even a couple years, so relearning a tool every time you
-want to make a configuration change could be unnecessary overhead. `dots` was
+configuration and versioning. Sometimes a local configuration might not
+change for months or even years, so relearning a tool every time you want
+to make a configuration change could be unnecessary overhead. `dots` was
 designed around a logical repository directory structure that works
 great with or without the `dots` program.
 
