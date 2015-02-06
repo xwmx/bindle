@@ -19,10 +19,10 @@ user's configuration, particularly:
 - user binaries and scripts (ie, anything in `$HOME/bin`),
 - configuration scripts.
 
-In order to keep everything easy to understand while using as few
-dependencies as possible the project structure is intended to reflect the
-original locations of the files and the commands try to be as close to
-simple task automation or the underlying git commands as possible.
+In order to keep everything easy to understand, the structure of a
+`dots`-managed repository reflects the original locations of the tracked
+files and the commands try to be as close to simple task automation
+of the underlying git commands as possible.
 
 `dots` is intended to compliment rather than entirely relace manual
 configuration and versioning. Sometimes a local configuration might not change
