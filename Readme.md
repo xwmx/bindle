@@ -50,9 +50,10 @@ To install with homebrew, use the following command:
 
     brew install alphabetum/taps/dots
 
-### Help
+### Usage
 
-You can view the help information by running `dots` with no arguments.
+You can view the usage and help information by running `dots` with no
+arguments or with the `--help` or `-h` options.
 
 ### init
 
