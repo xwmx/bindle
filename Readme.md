@@ -175,10 +175,10 @@ to track and don't want in the default directories.
 
 #### script
 
-`script` contains three subdirectories for contriguration scripts.
-Scripts or programs in this directory can be written in any language and can
-be run either individually or in aggregate. `dots` makes no assumptions about
-any of the scripts in these directories and will simply run them.
+`script` contains several subdirectories for contriguration scripts.
+Scripts or programs in these directories can be written in any language and
+can be run either individually or in aggregate. `dots` makes no assumptions
+about any of the scripts in these directories and will simply run them.
 
 ###### Example
 
