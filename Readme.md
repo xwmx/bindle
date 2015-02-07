@@ -43,6 +43,16 @@ example of a configuration managed with `dots`.
 
 ## Usage
 
+The basic idea is that you can add dotfiles and user scripts to the
+`~/.dots` respository so they can be versioned, and symbolic links are
+created in their original locations pointing to the versioned files. The
+`dots` command automates much of this by automatically moving, linking,
+and listing the files you want to version, and it also provides shortcuts
+for some git operations. Additionally, `dots` can help version and run local
+configuration scripts that you might want to create, like a script for
+installing local programs with your package manager or a script for
+setting preferences.
+
 ### Installation
 
 To get started, add the `dots` script to your path.
@@ -53,20 +63,10 @@ To install with homebrew, use the following command:
 
     brew install alphabetum/taps/dots
 
-### Usage
+### Viewing Help Information
 
 You can view the usage and help information by running `dots` with no
 arguments or with the `--help` or `-h` options.
-
-The basic idea is that you can add dotfiles and user scripts to the
-`~/.dots` respository so they can be versioned, and symbolic links are
-created in their original locations pointing to the versioned files. The
-`dots` command automates much of this by automatically moving, linking,
-and listing the files, as well as provide shortcuts for some git
-operations. Additionally, `dots` can help version and run local
-configuration scripts that you might want to create, like a script for
-installing local programs with your package manager or a script for
-setting preferences.
 
 ### init
 
