@@ -33,7 +33,10 @@ great with or without the `dots` program.
 
 In order to be as portable as possible while still being easy to develop,
 `dots` is written in Bash and should work with the default Bash version
-on any modern unix-like system (specifically, Bash 3 and higher).
+on any modern unix-like system (specifically, Bash 3 and higher). [Bash
+"Strict Mode"](https://github.com/alphabetum/bash-boilerplate#bash-strict-mode)
+and [ShellCheck](http://www.shellcheck.net/) are used in development to
+help ensure correctness.
 
 See [alphabetum/dotfiles](https://github.com/alphabetum/dotfiles) for an
 example of a configuration managed with `dots`.
