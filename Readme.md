@@ -58,6 +58,16 @@ To install with homebrew, use the following command:
 You can view the usage and help information by running `dots` with no
 arguments or with the `--help` or `-h` options.
 
+The basic idea is that you can add dotfiles and user scripts to the
+`~/.dots` respository so they can be versioned, and symbolic links are
+created in their original locations pointing to the versioned files. The
+`dots` command automates much of this by automatically moving, linking,
+and listing the files, as well as provide shortcuts for some git
+operations. Additionally, `dots` can help version and run local
+configuration scripts that you might want to create, like a script for
+installing local programs with your package manager or a script for
+setting preferences.
+
 ### init
 
 If you don't currently have a local repository tracking your dotfiles,
@@ -96,10 +106,9 @@ Contains all dotfiles and directories from `$HOME` that have been added to the
 repository.
 
 The `dots` command assumes that any items at the root level of this directory
-are 1) dotfiles (files and directories with a `.` prefix, ie, `.vim`) and 2)
-all symlinked in `$HOME`. It makes no assumptions about any additional
-subdirectories or unadded dotfiles. This is intended to be as simple as
-possible to avoid ambiguity.
+are 1) dotfiles (files and directories with a `.` prefix, ie, `.bashrc` or
+`.vim`) and 2) normally exist at your `$HOME` path, aka `~/`, which is the
+root level of your user account's home directory.
 
 To track items from `$HOME`, use `dots add`:
 
