@@ -387,6 +387,11 @@ please install git and make sure it has been added to your \$PATH.\n"
 fi
 
 # Set $EDITOR to blank if it's unbound in order to avoid unrelated errors.
+#
+# There are cases where this can be blank, such as when a shell environment
+# is only partially loaded. The only command that currently uses this
+# directly handles the blank case by outputting an error, but nothing else
+# should be directly impacted by the blank case.
 if [[ -z ${EDITOR:-} ]]; then
   EDITOR=
 fi
