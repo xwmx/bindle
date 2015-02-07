@@ -106,7 +106,7 @@ Contains all dotfiles and directories from `$HOME` that have been added to the
 repository.
 
 The `dots` command assumes that any items at the root level of this directory
-are 1) dotfiles (files and directories with a `.` prefix, ie, `.bashrc` or
+are 1) dotfiles (files and directories with a `.` prefix like `.bashrc` or
 `.vim`) and 2) normally exist at your `$HOME` path, aka `~/`, which is the
 root level of your user account's home directory.
 
