@@ -50,9 +50,9 @@ created in their original locations pointing to the versioned files.
 The `dots` command automates much of this by automatically moving, linking,
 and listing the files you want to version, and it also provides shortcuts
 for some git operations. Additionally, `dots` can help version and run local
-configuration scripts that you might want to create, like a script for
-installing local programs with package managers or scripts for
-setting preferences.
+configuration scripts that you might want to create, like scripts for
+installing local programs or libraries with package managers or scripts
+for setting preferences.
 
 ### Installation
 
