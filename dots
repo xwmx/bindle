@@ -131,7 +131,7 @@ fi
 DOTS_VERSION="3.0.1"
 
 # Set dotfiles if not already set.
-if [[ -z $DOTSPATH ]]; then
+if [[ -z ${DOTSPATH:-} ]]; then
   DOTSPATH="$HOME/.dots"
 fi
 
