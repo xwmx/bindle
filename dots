@@ -10,6 +10,8 @@
 #
 # A configuration management tool for your personal unix-like computer.
 #
+# Based on https://github.com/alphabetum/bash-boilerplate
+#
 # Copyright (c) 2015 William Melody • hi@williammelody.com
 
 ###############################################################################
