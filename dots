@@ -141,7 +141,7 @@ fi
 
 # _debug()
 #
-# A Simple function for executing a specified command if the `_use_debug`
+# A simple function for executing a specified command if the `_use_debug`
 # variable has been set. The command is expected to print a message and
 # should typically be either `echo`, `printf`, or `cat`.
 #
