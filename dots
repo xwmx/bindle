@@ -187,7 +187,7 @@ _die() {
 }
 # die()
 #
-# Exit with an error and the specified message.
+# Exit with an error and print the specified message.
 #
 # This is a shortcut for the _die() function that simply echos the message.
 #
