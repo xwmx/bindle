@@ -1095,19 +1095,33 @@ push() {
   _debug printf "%s push\n" "$_git_bin"
 }
 
-# ----------------------------------------------------------- update_submodules
+# ------------------------------------------------------------------ submodules
 
-desc update_submodules <<EOM
+desc submodules <<EOM
 Usage:
-  $_me update_submodules
+  $_me submodules ( sync | update )
 
-Description:
-  Update git submodules. An alias for the git command:
-    git submodule update --recursive --remote
+Subcommands:
+  sync    Sync all submodules with the current head commit. This usually be
+          should be performed after a \`dots pull\`. Equivalent git command:
+            git submodule update --recursive --init
+  update  Update all first-level submodules to the latest commit in each
+          submodule's origin repository. Equivalent git command:
+            git submodule update --init --remote
 EOM
-update_submodules() {
+submodules() {
   cd "$DOTSPATH"
-  $_git_bin submodule update --recursive --remote
+  case "$1" in
+    sync)
+      "$_git_bin" submodule update --init --recursive
+      ;;
+    update)
+      "$_git_bin" submodule update --init --remote
+      ;;
+    *)
+      _die printf "Unrecognized subcommand: submodules %s\n" "$1"
+      ;;
+  esac
 }
 
 # Scripts #####################################################################
