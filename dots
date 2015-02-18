@@ -719,7 +719,7 @@ help() {
     | (_| | (_) | |_\\__ \\
      \\__,_|\\___/ \\__|___/
 
-A local configuration tool and framework.
+A configuration management tool for your personal unix-like computer.
 
 Version: $DOTS_VERSION
 
