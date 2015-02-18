@@ -299,7 +299,7 @@ on the `$DOTFILES` repository. Among these are:
 
 - `dots pull`
 - `dots push`
-- `dots update_submodules`
+- `dots submodules`
 - `dots git`
 
 Use the help command (`dots help <command-name>`) to learn more about
