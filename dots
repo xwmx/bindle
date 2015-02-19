@@ -118,10 +118,14 @@ IFS="$SAFER_IFS"
 # .dotsrc
 ###############################################################################
 
-# If a dotsrc file exists in $HOME, source it.
-dotsrc="$HOME/.dotsrc"
-if [[ -e "$dotsrc" ]]; then
-  source "$dotsrc"
+# If there is a $DOTSRC environment variable present, use it for the
+# .dotsrc path.
+if [[ -z ${DOTSRC:-} ]]; then
+  DOTSRC="$HOME/.dotsrc"
+fi
+# If a dotsrc file exists, source it.
+if [[ -e "$DOTSRC" ]]; then
+  source "$DOTSRC"
 fi
 
 ###############################################################################
