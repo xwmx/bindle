@@ -522,13 +522,15 @@ _each_file() {
 #
 # Usage: _runner subdirectory ( --all | <list> | <script_name> )
 _run_script() {
-  if [[ -f "$1" ]]; then
-    printf ">> Running %s\n" "$(basename "$1")"
-    $1
-  elif [[ -d "$1" ]]; then
-    _die printf "'%s' is a directory.\n" "$1"
+  local _script="$1"
+  local script_arguments=(${@:2})
+  if [[ -f "$_script" ]]; then
+    printf ">> Running %s\n" "$(basename "$_script")"
+    "$_script" "${script_arguments[@]:-}"
+  elif [[ -d "$_script" ]]; then
+    _die printf "'%s' is a directory.\n" "$_script"
   else
-    _die printf "'%s' not found.\n" "$1"
+    _die printf "'%s' not found.\n" "$_script"
   fi
 }
 _runner() {
@@ -536,10 +538,11 @@ _runner() {
   local subdir=$1
   local subdir_path=$DOTSPATH/script/$subdir
   local script_file=$subdir_path/$2
+  local script_arguments=(${@:3})
   if _command_argv_includes "--all"; then
     for f in $subdir_path/*
     do
-      _run_script "$f"
+      _run_script "$f" "${script_arguments[@]:-}"
     done
   elif [[ -n "$2" ]]; then
     if [[ "$2" == "list" ]]; then
@@ -550,7 +553,7 @@ _runner() {
         fi
       done
     else
-      _run_script "$script_file"
+      _run_script "$script_file" "${script_arguments[@]:-}"
     fi
   else
     _die cat <<EOM
@@ -1144,7 +1147,7 @@ bootstrap() {
   if ( _command_argv_includes "--all" ); then
     _print_desc "bootstrap"
   else
-    _runner "bootstrap" "$1"
+    _runner "bootstrap" "${@:-}"
   fi
 }
 
@@ -1164,7 +1167,7 @@ Description:
     $DOTSPATH/script/install/
 EOM
 install() {
-  _runner "install" "$1"
+  _runner "install" "${@:-}"
 }
 
 # ------------------------------------------------------------------- configure
@@ -1183,7 +1186,7 @@ Description:
     $DOTSPATH/script/configure/
 EOM
 configure() {
-  _runner "configure" "$1"
+  _runner "configure" "${@:-}"
 }
 
 # ------------------------------------------------------------------- customize
@@ -1202,7 +1205,7 @@ Description:
     $DOTSPATH/script/customize/
 EOM
 customize() {
-  _runner "customize" "$1"
+  _runner "customize" "${@:-}"
 }
 
 # Dotfiles ####################################################################
