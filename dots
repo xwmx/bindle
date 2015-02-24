@@ -128,7 +128,7 @@ fi
 # Globals
 ###############################################################################
 
-DOTS_VERSION="4.0.0"
+DOTS_VERSION="4.1.0"
 
 # Set dotfiles if not already set.
 if [[ -z ${DOTSPATH:-} ]]; then
