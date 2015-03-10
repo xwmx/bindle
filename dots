@@ -542,7 +542,9 @@ _runner() {
   if _command_argv_includes "--all"; then
     for f in $subdir_path/*
     do
-      _run_script "$f" "${script_arguments[@]:-}"
+      if [[ ! -d "$f" ]]; then
+        _run_script "$f" "${script_arguments[@]:-}"
+      fi
     done
   elif [[ -n "$2" ]]; then
     if [[ "$2" == "list" ]]; then
