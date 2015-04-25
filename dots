@@ -426,7 +426,8 @@ _load_commands() {
   do
     # Each element has the format `declare -f function_name`, so set the name
     # to only the 'function_name' part of the string.
-    local function_name=$(printf "%s" "$c" | awk '{ print $3 }')
+    local function_name
+    function_name=$(printf "%s" "$c" | awk '{ print $3 }')
 
     _debug printf "_load_commands() \$function_name: %s\n" "$function_name"
 
@@ -499,7 +500,8 @@ _each_file() {
   fi
   for f in $search_files
   do
-    local filename=$(basename "$f")
+    local filename
+    filename=$(basename "$f")
     local tracked_file=$tracked_dir/$filename
     local original_file=$original_dir/$filename
     if [[ "$context" == "home" ]]; then
