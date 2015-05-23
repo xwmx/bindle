@@ -1,0 +1,7 @@
+{
+  "name": "bindle",
+  "version": "5.0.0-alpha",
+  "description": "A configuration management tool for your personal unix-like computer.",
+  "global": true,
+  "install": "make install"
+}
