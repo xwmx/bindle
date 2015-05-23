@@ -529,9 +529,9 @@ _each_file() {
   for f in $search_files
   do
     local filename
-    filename=$(basename "$f")
-    local tracked_file=$tracked_dir/$filename
-    local original_file=$original_dir/$filename
+    filename="$(basename "$f")"
+    local tracked_file="$tracked_dir/$filename"
+    local original_file="$original_dir/$filename"
     if [[ "$context" == "home" ]]; then
       if ! ( [[ "$filename" =~ ^\.?\.$     ]] || \
              [[ "$filename" == ".DS_Store" ]]
@@ -565,13 +565,13 @@ _run_script() {
   fi
 }
 _runner() {
-  [[ -z $1 ]] && _die printf "_runner: No subdirectory specified.\n"
-  local subdir=$1
-  local subdir_path=$BINDLEPATH/script/$subdir
-  local script_file=$subdir_path/$2
+  [[ -z "$1" ]] && _die printf "_runner: No subdirectory specified.\n"
+  local subdir="$1"
+  local subdir_path="$BINDLEPATH/script/$subdir"
+  local script_file="$subdir_path/$2"
   local script_arguments=(${@:3})
   if _command_argv_includes "--all"; then
-    for f in $subdir_path/*
+    for f in "$subdir_path"/*
     do
       if [[ ! -d "$f" ]]; then
         _run_script "$f" "${script_arguments[@]:-}"
@@ -579,7 +579,7 @@ _runner() {
     done
   elif [[ -n "$2" ]]; then
     if [[ "$2" == "list" ]]; then
-      for f in $subdir_path/*
+      for f in "$subdir_path"/*
       do
         if [[ -f "$f" ]]; then
           basename "$f"
@@ -747,8 +747,8 @@ _present() {
 # escaping backslashes, which is more common.
 desc() {
   set +e
-  [[ -z $1 ]] && _die printf "desc: No command name specified.\n"
-  if [[ -n ${2:-} ]]; then
+  [[ -z "$1" ]] && _die printf "desc: No command name specified.\n"
+  if [[ -n "${2:-}" ]]; then
     read -d '' "_desc_$1" <<EOM
 $2
 EOM
@@ -935,13 +935,13 @@ _init_with_source() {
   elif [[ -z "$2" ]]; then
     _die printf "Source URL not specified.\n"
   else
-    $_git_bin clone "$2" "$1"
+    "$_git_bin" clone "$2" "$1"
   fi
 
   if _command_argv_includes "--initialize-submodules"; then
     cd "$1"
-    $_git_bin submodule init
-    $_git_bin submodule update --init --recursive
+    "$_git_bin" submodule init
+    "$_git_bin" submodule update --init --recursive
   fi
 }
 # _init_bindlerc()
@@ -1022,7 +1022,7 @@ _init_gitignore() {
 _init_git_repository() {
   if [[ -n "$1" ]]; then
     cd "$1"
-    $_git_bin init
+    "$_git_bin" init
   else
     printf "Repository directory not specified.\n"
   fi
@@ -1133,7 +1133,7 @@ git() {
   ))
 
   # call the environment's git with the git options passed as an array.
-  $_git_bin "${git_options[@]}"
+  "$_git_bin" "${git_options[@]}"
 }
 
 # ---------------------------------------------------------------------- commit
@@ -1149,11 +1149,11 @@ EOM
 commit() {
   cd "$BINDLEPATH"
   if [[ -n "$1" ]]; then
-    $_git_bin add .
-    $_git_bin commit -a -m "$1"
+    "$_git_bin" add .
+    "$_git_bin" commit -a -m "$1"
   else
-    $_git_bin add .
-    $_git_bin commit -a
+    "$_git_bin" add .
+    "$_git_bin" commit -a
   fi
 }
 
@@ -1168,7 +1168,7 @@ Description:
 EOM
 pull() {
   cd "$BINDLEPATH"
-  $_git_bin pull
+  "$_git_bin" pull
   _debug printf "%s pull\n" "$_git_bin"
 }
 
@@ -1183,7 +1183,7 @@ Description:
 EOM
 push() {
   cd "$BINDLEPATH"
-  $_git_bin push
+  "$_git_bin" push
   _debug printf "%s push\n" "$_git_bin"
 }
 
