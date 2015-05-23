@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 #
-#         _       _
-#        | |     | |
-#      __| | ___ | |_ ___
-#     / _` |/ _ \| __/ __|
-#    | (_| | (_) | |_\__ \
-#     \__,_|\___/ \__|___/
+#  _____  ___  _____  _____  ____   _____
+# /  _  \/___\/  _  \|  _  \/  _/  /   __\
+# |  _  <|   ||  |  ||  |  ||  |---|   __|
+# \_____/\___/\__|__/|_____/\_____/\_____/
 #
 #
 # A configuration management tool for your personal unix-like computer.
@@ -115,13 +113,29 @@ SAFER_IFS="$(printf '\n\t')"
 IFS="$SAFER_IFS"
 
 ###############################################################################
-# .dotsrc
+# .bindlerc
 ###############################################################################
 
-# If a dotsrc file exists in $HOME, source it.
-dotsrc="$HOME/.dotsrc"
-if [[ -e "$dotsrc" ]]; then
-  source "$dotsrc"
+# .dotsrc (backwards compatibility)
+#
+# If a `.dotsrc` file exists in `$HOME`, source it.
+#
+# NOTE: This is superceded by .bindlerc if it is present.
+#
+# TODO: remove this.
+if [[ -e "$HOME/.dotsrc" ]]; then
+  BINDLERC="$HOME/.dotsrc"
+fi
+
+# .bindlerc
+#
+# If a `.bindlerc` file exists in `$HOME`, source it.
+if [[ -e "$HOME/.bindlerc" ]]; then
+  BINDLERC="$HOME/.bindlerc"
+fi
+
+if [[ -n "$BINDLERC" ]]; then
+  source "$BINDLERC"
 fi
 
 # $DEFAULT_COMMAND
@@ -134,11 +148,18 @@ DEFAULT_COMMAND="${DEFAULT_COMMAND:-help}"
 # Globals
 ###############################################################################
 
-_DOTS_VERSION="5.0.0-alpha"
+_BINDLE_VERSION="5.0.0-alpha"
 
-# Set dotfiles if not already set.
-if [[ -z ${DOTSPATH:-} ]]; then
-  DOTSPATH="$HOME/.dots"
+# Set `$BINDLEPATH` to `$DOTSPATH` if present.
+#
+# TODO: remove this.
+if [[ -n "${DOTSPATH:-}" ]]; then
+  BINDLEPATH="$DOTSPATH"
+fi
+
+# Set `$BINDLEPATH` if not already set.
+if [[ -z "${BINDLEPATH:-}" ]]; then
+  BINDLEPATH="$HOME/.bindle"
 fi
 
 ###############################################################################
@@ -365,9 +386,9 @@ _debug printf "\$_ME: %s\n" "$_ME"
 # Set to either 'home' or 'bin' within the dotfiles repository, depending on
 # the context.
 if [[ "$context" == "bin" ]]; then
-  tracked_dir=$DOTSPATH/bin
+  tracked_dir=$BINDLEPATH/bin
 else
-  tracked_dir=$DOTSPATH/home
+  tracked_dir=$BINDLEPATH/home
 fi
 
 _debug printf "\$tracked_dir: %s\n" "$tracked_dir"
@@ -385,12 +406,12 @@ _debug printf "\$original_dir: %s\n" "$original_dir"
 
 # $_git_bin
 #
-# Must perform git operations via $_git_bin to avoid calling the `dots git`
+# Must perform git operations via $_git_bin to avoid calling the `bindle git`
 # command.
 _git_bin=$(which git)
 if [[ -z "$_git_bin" ]]; then
   _die printf "\
-The \`git\` executable can not be found. Since \`dots\` depends on git, \
+The \`git\` executable can not be found. Since \`$_ME\` depends on git, \
 please install git and make sure it has been added to your \$PATH.\n"
 fi
 
@@ -546,7 +567,7 @@ _run_script() {
 _runner() {
   [[ -z $1 ]] && _die printf "_runner: No subdirectory specified.\n"
   local subdir=$1
-  local subdir_path=$DOTSPATH/script/$subdir
+  local subdir_path=$BINDLEPATH/script/$subdir
   local script_file=$subdir_path/$2
   local script_arguments=(${@:3})
   if _command_argv_includes "--all"; then
@@ -768,10 +789,10 @@ Usage:
 Description:
   Display the current program version.
 
-  To save you the trouble, the current version is $_DOTS_VERSION
+  To save you the trouble, the current version is $_BINDLE_VERSION
 EOM
 version() {
-  printf "%s\n" "$_DOTS_VERSION"
+  printf "%s\n" "$_BINDLE_VERSION"
 }
 
 # Help ########################################################################
@@ -786,16 +807,15 @@ EOM
 help() {
   if [[ ${#_COMMAND_ARGV[@]} = 1 ]]; then
     cat <<EOM
-         _       _
-        | |     | |
-      __| | ___ | |_ ___
-     / _\` |/ _ \\| __/ __|
-    | (_| | (_) | |_\\__ \\
-     \\__,_|\\___/ \\__|___/
+
+ _____  ___  _____  _____  ____   _____
+/  _  \\/___\\/  _  \\|  _  \\/  _/  /   __\\
+|  _  <|   ||  |  ||  |  ||  |---|   __|
+\_____/\\___/\\__|__/|_____/\\_____/\\_____/
 
 A configuration management tool for your personal unix-like computer.
 
-Version: $_DOTS_VERSION
+Version: $_BINDLE_VERSION
 
 Usage:
   $_ME command [--debug] [--command-options] [<arguments>]
@@ -881,13 +901,13 @@ commands() {
 
 desc "init" <<EOM
 Usage:
-  $_ME init [<source_repository>] [<dotspath>] [--initialize-submodules] \
-[--skip-dotsrc]
+  $_ME init [<source_repository>] [<bindlepath>] [--initialize-submodules] \
+[--skip-bindlerc]
 
 Options:
   --initialize-submodules  Initialize repository submodules when used with a
                            source_repository argument.
-  --skip-dotsrc            Don't generate a dotsrc file.
+  --skip-bindlerc          Don't generate a bindlerc file.
 
 Description:
   Create initial repository file structure and \$HOME/bin if it doesn't exist
@@ -898,8 +918,8 @@ Description:
 
   When provided with an absolute path as the lone argument or second argument
   after a repository URL, the initial repository is created at the specified
-  path and a configuration file is created at \$HOME/.dotsrc with that location
-  set as the \$DOTSPATH.
+  path and a configuration file is created at \$HOME/.bindlerc with that
+  location set as the \$BINDLEPATH.
 EOM
 # _init_with_source()
 #
@@ -924,32 +944,32 @@ _init_with_source() {
     $_git_bin submodule update --init --recursive
   fi
 }
-# _init_dotsrc()
+# _init_bindlerc()
 #
-# Create a file at $HOME/.dotsrc for configuration settings.
+# Create a file at $HOME/.bindlerc for configuration settings.
 #
 # called by: init()
-_init_dotsrc() {
-  _command_argv_includes "--skip-dotsrc" && return 0
+_init_bindlerc() {
+  _command_argv_includes "--skip-bindlerc" && return 0
   if [[ -n "$1" ]]; then
-    printf ">> Adding ~/.dotsrc configuration file.\n"
+    printf ">> Adding ~/.bindlerc configuration file.\n"
     printf "\
-# .dotsrc
+# .bindlerc
 #
-# Configuration file for dots
+# Configuration file for Bindle
 #
-# https://github.com/alphabetum/dots
+# https://github.com/alphabetum/bindle
 
-# Set dots directory
-export DOTSPATH=\"%s\"
-" "$1" >> "$HOME/.dotsrc"
+# Set bindle directory
+export BINDLEPATH=\"%s\"
+" "$1" >> "$HOME/.bindlerc"
   else
     printf "Repository location not specified.\n"
   fi
 }
 # _init_directory_structure()
 #
-# Create an initial directory structure at $DOTSPATH
+# Create an initial directory structure at $BINDLEPATH
 #
 # called by: init()
 _init_directory_structure() {
@@ -976,7 +996,7 @@ _init_directory_structure() {
 }
 # _init_gitignore()
 #
-# Add the default .gitignore to $DOTSPATH/.gitignore
+# Add the default .gitignore to $BINDLEPATH/.gitignore
 #
 # called by: init()
 _init_gitignore() {
@@ -996,7 +1016,7 @@ _init_gitignore() {
 }
 # _init_git_repository()
 #
-# Initialize the git repository at $DOTSPATH
+# Initialize the git repository at $BINDLEPATH
 #
 # called by: init()
 _init_git_repository() {
@@ -1015,19 +1035,17 @@ _init_git_repository() {
 _init_post_message() {
   if [[ -n "$1" ]]; then
     printf "\
-         _       _
-        | |     | |
-      __| | ___ | |_ ___
-     / _\` |/ _ \\| __/ __|
-    | (_| | (_) | |_\\__ \\
-     \\__,_|\\___/ \\__|___/
+ _____  ___  _____  _____  ____   _____
+/  _  \\/___\\/  _  \\|  _  \\/  _/  /   __\\
+|  _  <|   ||  |  ||  |  ||  |---|   __|
+\_____/\\___/\\__|__/|_____/\\_____/\\_____/
 
-Your dotfile git repo has been initialized at the following location:
+Your bindle git repo has been initialized at the following location:
 
 %s
 
-To finish installation, add the following to your shell configuration (.bashrc, \
-.bash_profile, .zshrc, or similar):
+To finish installation, add the following to your shell configuration
+(.bashrc, .bash_profile, .zshrc, or similar):
 
 if [ -d \"\$HOME/bin\" ]; then
   PATH=\"\$HOME/bin:\$PATH\"
@@ -1056,36 +1074,36 @@ init() {
   # Handle arguments.
   #
   # Expected behavior:
-  #   init [<source_repository>] [<dotspath>]
+  #   init [<source_repository>] [<bindlepath>]
   if [[ -n "$1" ]]; then
     if [[ "$1" =~ $_regex ]]; then
       init_source="$1"
       if [[ -n "$2" ]]; then
-        DOTSPATH="$2"
-        _init_dotsrc "$DOTSPATH"
+        BINDLEPATH="$2"
+        _init_bindlerc "$BINDLEPATH"
       fi
     else
-      DOTSPATH="$1"
-      _init_dotsrc "$DOTSPATH"
+      BINDLEPATH="$1"
+      _init_bindlerc "$BINDLEPATH"
     fi
   fi
-  _debug printf "init() \$DOTSPATH: %s\n" "$DOTSPATH"
+  _debug printf "init() \$BINDLEPATH: %s\n" "$BINDLEPATH"
   _debug printf "init() \$init_source: %s\n" "$init_source"
 
   # Initialize either from source or with fresh directory structure.
-  if [[ ! -e "$DOTSPATH" ]]; then
+  if [[ ! -e "$BINDLEPATH" ]]; then
     if [[ -n "$init_source" ]]; then
-      _init_with_source "$DOTSPATH" "$init_source"
+      _init_with_source "$BINDLEPATH" "$init_source"
     else
-      _init_directory_structure "$DOTSPATH"
-      _init_gitignore "$DOTSPATH"
-      _init_git_repository "$DOTSPATH"
+      _init_directory_structure "$BINDLEPATH"
+      _init_gitignore "$BINDLEPATH"
+      _init_git_repository "$BINDLEPATH"
     fi
-    _init_post_message "$DOTSPATH"
+    _init_post_message "$BINDLEPATH"
   else
     _die printf "\
 A file or directory already exists at the dotfile repository path:
-%s\n" "$DOTSPATH"
+%s\n" "$BINDLEPATH"
   fi
 }
 
@@ -1098,11 +1116,11 @@ Usage:
   $_ME git command [--options] [<arguments>]
 
 Description:
-  Run a git command within the \$DOTSPATH directory.
+  Run a git command within the \$BINDLEPATH directory.
 EOM
 git() {
-  # Perform git operations in the $DOTSPATH directory.
-  cd "$DOTSPATH"
+  # Perform git operations in the $BINDLEPATH directory.
+  cd "$BINDLEPATH"
 
   # Set $IFS to default for better argument handling.
   IFS="$DEFAULT_IFS"
@@ -1129,7 +1147,7 @@ Description:
   as the commit message. Otherwise, git will open your default editor.
 EOM
 commit() {
-  cd "$DOTSPATH"
+  cd "$BINDLEPATH"
   if [[ -n "$1" ]]; then
     $_git_bin add .
     $_git_bin commit -a -m "$1"
@@ -1149,7 +1167,7 @@ Description:
   Pull latest changes from the remote repository.
 EOM
 pull() {
-  cd "$DOTSPATH"
+  cd "$BINDLEPATH"
   $_git_bin pull
   _debug printf "%s pull\n" "$_git_bin"
 }
@@ -1164,7 +1182,7 @@ Description:
   Push local commits to the remote repository.
 EOM
 push() {
-  cd "$DOTSPATH"
+  cd "$BINDLEPATH"
   $_git_bin push
   _debug printf "%s push\n" "$_git_bin"
 }
@@ -1177,14 +1195,14 @@ Usage:
 
 Subcommands:
   sync    Sync all submodules with the current head commit. This usually be
-          should be performed after a \`dots pull\`. Equivalent git command:
+          should be performed after a \`$_ME pull\`. Equivalent git command:
             git submodule update --recursive --init
   update  Update all first-level submodules to the latest commit in each
           submodule's origin repository. Equivalent git command:
             git submodule update --init --remote
 EOM
 submodules() {
-  cd "$DOTSPATH"
+  cd "$BINDLEPATH"
   case "$1" in
     sync)
       "$_git_bin" submodule update --init --recursive
@@ -1210,7 +1228,7 @@ Description:
   Run the specified bootstrap script.
 
   Bootstrap scripts can be added to:
-    $DOTSPATH/script/bootstrap/
+    $BINDLEPATH/script/bootstrap/
 EOM
 bootstrap() {
   # Don't permit use of the --all flag, since it's unlikely that the user
@@ -1235,7 +1253,7 @@ Description:
   Run the specified package script.
 
   Package scripts can be added to:
-    $DOTSPATH/script/install/
+    $BINDLEPATH/script/install/
 EOM
 install() {
   _runner "install" "${@:-}"
@@ -1254,7 +1272,7 @@ Description:
   Run the specified package update script.
 
   Configuration scripts can be added to:
-    $DOTSPATH/script/configure/
+    $BINDLEPATH/script/configure/
 EOM
 configure() {
   _runner "configure" "${@:-}"
@@ -1273,7 +1291,7 @@ Description:
   Run the specified customization script.
 
   Customization scripts can be added to:
-    $DOTSPATH/script/customize/
+    $BINDLEPATH/script/customize/
 EOM
 customize() {
   _runner "customize" "${@:-}"
@@ -1691,7 +1709,7 @@ edit() {
     tracked_file=$tracked_dir/$filename
     $EDITOR "$tracked_file"
   else
-    $EDITOR "$DOTSPATH"
+    $EDITOR "$BINDLEPATH"
   fi
 }
 
@@ -1702,10 +1720,10 @@ Usage:
   $_ME dir
 
 Description:
-  Print the current value of \$DOTSPATH
+  Print the current value of \$BINDLEPATH
 EOM
 dir() {
-  printf "%s\n" "$DOTSPATH"
+  printf "%s\n" "$BINDLEPATH"
 }
 
 ###############################################################################
