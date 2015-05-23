@@ -694,7 +694,7 @@ _print_desc() {
 
 # Version #####################################################################
 
-desc version <<EOM
+desc "version" <<EOM
 Usage:
   $_me ( version | --version )
 
@@ -709,7 +709,7 @@ version() {
 
 # Help ########################################################################
 
-desc help <<EOM
+desc "help" <<EOM
 Usage:
   $_me help [<command>]
 
@@ -752,7 +752,7 @@ EOM
 
 # Command List ################################################################
 
-desc commands <<EOM
+desc "commands" <<EOM
 Usage:
   $_me commands [--raw]
 
@@ -812,7 +812,7 @@ commands() {
 
 # ------------------------------------------------------------------------ init
 
-desc init <<EOM
+desc "init" <<EOM
 Usage:
   $_me init [<source_repository>] [<dotspath>] [--initialize-submodules] \
 [--skip-dotsrc]
@@ -1026,7 +1026,7 @@ A file or directory already exists at the dotfile repository path:
 
 # ------------------------------------------------------------------------- git
 
-desc git <<EOM
+desc "git" <<EOM
 Usage:
   $_me git command [--options] [<arguments>]
 
@@ -1053,7 +1053,7 @@ git() {
 
 # ---------------------------------------------------------------------- commit
 
-desc commit <<EOM
+desc "commit" <<EOM
 Usage:
   $_me commit [<message>]
 
@@ -1074,7 +1074,7 @@ commit() {
 
 # ------------------------------------------------------------------------ pull
 
-desc pull <<EOM
+desc "pull" <<EOM
 Usage:
   $_me pull
 
@@ -1089,7 +1089,7 @@ pull() {
 
 # ------------------------------------------------------------------------ push
 
-desc push <<EOM
+desc "push" <<EOM
 Usage:
   $_me push
 
@@ -1104,7 +1104,7 @@ push() {
 
 # ------------------------------------------------------------------ submodules
 
-desc submodules <<EOM
+desc "submodules" <<EOM
 Usage:
   $_me submodules ( sync | update )
 
@@ -1135,7 +1135,7 @@ submodules() {
 
 # ------------------------------------------------------------------- bootstrap
 
-desc bootstrap <<EOM
+desc "bootstrap" <<EOM
 Usage:
   $_me bootstrap ( list | <script_name> )
 
@@ -1157,7 +1157,7 @@ bootstrap() {
 
 # --------------------------------------------------------------------- install
 
-desc install <<EOM
+desc "install" <<EOM
 Usage:
   $_me install ( --all | list | <script_name> )
 
@@ -1176,7 +1176,7 @@ install() {
 
 # ------------------------------------------------------------------- configure
 
-desc configure <<EOM
+desc "configure" <<EOM
 Usage:
   $_me configure ( --all | list | <configuration_script> )
 
@@ -1195,7 +1195,7 @@ configure() {
 
 # ------------------------------------------------------------------- customize
 
-desc customize <<EOM
+desc "customize" <<EOM
 Usage:
   $_me customize ( --all | list | <customization_script> )
 
@@ -1216,7 +1216,7 @@ customize() {
 
 # ------------------------------------------------------------------------ list
 
-desc list <<EOM
+desc "list" <<EOM
 Usage:
   $_me [bin | home] list [tracked | untracked | <filename>]
 
@@ -1272,7 +1272,7 @@ list() {
 
 # ------------------------------------------------------------------- untracked
 
-desc untracked <<EOM
+desc "untracked" <<EOM
 Usage:
   $_me [bin | home] untracked
 
@@ -1302,7 +1302,7 @@ untracked() {
 
 # --------------------------------------------------------------------- tracked
 
-desc tracked <<EOM
+desc "tracked" <<EOM
 Usage:
   $_me [bin | home] tracked
 
@@ -1327,7 +1327,7 @@ tracked() {
 
 # ------------------------------------------------------------------------- add
 
-desc add <<EOM
+desc "add" <<EOM
 Usage:
   $_me [bin | home] add <filename> [--force]
 
@@ -1405,7 +1405,7 @@ add() {
 
 # --------------------------------------------------------------------- restore
 
-desc restore <<EOM
+desc "restore" <<EOM
 Usage:
   $_me [bin | home] restore <filename>
 
@@ -1443,7 +1443,7 @@ restore() {
 
 # ---------------------------------------------------------------------- status
 
-desc status <<EOM
+desc "status" <<EOM
 Usage:
   $_me [bin | home] status
 
@@ -1474,7 +1474,7 @@ status() {
 
 # ------------------------------------------------------------------------ link
 
-desc link <<EOM
+desc "link" <<EOM
 Usage:
   $_me [bin | home] link [<filename>] [--overwrite [--with-backup]]
 
@@ -1533,7 +1533,7 @@ link() {
 
 # ---------------------------------------------------------------------- unlink
 
-desc unlink <<EOM
+desc "unlink" <<EOM
 Usage:
   $_me [bin | home] unlink [<filename>]
 
@@ -1568,7 +1568,7 @@ unlink() {
 
 # ---------------------------------------------------------------------- rename
 
-desc rename <<EOM
+desc "rename" <<EOM
 Usage:
   $_me [bin | home] rename <old_filename> <new_filename>
 
@@ -1607,7 +1607,7 @@ rename() {
 
 # ------------------------------------------------------------------------ edit
 
-desc edit <<EOM
+desc "edit" <<EOM
 Usage:
   $_me edit
   $_me [bin | home] edit [<filename>]
@@ -1630,7 +1630,7 @@ edit() {
 
 # ------------------------------------------------------------------------- dir
 
-desc dir <<EOM
+desc "dir" <<EOM
 Usage:
   $_me dir
 
