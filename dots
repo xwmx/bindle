@@ -287,9 +287,9 @@ unset options
 # that have been filtered out in the program option parsing loop. This array
 # is initialized with $0, which is the program's name.
 COMMAND_ARGV=("$0")
-# Initialize $cmd and $_USE_DEBUG, which can continue to be blank depending on
+# Initialize $_CMD and $_USE_DEBUG, which can continue to be blank depending on
 # what the program needs.
-cmd=""
+_CMD=""
 _USE_DEBUG=0
 
 while [ $# -gt 0 ]; do
@@ -297,10 +297,10 @@ while [ $# -gt 0 ]; do
   shift
   case "$opt" in
     -h|--help)
-      cmd="help"
+      _CMD="help"
       ;;
     --version)
-      cmd="version"
+      _CMD="version"
       ;;
     --debug)
       _USE_DEBUG=1
@@ -309,7 +309,7 @@ while [ $# -gt 0 ]; do
       # If an argument prior to the command name is either 'bin' or 'home', set
       # that as the context. Otherwise, if the command has already been set,
       # then any matches are assumed to be command arguments.
-      if [[ -z $cmd ]]; then
+      if [[ -z $_CMD ]]; then
         context="$opt"
       else
         COMMAND_ARGV+=("$opt")
@@ -318,10 +318,10 @@ while [ $# -gt 0 ]; do
     *)
       # The first non-context argument encountered is assumed to be the command
       # name, and all subsequent arguments are set as command arguments.
-      if [[ -n $cmd ]]; then
+      if [[ -n $_CMD ]]; then
         COMMAND_ARGV+=("$opt")
       else
-        cmd=$opt
+        _CMD=$opt
       fi
       ;;
   esac
@@ -338,7 +338,7 @@ fi
 COMMAND_PARAMETERS=("${COMMAND_ARGV[@]:1}")
 
 _debug printf "\$context: %s\n" "$context"
-_debug printf "\$cmd: %s\n" "$cmd"
+_debug printf "\$_CMD: %s\n" "$_CMD"
 _debug printf "\$RAW_OPTIONS (one per line):\n%s\n" "$RAW_OPTIONS"
 _debug printf "\$COMMAND_ARGV: %s\n" "${COMMAND_ARGV[*]}"
 _debug printf "\$COMMAND_PARAMETERS: %s\n" "${COMMAND_PARAMETERS[*]:-}"
@@ -462,22 +462,22 @@ _load_commands() {
 # NOTE: must be called at end of program after all commands have been defined.
 _main() {
   _debug printf "main(): entering...\n"
-  _debug printf "main() \$cmd (upon entering): %s\n" "$cmd"
+  _debug printf "main() \$_CMD (upon entering): %s\n" "$_CMD"
 
-  # If $cmd is blank, then set to help
-  if [[ -z $cmd ]]; then
-    cmd="help"
+  # If $_CMD is blank, then set to help
+  if [[ -z $_CMD ]]; then
+    _CMD="help"
   fi
 
   # Load all of the commands.
   _load_commands
 
   # If the command is defined, run it, otherwise return an error.
-  if ( _contains "$cmd" "${defined_commands[*]:-}" ); then
+  if ( _contains "$_CMD" "${defined_commands[*]:-}" ); then
     # Pass all comment arguments to the program except for the first ($0).
-    $cmd "${COMMAND_PARAMETERS[@]:-}"
+    $_CMD "${COMMAND_PARAMETERS[@]:-}"
   else
-    _die printf "Unknown command: %s\n" "$cmd"
+    _die printf "Unknown command: %s\n" "$_CMD"
   fi
 }
 
