@@ -1343,9 +1343,9 @@ list() {
   elif [[ "$1" =~ ^\.(.*) ]]; then
     f="$original_dir/$1"
     if [[ -e "$f" ]]; then
-      filename=$(basename "$f")
-      tracked_file=$tracked_dir/$filename
-      original_file=$original_dir/$filename
+      filename="$(basename "$f")"
+      tracked_file="$tracked_dir/$filename"
+      original_file="$original_dir/$filename"
       _list_item
     else
       _die printf "File not found.\n"
@@ -1431,19 +1431,19 @@ add() {
   if [[ $# = 0 ]]; then
     _die printf "Must specify a valid file or directory name.\n"
   else
-    filename=$(basename "$1")
+    filename="$(basename "$1")"
 
-    original_file=$original_dir/$filename
+    original_file="$original_dir/$filename"
     _debug printf "add() \$original_file: %s\n" "$original_file"
 
-    tracked_file=$tracked_dir/$filename
+    tracked_file="$tracked_dir/$filename"
     _debug printf "add() \$tracked_file: %s\n" "$tracked_file"
 
     # Because the if / else is complicated, guarding against errors by only
     # proceeding when this variable has been set.
     safe_to_proceed=
 
-    if [[ ! -e $original_file ]]; then
+    if [[ ! -e "$original_file" ]]; then
       _die printf "File or directory does not exist.\n"
     elif ( \
       [[ "$filename" == "/"  ]] || \
@@ -1451,7 +1451,7 @@ add() {
       [[ "$filename" == ".." ]]
     ); then
       _die printf "Invalid filename: %s\n" "$filename"
-    elif [[ -e $tracked_file ]]; then
+    elif [[ -e "$tracked_file" ]]; then
       if _command_argv_includes "--force"; then
         printf "Overwriting %s\n" "$tracked_file"
         while true; do
@@ -1475,7 +1475,7 @@ add() {
       else
         _die printf "File has already been added.\n"
       fi
-    elif [[ -L $original_file ]]; then
+    elif [[ -L "$original_file" ]]; then
       _die printf "Original is already a symlink.\n"
     else
       safe_to_proceed=1
@@ -1506,17 +1506,17 @@ restore() {
   if [[ $# = 0 ]]; then
     _die printf "Must specify a valid file or directory name.\n"
   else
-    filename=$(basename "$1")
+    filename="$(basename "$1")"
 
-    original_file=$original_dir/$filename
+    original_file="$original_dir/$filename"
     _debug printf "restore() \$original_file: %s\n" "$original_file"
 
-    tracked_file=$tracked_dir/$filename
+    tracked_file="$tracked_dir/$filename"
     _debug printf "restore() \$tracked_file: %s\n" "$tracked_file"
 
-    if [[ ! -e $tracked_file ]]; then
+    if [[ ! -e "$tracked_file" ]]; then
       printf "File does not exist.\n"
-    elif [[ ! -L $original_file ]]; then
+    elif [[ ! -L "$original_file" ]]; then
       printf "File is not a symlink.\n"
     else
       rm "$original_file"
@@ -1543,11 +1543,11 @@ Description:
       x - No file exists
 EOM
 _status_item() {
-  if ( [[ -L $original_file ]] && \
+  if ( [[ -L "$original_file" ]] && \
        [[ "$(readlink "$original_file")" == "$f" ]]
   ); then
     printf "i   %s\n" "$filename"
-  elif [[ -e $original_file ]]; then
+  elif [[ -e "$original_file" ]]; then
     printf " e  %s\n" "$filename"
   else
     printf "  x %s\n" "$filename"
@@ -1582,7 +1582,7 @@ Description:
   If a filename is passed to the link command, then it only acts on that file.
 EOM
 _link_item() {
-  if [[ -e $original_file ]]; then
+  if [[ -e "$original_file" ]]; then
     if _command_argv_includes "--overwrite" ; then
       if _command_argv_includes "--with-backup"; then
         if [[ -e "$original_file".bak ]]; then
@@ -1605,9 +1605,9 @@ _link_item() {
 link() {
   if [[ -n "$1" ]]; then
     f="$tracked_dir/$1"
-    filename=$(basename "$1")
-    tracked_file=$tracked_dir/$filename
-    original_file=$original_dir/$filename
+    filename="$(basename "$1")"
+    tracked_file="$tracked_dir/$filename"
+    original_file="$original_dir/$filename"
     if [[ -e "$tracked_file" ]]; then
       _link_item
     fi
@@ -1632,7 +1632,7 @@ Description:
   only acts on symlinks to that file.
 EOM
 _unlink_item() {
-  if ( [[ -L $original_file ]] && \
+  if ( [[ -L "$original_file" ]] && \
        [[ "$(readlink "$original_file")" == "$f" ]]
   ); then
     printf "Removing link: %s\n" "$original_file"
@@ -1642,9 +1642,9 @@ _unlink_item() {
 unlink() {
   if [[ -n "$1" ]]; then
     f="$tracked_dir/$1"
-    filename=$(basename "$1")
-    tracked_file=$tracked_dir/$filename
-    original_file=$original_dir/$filename
+    filename="$(basename "$1")"
+    tracked_file="$tracked_dir/$filename"
+    original_file="$original_dir/$filename"
     _unlink_item
   else
     _each_tracked_file _unlink_item
@@ -1663,9 +1663,9 @@ Decription:
   dotfiles).
 EOM
 rename() {
-  old_file=$tracked_dir/$1
+  old_file="$tracked_dir/$1"
   _debug printf "rename() \$old_file: %s\n" "$old_file"
-  new_file=$tracked_dir/$2
+  new_file="$tracked_dir/$2"
   _debug printf "rename() \$new_file: %s\n" "$new_file"
 
   if [[ -z "$1" ]]; then
@@ -1705,8 +1705,8 @@ edit() {
   [[ -z "$EDITOR" ]] && _die printf "\$EDITOR is not set.\n"
   if [[ -n "$1" ]]; then
     f="$tracked_dir/$1"
-    filename=$(basename "$1")
-    tracked_file=$tracked_dir/$filename
+    filename="$(basename "$1")"
+    tracked_file="$tracked_dir/$filename"
     $EDITOR "$tracked_file"
   else
     $EDITOR "$BINDLEPATH"
