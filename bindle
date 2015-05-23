@@ -134,8 +134,8 @@ if [[ -e "$HOME/.bindlerc" ]]; then
   BINDLERC="$HOME/.bindlerc"
 fi
 
-if [[ -n "$BINDLERC" ]]; then
-  source "$BINDLERC"
+if [[ -n "${BINDLERC:-}" ]]; then
+  source "${BINDLERC:-}"
 fi
 
 # $DEFAULT_COMMAND
