@@ -134,7 +134,7 @@ DEFAULT_COMMAND="${DEFAULT_COMMAND:-help}"
 # Globals
 ###############################################################################
 
-DOTS_VERSION="5.0.0-alpha"
+_DOTS_VERSION="5.0.0-alpha"
 
 # Set dotfiles if not already set.
 if [[ -z ${DOTSPATH:-} ]]; then
@@ -768,10 +768,10 @@ Usage:
 Description:
   Display the current program version.
 
-  To save you the trouble, the current version is $DOTS_VERSION
+  To save you the trouble, the current version is $_DOTS_VERSION
 EOM
 version() {
-  printf "%s\n" "$DOTS_VERSION"
+  printf "%s\n" "$_DOTS_VERSION"
 }
 
 # Help ########################################################################
@@ -795,7 +795,7 @@ help() {
 
 A configuration management tool for your personal unix-like computer.
 
-Version: $DOTS_VERSION
+Version: $_DOTS_VERSION
 
 Usage:
   $_ME command [--debug] [--command-options] [<arguments>]
