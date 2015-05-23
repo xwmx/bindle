@@ -280,13 +280,13 @@ unset options
 
 # Parse Options ###############################################################
 
-# Initialize command_argv array
+# Initialize $COMMAND_ARGV array
 #
 # This array contains all of the arguments that get passed along to each
 # command. This is essentially the same as the program arguments, minus those
 # that have been filtered out in the program option parsing loop. This array
 # is initialized with $0, which is the program's name.
-command_argv=("$0")
+COMMAND_ARGV=("$0")
 # Initialize $cmd and $_USE_DEBUG, which can continue to be blank depending on
 # what the program needs.
 cmd=""
@@ -312,14 +312,14 @@ while [ $# -gt 0 ]; do
       if [[ -z $cmd ]]; then
         context="$opt"
       else
-        command_argv+=("$opt")
+        COMMAND_ARGV+=("$opt")
       fi
       ;;
     *)
       # The first non-context argument encountered is assumed to be the command
       # name, and all subsequent arguments are set as command arguments.
       if [[ -n $cmd ]]; then
-        command_argv+=("$opt")
+        COMMAND_ARGV+=("$opt")
       else
         cmd=$opt
       fi
@@ -332,15 +332,15 @@ if [[ -z "${context:-}" ]]; then
   context="home"
 fi
 
-# Set $command_parameters to $command_argv, minus the initial element, $0. This
+# Set $command_parameters to $COMMAND_ARGV, minus the initial element, $0. This
 # provides an array that is equivalent to $* and $@ within each command
 # function, though the array is zero-indexed, which could lead to confusion.
-command_parameters=("${command_argv[@]:1}")
+command_parameters=("${COMMAND_ARGV[@]:1}")
 
 _debug printf "\$context: %s\n" "$context"
 _debug printf "\$cmd: %s\n" "$cmd"
 _debug printf "\$raw_options (one per line):\n%s\n" "$raw_options"
-_debug printf "\$command_argv: %s\n" "${command_argv[*]}"
+_debug printf "\$COMMAND_ARGV: %s\n" "${COMMAND_ARGV[*]}"
 _debug printf "\$command_parameters: %s\n" "${command_parameters[*]:-}"
 
 ###############################################################################
@@ -625,7 +625,7 @@ _contains() {
 # Usage:
 #   _command_argv_includes "an_argument"
 _command_argv_includes() {
-  _contains "$1" "${command_argv[*]}"
+  _contains "$1" "${COMMAND_ARGV[*]}"
 }
 
 ###############################################################################
@@ -717,7 +717,7 @@ Description:
   Display help information for $_me or a specified command.
 EOM
 help() {
-  if [[ ${#command_argv[@]} = 1 ]]; then
+  if [[ ${#COMMAND_ARGV[@]} = 1 ]]; then
     cat <<EOM
          _       _
         | |     | |
