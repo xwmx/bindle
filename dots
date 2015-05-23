@@ -287,8 +287,8 @@ unset options
 # that have been filtered out in the program option parsing loop. This array
 # is initialized with $0, which is the program's name.
 _COMMAND_ARGV=("$0")
-# Initialize $_CMD and $_USE_DEBUG, which can continue to be blank depending on
-# what the program needs.
+# Initialize `$_CMD` and `$_USE_DEBUG`, which can continue to be blank
+# depending on what the program needs.
 _CMD=""
 _USE_DEBUG=0
 
