@@ -487,10 +487,11 @@ _main() {
 
 # _each_file()
 #
+# Usage:
+#   _each_file directory function
+#
 # Iterate over the files in the specified directory and execute the specified
 # function.
-#
-# Usage: _each_file directory function
 _each_file() {
   local per_file_function=$2
   if [[ "$context" == "home" ]]; then
@@ -520,9 +521,10 @@ _each_file() {
 
 # _runner()
 #
-# Run or list scripts in a specified script subdirectory.
+# Usage:
+#   _runner subdirectory ( --all | <list> | <script_name> )
 #
-# Usage: _runner subdirectory ( --all | <list> | <script_name> )
+# Run or list scripts in a specified script subdirectory.
 _run_script() {
   local _script="$1"
   local script_arguments=(${@:2})
@@ -569,20 +571,22 @@ EOM
 
 # _each_tracked_file()
 #
+# Usage:
+#   _each_tracked_file function
+#
 # Iterate over the files in the tracked directory and execute the specified
 # function.
-#
-# Usage: _each_tracked_file function
 _each_tracked_file() {
   _each_file "$tracked_dir" "$1"
 }
 
 # _each_original_file()
 #
+# Usage:
+#   _each_original_file function
+#
 # Iterate over the files in the original directory and execute the specified
 # function.
-#
-# Usage: _each_original_file function
 _each_original_file() {
   _each_file "$original_dir" "$1"
 }
