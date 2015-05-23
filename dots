@@ -124,6 +124,12 @@ if [[ -e "$dotsrc" ]]; then
   source "$dotsrc"
 fi
 
+# $DEFAULT_COMMAND
+#
+# The command to be run by default, when no command name is specified. If the
+# environment has an existing $DEFAULT_COMMAND set, then that value is used.
+DEFAULT_COMMAND="${DEFAULT_COMMAND:-help}"
+
 ###############################################################################
 # Globals
 ###############################################################################
@@ -464,9 +470,9 @@ _main() {
   _debug printf "main(): entering...\n"
   _debug printf "main() \$_CMD (upon entering): %s\n" "$_CMD"
 
-  # If $_CMD is blank, then set to help
+  # If $_CMD is blank, then set to `$DEFAULT_COMMAND`
   if [[ -z $_CMD ]]; then
-    _CMD="help"
+    _CMD="$DEFAULT_COMMAND"
   fi
 
   # Load all of the commands.
