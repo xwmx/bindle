@@ -347,12 +347,12 @@ _debug printf "\$_COMMAND_PARAMETERS: %s\n" "${_COMMAND_PARAMETERS[*]:-}"
 # Environment
 ###############################################################################
 
-# $_me
+# $_ME
 #
 # Set to the program's basename.
-_me=$(basename "$0")
+_ME=$(basename "$0")
 
-_debug printf "\$_me: %s\n" "$_me"
+_debug printf "\$_ME: %s\n" "$_ME"
 
 # $tracked_dir
 #
@@ -562,7 +562,7 @@ _runner() {
   else
     _die cat <<EOM
 Script must be specified. List available '$subdir' scripts by running:
-  $_me $1 list
+  $_ME $1 list
 EOM
   fi
 }
@@ -696,7 +696,7 @@ _print_desc() {
 
 desc "version" <<EOM
 Usage:
-  $_me ( version | --version )
+  $_ME ( version | --version )
 
 Description:
   Display the current program version.
@@ -711,10 +711,10 @@ version() {
 
 desc "help" <<EOM
 Usage:
-  $_me help [<command>]
+  $_ME help [<command>]
 
 Description:
-  Display help information for $_me or a specified command.
+  Display help information for $_ME or a specified command.
 EOM
 help() {
   if [[ ${#_COMMAND_ARGV[@]} = 1 ]]; then
@@ -731,9 +731,9 @@ A configuration management tool for your personal unix-like computer.
 Version: $DOTS_VERSION
 
 Usage:
-  $_me command [--debug] [--command-options] [<arguments>]
-  $_me -h | --help
-  $_me --version
+  $_ME command [--debug] [--command-options] [<arguments>]
+  $_ME -h | --help
+  $_ME --version
 
 Options:
   --debug    Print debug information.
@@ -741,7 +741,7 @@ Options:
   --version  Display version information.
 
 Help:
-  $_me help [<command>]
+  $_ME help [<command>]
 
 $(commands)
 EOM
@@ -754,7 +754,7 @@ EOM
 
 desc "commands" <<EOM
 Usage:
-  $_me commands [--raw]
+  $_ME commands [--raw]
 
 Options:
   --raw  Display the command list without formatting.
@@ -784,7 +784,7 @@ commands() {
 #
 # desc example <<EOM
 #   Usage:
-#     $_me example
+#     $_ME example
 #
 #   Description:
 #     List files.
@@ -814,7 +814,7 @@ commands() {
 
 desc "init" <<EOM
 Usage:
-  $_me init [<source_repository>] [<dotspath>] [--initialize-submodules] \
+  $_ME init [<source_repository>] [<dotspath>] [--initialize-submodules] \
 [--skip-dotsrc]
 
 Options:
@@ -1028,7 +1028,7 @@ A file or directory already exists at the dotfile repository path:
 
 desc "git" <<EOM
 Usage:
-  $_me git command [--options] [<arguments>]
+  $_ME git command [--options] [<arguments>]
 
 Description:
   Run a git command within the \$DOTSPATH directory.
@@ -1055,7 +1055,7 @@ git() {
 
 desc "commit" <<EOM
 Usage:
-  $_me commit [<message>]
+  $_ME commit [<message>]
 
 Description:
   Commit the current changes to git. If a message is provided, it will be used
@@ -1076,7 +1076,7 @@ commit() {
 
 desc "pull" <<EOM
 Usage:
-  $_me pull
+  $_ME pull
 
 Description:
   Pull latest changes from the remote repository.
@@ -1091,7 +1091,7 @@ pull() {
 
 desc "push" <<EOM
 Usage:
-  $_me push
+  $_ME push
 
 Description:
   Push local commits to the remote repository.
@@ -1106,7 +1106,7 @@ push() {
 
 desc "submodules" <<EOM
 Usage:
-  $_me submodules ( sync | update )
+  $_ME submodules ( sync | update )
 
 Subcommands:
   sync    Sync all submodules with the current head commit. This usually be
@@ -1137,7 +1137,7 @@ submodules() {
 
 desc "bootstrap" <<EOM
 Usage:
-  $_me bootstrap ( list | <script_name> )
+  $_ME bootstrap ( list | <script_name> )
 
 Description:
   Run the specified bootstrap script.
@@ -1159,7 +1159,7 @@ bootstrap() {
 
 desc "install" <<EOM
 Usage:
-  $_me install ( --all | list | <script_name> )
+  $_ME install ( --all | list | <script_name> )
 
 Options:
   --all  Run all install scripts.
@@ -1178,7 +1178,7 @@ install() {
 
 desc "configure" <<EOM
 Usage:
-  $_me configure ( --all | list | <configuration_script> )
+  $_ME configure ( --all | list | <configuration_script> )
 
 Options:
   --all  Run all configure scripts.
@@ -1197,7 +1197,7 @@ configure() {
 
 desc "customize" <<EOM
 Usage:
-  $_me customize ( --all | list | <customization_script> )
+  $_ME customize ( --all | list | <customization_script> )
 
 Options:
   --all  Run all customize scripts.
@@ -1218,7 +1218,7 @@ customize() {
 
 desc "list" <<EOM
 Usage:
-  $_me [bin | home] list [tracked | untracked | <filename>]
+  $_ME [bin | home] list [tracked | untracked | <filename>]
 
 Description:
   List all files in the original directory of the current context ('bin' or
@@ -1274,7 +1274,7 @@ list() {
 
 desc "untracked" <<EOM
 Usage:
-  $_me [bin | home] untracked
+  $_ME [bin | home] untracked
 
 Description:
   List all untracked dotfiles in the original directory of the current context
@@ -1304,7 +1304,7 @@ untracked() {
 
 desc "tracked" <<EOM
 Usage:
-  $_me [bin | home] tracked
+  $_ME [bin | home] tracked
 
 Description:
   List all tracked dotfiles from in the original directory of the current
@@ -1329,7 +1329,7 @@ tracked() {
 
 desc "add" <<EOM
 Usage:
-  $_me [bin | home] add <filename> [--force]
+  $_ME [bin | home] add <filename> [--force]
 
 Options:
   --force  Overwrite files and folders in the repository that have the same
@@ -1407,7 +1407,7 @@ add() {
 
 desc "restore" <<EOM
 Usage:
-  $_me [bin | home] restore <filename>
+  $_ME [bin | home] restore <filename>
 
 Description:
   Unlink the specified file and move from the tracked location in the
@@ -1445,7 +1445,7 @@ restore() {
 
 desc "status" <<EOM
 Usage:
-  $_me [bin | home] status
+  $_ME [bin | home] status
 
 Description:
   List status of files in original directory of the current context ('bin' or
@@ -1476,7 +1476,7 @@ status() {
 
 desc "link" <<EOM
 Usage:
-  $_me [bin | home] link [<filename>] [--overwrite [--with-backup]]
+  $_ME [bin | home] link [<filename>] [--overwrite [--with-backup]]
 
 Options:
   --overwrite    Overwrite any files that exist in the directory where links
@@ -1535,7 +1535,7 @@ link() {
 
 desc "unlink" <<EOM
 Usage:
-  $_me [bin | home] unlink [<filename>]
+  $_ME [bin | home] unlink [<filename>]
 
 Description:
   Remove symlinks in the original directory for the context ('bin' or 'home').
@@ -1570,7 +1570,7 @@ unlink() {
 
 desc "rename" <<EOM
 Usage:
-  $_me [bin | home] rename <old_filename> <new_filename>
+  $_ME [bin | home] rename <old_filename> <new_filename>
 
 Decription:
   Rename a tracked file and its corresponding link in the specified context. If
@@ -1609,8 +1609,8 @@ rename() {
 
 desc "edit" <<EOM
 Usage:
-  $_me edit
-  $_me [bin | home] edit [<filename>]
+  $_ME edit
+  $_ME [bin | home] edit [<filename>]
 
 Description:
   Open a tracked file or, when no filename is specified, the entire tracked
@@ -1632,7 +1632,7 @@ edit() {
 
 desc "dir" <<EOM
 Usage:
-  $_me dir
+  $_ME dir
 
 Description:
   Print the current value of \$DOTSPATH
