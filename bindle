@@ -148,7 +148,7 @@ DEFAULT_COMMAND="${DEFAULT_COMMAND:-help}"
 # Globals
 ###############################################################################
 
-_BINDLE_VERSION="5.0.0"
+_BINDLE_VERSION="5.0.1"
 
 # Set `$BINDLEPATH` to `$DOTSPATH` if present.
 #
