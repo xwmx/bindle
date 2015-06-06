@@ -162,6 +162,15 @@ if [[ -z "${BINDLEPATH:-}" ]]; then
   BINDLEPATH="$HOME/.bindle"
 fi
 
+# Verify that $BINDLEPATH is a directory.
+if [[ ! -e "${BINDLEPATH}" ]]; then
+  printf "\$BINDLEPATH (%s) does not exist.\n" "${BINDLEPATH}"
+  exit 1
+elif [[ ! -d "${BINDLEPATH}" ]]; then
+  printf "\$BINDLEPATH (%s) is not a directory.\n" "${BINDLEPATH}"
+  exit 1
+fi
+
 ###############################################################################
 # Debug
 ###############################################################################
