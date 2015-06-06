@@ -522,9 +522,9 @@ _main() {
 _each_file() {
   local per_file_function=$2
   if [[ "$context" == "home" ]]; then
-    local search_files="$1/.*"
+    local search_files="$1"/.*
   else
-    local search_files="$1/*"
+    local search_files="$1"/*
   fi
   for f in $search_files
   do
