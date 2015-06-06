@@ -522,11 +522,12 @@ _main() {
 _each_file() {
   local per_file_function=$2
   if [[ "$context" == "home" ]]; then
-    local search_files="$1"/.*
+    local search_files=("$1"/.*)
   else
-    local search_files="$1"/*
+    local search_files=("$1"/*)
   fi
-  for f in $search_files
+  _debug printf "_each_file() \${#search_files[@]}: %s\n" "${#search_files[@]}"
+  for f in "${search_files[@]}"
   do
     local filename
     filename="$(basename "$f")"
