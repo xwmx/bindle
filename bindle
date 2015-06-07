@@ -1432,10 +1432,21 @@ EOM
 add() {
   _debug printf "add() \$1: %s\n" "$1"
 
-  if [[ $# = 0 ]]; then
+  local _force=0
+  local _arguments=()
+
+  for arg in "${_COMMAND_PARAMETERS[@]:-}"; do
+    case $arg in
+      --force) _force=1;;
+      *) _arguments+=($arg);;
+    esac
+  done
+
+
+  if [[ "${#_arguments[@]}" = 0 ]]; then
     _die printf "Must specify a valid file or directory name.\n"
   else
-    filename="$(basename "$1")"
+    filename="$(basename "${_arguments[@]}")"
 
     original_file="$original_dir/$filename"
     _debug printf "add() \$original_file: %s\n" "$original_file"
@@ -1456,7 +1467,7 @@ add() {
     ); then
       _die printf "Invalid filename: %s\n" "$filename"
     elif [[ -e "$tracked_file" ]]; then
-      if _command_argv_includes "--force"; then
+      if (($_force)); then
         printf "Overwriting %s\n" "$tracked_file"
         while true; do
           read -p "Are you sure you want to proceed? [y/n] " yn
