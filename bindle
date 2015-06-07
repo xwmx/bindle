@@ -1587,8 +1587,8 @@ Description:
 EOM
 _link_item() {
   if [[ -e "$original_file" ]]; then
-    if _command_argv_includes "--overwrite" ; then
-      if _command_argv_includes "--with-backup"; then
+    if (($_overwrite)); then
+      if (($_with_backup)); then
         if [[ -e "$original_file".bak ]]; then
           printf "Exists with .bak: %s, %s\n" "$filename" "$filename".bak
           return 0
@@ -1607,9 +1607,21 @@ _link_item() {
   ln -s "$f" "$original_file"
 }
 link() {
-  if [[ -n "$1" ]]; then
-    f="$tracked_dir/$1"
-    filename="$(basename "$1")"
+  local _overwrite=0
+  local _with_backup=0
+  local _arguments=()
+
+  for arg in "${_COMMAND_ARGV[@]:-}"; do
+    case $arg in
+      --overwrite)    _overwrite=1;;
+      --with-backup)  _with_backup=1;;
+      *)              _arguments+=($arg);;
+    esac
+  done
+
+  if [[ -n "${_arguments[1]:-}" ]]; then
+    f="$tracked_dir/${_arguments[1]}"
+    filename="$(basename "${_arguments[1]}")"
     tracked_file="$tracked_dir/$filename"
     original_file="$original_dir/$filename"
     if [[ -e "$tracked_file" ]]; then
