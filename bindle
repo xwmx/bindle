@@ -1422,7 +1422,7 @@ Usage:
 
 Options:
   --force  Overwrite files and folders in the repository that have the same
-           as the item(s) being added.
+           name as the item(s) being added.
 
 Description:
   Add the specified file to the tracked directory for the context ('bin' or
