@@ -1505,7 +1505,7 @@ add() {
   local _force=0
   local _arguments=()
 
-  for arg in "${_COMMAND_PARAMETERS[@]:-}"
+  for arg in "${_COMMAND_ARGV[@]:-}"
   do
     case $arg in
       --force) _force=1;;
@@ -1514,11 +1514,11 @@ add() {
   done
 
 
-  if [[ "${#_arguments[@]}" = 0 ]]
+  if [[ -z "${_arguments[1]:-}" ]]
   then
     _die printf "Must specify a valid file or directory name.\n"
   else
-    filename="$(basename "${_arguments[@]}")"
+    filename="$(basename "${_arguments[1]:-}")"
 
     original_file="$original_dir/$filename"
     _debug printf "add() \$original_file: %s\n" "$original_file"
