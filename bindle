@@ -113,65 +113,6 @@ SAFER_IFS="$(printf '\n\t')"
 IFS="$SAFER_IFS"
 
 ###############################################################################
-# .bindlerc
-###############################################################################
-
-# .dotsrc (backwards compatibility)
-#
-# If a `.dotsrc` file exists in `$HOME`, source it.
-#
-# NOTE: This is superceded by .bindlerc if it is present.
-#
-# TODO: remove this.
-if [[ -e "$HOME/.dotsrc" ]]; then
-  BINDLERC="$HOME/.dotsrc"
-fi
-
-# .bindlerc
-#
-# If a `.bindlerc` file exists in `$HOME`, source it.
-if [[ -e "$HOME/.bindlerc" ]]; then
-  BINDLERC="$HOME/.bindlerc"
-fi
-
-if [[ -n "${BINDLERC:-}" ]]; then
-  source "${BINDLERC:-}"
-fi
-
-# $DEFAULT_COMMAND
-#
-# The command to be run by default, when no command name is specified. If the
-# environment has an existing $DEFAULT_COMMAND set, then that value is used.
-DEFAULT_COMMAND="${DEFAULT_COMMAND:-help}"
-
-###############################################################################
-# Globals
-###############################################################################
-
-_BINDLE_VERSION="5.0.1"
-
-# Set `$BINDLEPATH` to `$DOTSPATH` if present.
-#
-# TODO: remove this.
-if [[ -n "${DOTSPATH:-}" ]]; then
-  BINDLEPATH="$DOTSPATH"
-fi
-
-# Set `$BINDLEPATH` if not already set.
-if [[ -z "${BINDLEPATH:-}" ]]; then
-  BINDLEPATH="$HOME/.bindle"
-fi
-
-# Verify that $BINDLEPATH is a directory.
-if [[ ! -e "${BINDLEPATH}" ]]; then
-  printf "\$BINDLEPATH (%s) does not exist.\n" "${BINDLEPATH}"
-  exit 1
-elif [[ ! -d "${BINDLEPATH}" ]]; then
-  printf "\$BINDLEPATH (%s) is not a directory.\n" "${BINDLEPATH}"
-  exit 1
-fi
-
-###############################################################################
 # Debug
 ###############################################################################
 
@@ -232,6 +173,63 @@ _die() {
 die() {
   _die echo "$@"
 }
+
+###############################################################################
+# .bindlerc
+###############################################################################
+
+# .dotsrc (backwards compatibility)
+#
+# If a `.dotsrc` file exists in `$HOME`, source it.
+#
+# NOTE: This is superceded by .bindlerc if it is present.
+#
+# TODO: remove this.
+if [[ -e "$HOME/.dotsrc" ]]; then
+  BINDLERC="$HOME/.dotsrc"
+fi
+
+# .bindlerc
+#
+# If a `.bindlerc` file exists in `$HOME`, source it.
+if [[ -e "$HOME/.bindlerc" ]]; then
+  BINDLERC="$HOME/.bindlerc"
+fi
+
+if [[ -n "${BINDLERC:-}" ]]; then
+  source "${BINDLERC:-}"
+fi
+
+# $DEFAULT_COMMAND
+#
+# The command to be run by default, when no command name is specified. If the
+# environment has an existing $DEFAULT_COMMAND set, then that value is used.
+DEFAULT_COMMAND="${DEFAULT_COMMAND:-help}"
+
+###############################################################################
+# Globals
+###############################################################################
+
+_BINDLE_VERSION="5.0.1"
+
+# Set `$BINDLEPATH` to `$DOTSPATH` if present.
+#
+# TODO: remove this.
+if [[ -n "${DOTSPATH:-}" ]]; then
+  BINDLEPATH="$DOTSPATH"
+fi
+
+# Set `$BINDLEPATH` if not already set.
+if [[ -z "${BINDLEPATH:-}" ]]; then
+  BINDLEPATH="$HOME/.bindle"
+fi
+
+# Verify that $BINDLEPATH is a directory.
+if [[ ! -e "${BINDLEPATH}" ]]; then
+  _die printf "\$BINDLEPATH (%s) does not exist.\n" "${BINDLEPATH}"
+elif [[ ! -d "${BINDLEPATH}" ]]; then
+  _die printf "\$BINDLEPATH (%s) is not a directory.\n" "${BINDLEPATH}"
+fi
 
 ###############################################################################
 # Options
