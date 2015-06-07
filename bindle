@@ -121,7 +121,8 @@ IFS="$SAFER_IFS"
 # variable has been set. The command is expected to print a message and
 # should typically be either `echo`, `printf`, or `cat`.
 _debug() {
-  if [[ "${_USE_DEBUG:-"0"}" -eq 1 ]]; then
+  if [[ "${_USE_DEBUG:-"0"}" -eq 1 ]]
+  then
     # Prefix debug message with "bug (U+1F41B)"
     printf "🐛  "
     "$@"
@@ -181,18 +182,21 @@ die() {
 # NOTE: This is superceded by .bindlerc if it is present.
 #
 # TODO: remove this.
-if [[ -e "$HOME/.dotsrc" ]]; then
+if [[ -e "$HOME/.dotsrc" ]]
+then
   BINDLERC="$HOME/.dotsrc"
 fi
 
 # .bindlerc
 #
 # If a `.bindlerc` file exists in `$HOME`, source it.
-if [[ -e "$HOME/.bindlerc" ]]; then
+if [[ -e "$HOME/.bindlerc" ]]
+then
   BINDLERC="$HOME/.bindlerc"
 fi
 
-if [[ -n "${BINDLERC:-}" ]]; then
+if [[ -n "${BINDLERC:-}" ]]
+then
   source "${BINDLERC:-}"
 fi
 
@@ -211,19 +215,23 @@ _BINDLE_VERSION="5.0.1"
 # Set `$BINDLEPATH` to `$DOTSPATH` if present.
 #
 # TODO: remove this.
-if [[ -n "${DOTSPATH:-}" ]]; then
+if [[ -n "${DOTSPATH:-}" ]]
+then
   BINDLEPATH="$DOTSPATH"
 fi
 
 # Set `$BINDLEPATH` if not already set.
-if [[ -z "${BINDLEPATH:-}" ]]; then
+if [[ -z "${BINDLEPATH:-}" ]]
+then
   BINDLEPATH="$HOME/.bindle"
 fi
 
 # Verify that $BINDLEPATH is a directory.
-if [[ ! -e "${BINDLEPATH}" ]]; then
+if [[ ! -e "${BINDLEPATH}" ]]
+then
   _die printf "\$BINDLEPATH (%s) does not exist.\n" "${BINDLEPATH}"
-elif [[ ! -d "${BINDLEPATH}" ]]; then
+elif [[ ! -d "${BINDLEPATH}" ]]
+then
   _die printf "\$BINDLEPATH (%s) is not a directory.\n" "${BINDLEPATH}"
 fi
 
@@ -270,12 +278,14 @@ optstring=h
 # argument to the option, such as wget -qO-)
 unset options
 # while the number of arguments is greater than 0
-while (($#)); do
+while (($#))
+do
   case $1 in
     # if option is of type -ab
     -[!-]?*)
       # loop over each character starting with the second
-      for ((i=1; i<${#1}; i++)); do
+      for ((i=1; i<${#1}; i++))
+      do
         # extract 1 character from position 'i'
         c=${1:i:1}
         # add current char to options
@@ -283,14 +293,17 @@ while (($#)); do
 
         # if option takes a required argument, and it's not the last char
         # make the rest of the string its argument
-        if [[ $optstring = *"$c:"* && ${1:i+1} ]]; then
+        if [[ $optstring = *"$c:"* && ${1:i+1} ]]
+        then
           options+=("${1:i+1}")
           break
         fi
       done
       ;;
     # if option is of type --foo=bar, split on first '='
-    --?*=*) options+=("${1%%=*}" "${1#*=}");;
+    --?*=*)
+      options+=("${1%%=*}" "${1#*=}")
+      ;;
     # end of options, stop breaking them up
     --)
       options+=(--endopts)
@@ -299,7 +312,9 @@ while (($#)); do
       break
       ;;
     # otherwise, nothing special
-    *) options+=("$1");;
+    *)
+      options+=("$1")
+      ;;
   esac
 
   shift
@@ -322,7 +337,8 @@ _COMMAND_ARGV=("$0")
 _CMD=""
 _USE_DEBUG=0
 
-while [ $# -gt 0 ]; do
+while [ $# -gt 0 ]
+do
   opt="$1"
   shift
   case "$opt" in
@@ -339,7 +355,8 @@ while [ $# -gt 0 ]; do
       # If an argument prior to the command name is either 'bin' or 'home', set
       # that as the context. Otherwise, if the command has already been set,
       # then any matches are assumed to be command arguments.
-      if [[ -z $_CMD ]]; then
+      if [[ -z $_CMD ]]
+      then
         context="$opt"
       else
         _COMMAND_ARGV+=("$opt")
@@ -348,7 +365,8 @@ while [ $# -gt 0 ]; do
     *)
       # The first non-context argument encountered is assumed to be the command
       # name, and all subsequent arguments are set as command arguments.
-      if [[ -n $_CMD ]]; then
+      if [[ -n $_CMD ]]
+      then
         _COMMAND_ARGV+=("$opt")
       else
         _CMD=$opt
@@ -358,7 +376,8 @@ while [ $# -gt 0 ]; do
 done
 
 # If no context was set from the options, default to 'home'.
-if [[ -z "${context:-}" ]]; then
+if [[ -z "${context:-}" ]]
+then
   context="home"
 fi
 
@@ -388,7 +407,8 @@ _debug printf "\$_ME: %s\n" "$_ME"
 #
 # Set to either 'home' or 'bin' within the dotfiles repository, depending on
 # the context.
-if [[ "$context" == "bin" ]]; then
+if [[ "$context" == "bin" ]]
+then
   tracked_dir=$BINDLEPATH/bin
 else
   tracked_dir=$BINDLEPATH/home
@@ -399,7 +419,8 @@ _debug printf "\$tracked_dir: %s\n" "$tracked_dir"
 # $original_dir
 #
 # Set to either '$HOME/bin' or '$HOME', depending on the context.
-if [[ "$context" == "bin" ]]; then
+if [[ "$context" == "bin" ]]
+then
   original_dir=$HOME/bin
 else
   original_dir=$HOME
@@ -412,7 +433,8 @@ _debug printf "\$original_dir: %s\n" "$original_dir"
 # Must perform git operations via $_git_bin to avoid calling the `bindle git`
 # command.
 _git_bin=$(which git)
-if [[ -z "$_git_bin" ]]; then
+if [[ -z "$_git_bin" ]]
+then
   _die printf "\
 The \`git\` executable can not be found. Since \`$_ME\` depends on git, \
 please install git and make sure it has been added to your \$PATH.\n"
@@ -424,7 +446,8 @@ fi
 # is only partially loaded. The only command that currently uses this
 # directly handles the blank case by outputting an error, but nothing else
 # should be directly impacted by the blank case.
-if [[ -z ${EDITOR:-} ]]; then
+if [[ -z ${EDITOR:-} ]]
+then
   EDITOR=
 fi
 
@@ -468,7 +491,8 @@ _load_commands() {
            [[ "$function_name" == "desc"  ]] || \
            [[ "$function_name" == "debug" ]] || \
            [[ "$function_name" == "die"   ]]
-    ); then
+    )
+    then
       _DEFINED_COMMANDS+=("$function_name")
     fi
   done
@@ -495,7 +519,8 @@ _main() {
   _debug printf "main() \$_CMD (upon entering): %s\n" "$_CMD"
 
   # If $_CMD is blank, then set to `$DEFAULT_COMMAND`
-  if [[ -z $_CMD ]]; then
+  if [[ -z $_CMD ]]
+  then
     _CMD="$DEFAULT_COMMAND"
   fi
 
@@ -503,7 +528,8 @@ _main() {
   _load_commands
 
   # If the command is defined, run it, otherwise return an error.
-  if _contains "$_CMD" "${_DEFINED_COMMANDS[*]:-}"; then
+  if _contains "$_CMD" "${_DEFINED_COMMANDS[*]:-}"
+  then
     # Pass all comment arguments to the program except for the first ($0).
     $_CMD "${_COMMAND_PARAMETERS[@]:-}"
   else
@@ -524,7 +550,8 @@ _main() {
 # function.
 _each_file() {
   local per_file_function=$2
-  if [[ "$context" == "home" ]]; then
+  if [[ "$context" == "home" ]]
+  then
     local search_files=("$1"/.*)
   else
     local search_files=("$1"/*)
@@ -536,10 +563,12 @@ _each_file() {
     filename="$(basename "$f")"
     local tracked_file="$tracked_dir/$filename"
     local original_file="$original_dir/$filename"
-    if [[ "$context" == "home" ]]; then
+    if [[ "$context" == "home" ]]
+    then
       if ! ( [[ "$filename" =~ ^\.?\.$     ]] || \
              [[ "$filename" == ".DS_Store" ]]
-      ); then
+      )
+      then
         # Subfunctions can access the variables in this function, so it's not
         # necessary to pass them as arguments.
         $per_file_function
@@ -559,10 +588,12 @@ _each_file() {
 _run_script() {
   local _script="$1"
   local script_arguments=(${@:2})
-  if [[ -f "$_script" ]]; then
+  if [[ -f "$_script" ]]
+  then
     printf ">> Running %s\n" "$(basename "$_script")"
     "$_script" "${script_arguments[@]:-}"
-  elif [[ -d "$_script" ]]; then
+  elif [[ -d "$_script" ]]
+  then
     _die printf "'%s' is a directory.\n" "$_script"
   else
     _die printf "'%s' not found.\n" "$_script"
@@ -574,18 +605,23 @@ _runner() {
   local subdir_path="$BINDLEPATH/script/$subdir"
   local script_file="$subdir_path/$2"
   local script_arguments=(${@:3})
-  if _command_argv_includes "--all"; then
+  if _command_argv_includes "--all"
+  then
     for f in "$subdir_path"/*
     do
-      if [[ ! -d "$f" ]]; then
+      if [[ ! -d "$f" ]]
+      then
         _run_script "$f" "${script_arguments[@]:-}"
       fi
     done
-  elif [[ -n "$2" ]]; then
-    if [[ "$2" == "list" ]]; then
+  elif [[ -n "$2" ]]
+  then
+    if [[ "$2" == "list" ]]
+    then
       for f in "$subdir_path"/*
       do
-        if [[ -f "$f" ]]; then
+        if [[ -f "$f" ]]
+        then
           basename "$f"
         fi
       done
@@ -658,7 +694,8 @@ _contains() {
   for _test_element in "${test_list[@]:-}"
   do
     _debug printf "_contains() \$_test_element: %s\n" "$_test_element"
-    if [[ "$_test_element" == "$1" ]]; then
+    if [[ "$_test_element" == "$1" ]]
+    then
       _debug printf "_contains() match: %s\n" "$1"
       return 0
     fi
@@ -751,8 +788,9 @@ _present() {
 # escaping backslashes, which is more common.
 desc() {
   set +e
-  [[ -z "$1" ]] && _die printf "desc: No command name specified.\n"
-  if [[ -n "${2:-}" ]]; then
+  [[ -z $1 ]] && _die printf "desc: No command name specified.\n"
+  if [[ -n ${2:-} ]]
+  then
     read -d '' "_desc_$1" <<EOM
 $2
 EOM
@@ -773,7 +811,8 @@ EOM
 # set using the desc() function.
 _print_desc() {
   local var="_desc_$1"
-  if [[ -n ${!var:-} ]]; then
+  if [[ -n ${!var:-} ]]
+  then
     printf "%s\n" "${!var}"
   else
     printf "No additional information for \`%s\`\n" "$1"
@@ -809,7 +848,8 @@ Description:
   Display help information for $_ME or a specified command.
 EOM
 help() {
-  if [[ ${#_COMMAND_ARGV[@]} = 1 ]]; then
+  if [[ ${#_COMMAND_ARGV[@]} = 1 ]]
+  then
     cat <<EOM
 
  _____  ___  _____  _____  ____   _____
@@ -854,7 +894,8 @@ Description:
   Display the list of available commands.
 EOM
 commands() {
-  if _command_argv_includes "--raw"; then
+  if _command_argv_includes "--raw"
+  then
     printf "%s\n" "${_DEFINED_COMMANDS[@]:-}"
   else
     printf "Available commands:\n"
@@ -934,15 +975,18 @@ _init_with_source() {
   _debug printf "_init_with_source() \$1: %s\n" "$1"
   _debug printf "_init_with_source() \$2: %s\n" "$2"
 
-  if [[ -z "$1" ]]; then
+  if [[ -z "$1" ]]
+  then
     _die printf "Repository directory not specified.\n"
-  elif [[ -z "$2" ]]; then
+  elif [[ -z "$2" ]]
+  then
     _die printf "Source URL not specified.\n"
   else
     "$_git_bin" clone "$2" "$1"
   fi
 
-  if _command_argv_includes "--initialize-submodules"; then
+  if _command_argv_includes "--initialize-submodules"
+  then
     cd "$1"
     "$_git_bin" submodule init
     "$_git_bin" submodule update --init --recursive
@@ -955,7 +999,8 @@ _init_with_source() {
 # called by: init()
 _init_bindlerc() {
   _command_argv_includes "--skip-bindlerc" && return 0
-  if [[ -n "$1" ]]; then
+  if [[ -n "$1" ]]
+  then
     printf ">> Adding ~/.bindlerc configuration file.\n"
     printf "\
 # .bindlerc
@@ -977,7 +1022,8 @@ export BINDLEPATH=\"%s\"
 #
 # called by: init()
 _init_directory_structure() {
-  if [[ -n "$1" ]]; then
+  if [[ -n "$1" ]]
+  then
     mkdir "$1"
     mkdir "$1/bin"
     touch "$1/bin/.gitkeep"
@@ -1004,7 +1050,8 @@ _init_directory_structure() {
 #
 # called by: init()
 _init_gitignore() {
-  if [[ -n "$1" ]]; then
+  if [[ -n "$1" ]]
+  then
     printf "\
 # Ignore the local directory, but track .gitkeep so it's included in the repo.
 /local/*
@@ -1024,7 +1071,8 @@ _init_gitignore() {
 #
 # called by: init()
 _init_git_repository() {
-  if [[ -n "$1" ]]; then
+  if [[ -n "$1" ]]
+  then
     cd "$1"
     "$_git_bin" init
   else
@@ -1037,7 +1085,8 @@ _init_git_repository() {
 #
 # called by: init()
 _init_post_message() {
-  if [[ -n "$1" ]]; then
+  if [[ -n "$1" ]]
+  then
     printf "\
  _____  ___  _____  _____  ____   _____
 /  _  \\/___\\/  _  \\|  _  \\/  _/  /   __\\
@@ -1071,7 +1120,8 @@ init() {
   _regex='(https?|git|ssh|file)://[-A-Za-z0-9\+&@#/%?=~_|!:,.;]*[-A-Za-z0-9\+&@#/%=~_|]'
 
   # Create $HOME/bin if it doesn't exist.
-  if [[ ! -e "$HOME/bin" ]]; then
+  if [[ ! -e "$HOME/bin" ]]
+  then
     mkdir "$HOME/bin"
   fi
 
@@ -1079,10 +1129,13 @@ init() {
   #
   # Expected behavior:
   #   init [<source_repository>] [<bindlepath>]
-  if [[ -n "$1" ]]; then
-    if [[ "$1" =~ $_regex ]]; then
+  if [[ -n "$1" ]]
+  then
+    if [[ "$1" =~ $_regex ]]
+    then
       init_source="$1"
-      if [[ -n "$2" ]]; then
+      if [[ -n "$2" ]]
+      then
         BINDLEPATH="$2"
         _init_bindlerc "$BINDLEPATH"
       fi
@@ -1095,8 +1148,10 @@ init() {
   _debug printf "init() \$init_source: %s\n" "$init_source"
 
   # Initialize either from source or with fresh directory structure.
-  if [[ ! -e "$BINDLEPATH" ]]; then
-    if [[ -n "$init_source" ]]; then
+  if [[ ! -e "$BINDLEPATH" ]]
+  then
+    if [[ -n "$init_source" ]]
+    then
       _init_with_source "$BINDLEPATH" "$init_source"
     else
       _init_directory_structure "$BINDLEPATH"
@@ -1152,7 +1207,8 @@ Description:
 EOM
 commit() {
   cd "$BINDLEPATH"
-  if [[ -n "$1" ]]; then
+  if [[ -n "$1" ]]
+  then
     "$_git_bin" add .
     "$_git_bin" commit -a -m "$1"
   else
@@ -1237,7 +1293,8 @@ EOM
 bootstrap() {
   # Don't permit use of the --all flag, since it's unlikely that the user
   # intends to run all bootstrap scripts.
-  if ( _command_argv_includes "--all" ); then
+  if ( _command_argv_includes "--all" )
+  then
     _print_desc "bootstrap"
   else
     _runner "bootstrap" "${@:-}"
@@ -1326,27 +1383,35 @@ Description:
     @ i - Symbolic link to tracked file.
 EOM
 _list_item() {
-  if [[ -L $f ]]; then
-    if [[ "$(readlink "$f")" == "$tracked_file" ]]; then
+  if [[ -L $f ]]
+  then
+    if [[ "$(readlink "$f")" == "$tracked_file" ]]
+    then
       printf "@  i   %s\n" "$filename"
     else
       printf "@      %s\n" "$filename"
     fi
-  elif [[ -d $f ]]; then
+  elif [[ -d $f ]]
+  then
     printf "d      %s\n" "$filename"
-  elif [[ -e $f ]]; then
+  elif [[ -e $f ]]
+  then
     printf "       %s\n" "$filename"
   fi
 
 }
 list() {
-  if [[ "$1" == "untracked" ]]; then
+  if [[ "$1" == "untracked" ]]
+  then
     untracked
-  elif [[ "$1" == "tracked" ]]; then
+  elif [[ "$1" == "tracked" ]]
+  then
     tracked
-  elif [[ "$1" =~ ^\.(.*) ]]; then
+  elif [[ "$1" =~ ^\.(.*) ]]
+  then
     f="$original_dir/$1"
-    if [[ -e "$f" ]]; then
+    if [[ -e "$f" ]]
+    then
       filename="$(basename "$f")"
       tracked_file="$tracked_dir/$filename"
       original_file="$original_dir/$filename"
@@ -1375,13 +1440,17 @@ Description:
     @   - Symbolic link
 EOM
 _untracked_item() {
-  if [[ -L $f ]];then
-    if ! ( [[ "$(readlink "$f")" == "$tracked_file" ]] ); then
+  if [[ -L $f ]]
+  then
+    if ! ( [[ "$(readlink "$f")" == "$tracked_file" ]] )
+    then
       printf "@      %s\n" "$filename"
     fi
-  elif [[ -d $f ]]; then
+  elif [[ -d $f ]]
+  then
     printf "d      %s\n" "$filename"
-  elif [[ -e $f ]]; then
+  elif [[ -e $f ]]
+  then
     printf "       %s\n" "$filename"
   fi
 }
@@ -1406,7 +1475,8 @@ EOM
 _tracked_item() {
   if ( [[ -L $f ]] && \
        [[ "$(readlink "$f")" == "$tracked_file" ]]
-  ); then
+  )
+  then
     printf "@  i   %s\n" "$filename"
   fi
 }
@@ -1435,7 +1505,8 @@ add() {
   local _force=0
   local _arguments=()
 
-  for arg in "${_COMMAND_PARAMETERS[@]:-}"; do
+  for arg in "${_COMMAND_PARAMETERS[@]:-}"
+  do
     case $arg in
       --force) _force=1;;
       *) _arguments+=($arg);;
@@ -1443,7 +1514,8 @@ add() {
   done
 
 
-  if [[ "${#_arguments[@]}" = 0 ]]; then
+  if [[ "${#_arguments[@]}" = 0 ]]
+  then
     _die printf "Must specify a valid file or directory name.\n"
   else
     filename="$(basename "${_arguments[@]}")"
@@ -1458,18 +1530,23 @@ add() {
     # proceeding when this variable has been set.
     safe_to_proceed=
 
-    if [[ ! -e "$original_file" ]]; then
+    if [[ ! -e "$original_file" ]]
+    then
       _die printf "File or directory does not exist.\n"
     elif ( \
       [[ "$filename" == "/"  ]] || \
       [[ "$filename" == "."  ]] || \
       [[ "$filename" == ".." ]]
-    ); then
+    )
+    then
       _die printf "Invalid filename: %s\n" "$filename"
-    elif [[ -e "$tracked_file" ]]; then
-      if (($_force)); then
+    elif [[ -e "$tracked_file" ]]
+    then
+      if (($_force))
+      then
         printf "Overwriting %s\n" "$tracked_file"
-        while true; do
+        while true
+        do
           read -p "Are you sure you want to proceed? [y/n] " yn
           case $yn in
             [Yy]* )
@@ -1490,12 +1567,14 @@ add() {
       else
         _die printf "File has already been added.\n"
       fi
-    elif [[ -L "$original_file" ]]; then
+    elif [[ -L "$original_file" ]]
+    then
       _die printf "Original is already a symlink.\n"
     else
       safe_to_proceed=1
     fi
-    if [[ -n "$safe_to_proceed" ]]; then
+    if [[ -n "$safe_to_proceed" ]]
+    then
       mv "$original_file" "$tracked_dir"
       printf "Linking %s => %s\n" "$tracked_file" "$original_file"
       ln -s "$tracked_file" "$original_file"
@@ -1518,7 +1597,8 @@ EOM
 restore() {
   _debug printf "restore() \$1: %s\n" "$1"
 
-  if [[ $# = 0 ]]; then
+  if [[ $# = 0 ]]
+  then
     _die printf "Must specify a valid file or directory name.\n"
   else
     filename="$(basename "$1")"
@@ -1529,9 +1609,11 @@ restore() {
     tracked_file="$tracked_dir/$filename"
     _debug printf "restore() \$tracked_file: %s\n" "$tracked_file"
 
-    if [[ ! -e "$tracked_file" ]]; then
+    if [[ ! -e "$tracked_file" ]]
+    then
       printf "File does not exist.\n"
-    elif [[ ! -L "$original_file" ]]; then
+    elif [[ ! -L "$original_file" ]]
+    then
       printf "File is not a symlink.\n"
     else
       rm "$original_file"
@@ -1560,9 +1642,11 @@ EOM
 _status_item() {
   if ( [[ -L "$original_file" ]] && \
        [[ "$(readlink "$original_file")" == "$f" ]]
-  ); then
+  )
+  then
     printf "i   %s\n" "$filename"
-  elif [[ -e "$original_file" ]]; then
+  elif [[ -e "$original_file" ]]
+  then
     printf " e  %s\n" "$filename"
   else
     printf "  x %s\n" "$filename"
@@ -1597,10 +1681,14 @@ Description:
   If a filename is passed to the link command, then it only acts on that file.
 EOM
 _link_item() {
-  if [[ -e "$original_file" ]]; then
-    if (($_overwrite)); then
-      if (($_with_backup)); then
-        if [[ -e "$original_file".bak ]]; then
+  if [[ -e "$original_file" ]]
+  then
+    if (($_overwrite))
+    then
+      if (($_with_backup))
+      then
+        if [[ -e "$original_file".bak ]]
+        then
           printf "Exists with .bak: %s, %s\n" "$filename" "$filename".bak
           return 0
         else
@@ -1622,7 +1710,8 @@ link() {
   local _with_backup=0
   local _arguments=()
 
-  for arg in "${_COMMAND_ARGV[@]:-}"; do
+  for arg in "${_COMMAND_ARGV[@]:-}"
+  do
     case $arg in
       --overwrite)    _overwrite=1;;
       --with-backup)  _with_backup=1;;
@@ -1630,12 +1719,14 @@ link() {
     esac
   done
 
-  if [[ -n "${_arguments[1]:-}" ]]; then
+  if [[ -n "${_arguments[1]:-}" ]]
+  then
     f="$tracked_dir/${_arguments[1]}"
     filename="$(basename "${_arguments[1]}")"
     tracked_file="$tracked_dir/$filename"
     original_file="$original_dir/$filename"
-    if [[ -e "$tracked_file" ]]; then
+    if [[ -e "$tracked_file" ]]
+    then
       _link_item
     fi
   else
@@ -1661,13 +1752,15 @@ EOM
 _unlink_item() {
   if ( [[ -L "$original_file" ]] && \
        [[ "$(readlink "$original_file")" == "$f" ]]
-  ); then
+  )
+  then
     printf "Removing link: %s\n" "$original_file"
     rm "$original_file"
   fi
 }
 unlink() {
-  if [[ -n "$1" ]]; then
+  if [[ -n "$1" ]]
+  then
     f="$tracked_dir/$1"
     filename="$(basename "$1")"
     tracked_file="$tracked_dir/$filename"
@@ -1695,13 +1788,17 @@ rename() {
   new_file="$tracked_dir/$2"
   _debug printf "rename() \$new_file: %s\n" "$new_file"
 
-  if [[ -z "$1" ]]; then
+  if [[ -z "$1" ]]
+  then
     printf "Filename not provided.\n"
-  elif [[ -z "$2" ]]; then
+  elif [[ -z "$2" ]]
+  then
     printf "New name not provided.\n"
-  elif ! ( [[ -e "$old_file" ]] ); then
+  elif ! ( [[ -e "$old_file" ]] )
+  then
     printf "File not found.\n"
-  elif ( [[ -e "$new_file" ]] ); then
+  elif ( [[ -e "$new_file" ]] )
+  then
     printf "A file already exists with the new filename.\n"
   else
     unlink "$1"
@@ -1730,7 +1827,8 @@ Description:
 EOM
 edit() {
   [[ -z "$EDITOR" ]] && _die printf "\$EDITOR is not set.\n"
-  if [[ -n "$1" ]]; then
+  if [[ -n "$1" ]]
+  then
     f="$tracked_dir/$1"
     filename="$(basename "$1")"
     tracked_file="$tracked_dir/$filename"
