@@ -336,6 +336,7 @@ _COMMAND_ARGV=("$0")
 # depending on what the program needs.
 _CMD=""
 _USE_DEBUG=0
+_CONTEXT="home"
 
 while [ $# -gt 0 ]
 do
@@ -353,18 +354,19 @@ do
       ;;
     bin|home)
       # If an argument prior to the command name is either 'bin' or 'home', set
-      # that as the context. Otherwise, if the command has already been set,
+      # that as the $_CONTEXT. Otherwise, if the command has already been set,
       # then any matches are assumed to be command arguments.
       if [[ -z $_CMD ]]
       then
-        context="$opt"
+        _CONTEXT="$opt"
       else
         _COMMAND_ARGV+=("$opt")
       fi
       ;;
     *)
-      # The first non-context argument encountered is assumed to be the command
-      # name, and all subsequent arguments are set as command arguments.
+      # The first non-$_CONTEXT argument encountered is assumed to be the
+      # command name, and all subsequent arguments are set as command
+      # arguments.
       if [[ -n $_CMD ]]
       then
         _COMMAND_ARGV+=("$opt")
@@ -375,18 +377,12 @@ do
   esac
 done
 
-# If no context was set from the options, default to 'home'.
-if [[ -z "${context:-}" ]]
-then
-  context="home"
-fi
-
 # Set $_COMMAND_PARAMETERS to $_COMMAND_ARGV, minus the initial element, $0. This
 # provides an array that is equivalent to $* and $@ within each command
 # function, though the array is zero-indexed, which could lead to confusion.
 _COMMAND_PARAMETERS=("${_COMMAND_ARGV[@]:1}")
 
-_debug printf "\$context: %s\n" "$context"
+_debug printf "\$_CONTEXT: %s\n" "$_CONTEXT"
 _debug printf "\$_CMD: %s\n" "$_CMD"
 _debug printf "\$_RAW_OPTIONS (one per line):\n%s\n" "$_RAW_OPTIONS"
 _debug printf "\$_COMMAND_ARGV: %s\n" "${_COMMAND_ARGV[*]}"
@@ -406,8 +402,8 @@ _debug printf "\$_ME: %s\n" "$_ME"
 # $tracked_dir
 #
 # Set to either 'home' or 'bin' within the dotfiles repository, depending on
-# the context.
-if [[ "$context" == "bin" ]]
+# the $_CONTEXT
+if [[ "$_CONTEXT" == "bin" ]]
 then
   tracked_dir=$BINDLEPATH/bin
 else
@@ -419,7 +415,7 @@ _debug printf "\$tracked_dir: %s\n" "$tracked_dir"
 # $original_dir
 #
 # Set to either '$HOME/bin' or '$HOME', depending on the context.
-if [[ "$context" == "bin" ]]
+if [[ "$_CONTEXT" == "bin" ]]
 then
   original_dir=$HOME/bin
 else
@@ -550,7 +546,7 @@ _main() {
 # function.
 _each_file() {
   local per_file_function=$2
-  if [[ "$context" == "home" ]]
+  if [[ "$_CONTEXT" == "home" ]]
   then
     local search_files=("$1"/.*)
   else
@@ -563,7 +559,7 @@ _each_file() {
     filename="$(basename "$f")"
     local tracked_file="$tracked_dir/$filename"
     local original_file="$original_dir/$filename"
-    if [[ "$context" == "home" ]]
+    if [[ "$_CONTEXT" == "home" ]]
     then
       if ! ( [[ "$filename" =~ ^\.?\.$     ]] || \
              [[ "$filename" == ".DS_Store" ]]
@@ -1801,13 +1797,13 @@ rename() {
   then
     printf "A file already exists with the new filename.\n"
   else
-    $_ME $context unlink "$1"
+    $_ME $_CONTEXT unlink "$1"
     _debug printf "unlink %s\n" "$1"
 
     mv "$old_file" "$new_file"
     _debug printf "mv %s %s\n" "$old_file" "$new_file"
 
-    $_ME $context link "$2"
+    $_ME $_CONTEXT link "$2"
     _debug printf "link %s\n" "$2"
   fi
 }
