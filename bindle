@@ -1794,20 +1794,20 @@ rename() {
   elif [[ -z "$2" ]]
   then
     printf "New name not provided.\n"
-  elif ! ( [[ -e "$old_file" ]] )
+  elif [[ ! -e "$old_file" ]]
   then
     printf "File not found.\n"
-  elif ( [[ -e "$new_file" ]] )
+  elif [[ -e "$new_file" ]]
   then
     printf "A file already exists with the new filename.\n"
   else
-    unlink "$1"
+    $_ME $context unlink "$1"
     _debug printf "unlink %s\n" "$1"
 
     mv "$old_file" "$new_file"
     _debug printf "mv %s %s\n" "$old_file" "$new_file"
 
-    link "$2"
+    $_ME $context link "$2"
     _debug printf "link %s\n" "$2"
   fi
 }
