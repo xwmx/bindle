@@ -1164,6 +1164,28 @@ A file or directory already exists at the dotfile repository path:
 
 # git #########################################################################
 
+# ---------------------------------------------------------------------- commit
+
+desc "commit" <<EOM
+Usage:
+  $_ME commit [<message>]
+
+Description:
+  Commit the current changes to git. If a message is provided, it will be used
+  as the commit message. Otherwise, git will open your default editor.
+EOM
+commit() {
+  cd "$BINDLEPATH"
+  if [[ -n "$1" ]]
+  then
+    "$_git_bin" add .
+    "$_git_bin" commit -a -m "$1"
+  else
+    "$_git_bin" add .
+    "$_git_bin" commit -a
+  fi
+}
+
 # ------------------------------------------------------------------------- git
 
 desc "git" <<EOM
@@ -1191,28 +1213,6 @@ git() {
   "$_git_bin" "${git_options[@]}"
 }
 
-# ---------------------------------------------------------------------- commit
-
-desc "commit" <<EOM
-Usage:
-  $_ME commit [<message>]
-
-Description:
-  Commit the current changes to git. If a message is provided, it will be used
-  as the commit message. Otherwise, git will open your default editor.
-EOM
-commit() {
-  cd "$BINDLEPATH"
-  if [[ -n "$1" ]]
-  then
-    "$_git_bin" add .
-    "$_git_bin" commit -a -m "$1"
-  else
-    "$_git_bin" add .
-    "$_git_bin" commit -a
-  fi
-}
-
 # ------------------------------------------------------------------------ pull
 
 desc "pull" <<EOM
@@ -1226,19 +1226,6 @@ pull() {
   cd "$BINDLEPATH"
   "$_git_bin" pull
   _debug printf "%s pull\n" "$_git_bin"
-}
-
-# ------------------------------------------------------------------------ sync
-
-desc "sync" <<EOM
-Usage:
-  $_ME sync
-
-Description:
-  Pull latest changes from the remote repository and sync submodules.
-EOM
-sync() {
-  pull && submodules sync
 }
 
 # ------------------------------------------------------------------------ push
@@ -1285,6 +1272,19 @@ submodules() {
   esac
 }
 
+# ------------------------------------------------------------------------ sync
+
+desc "sync" <<EOM
+Usage:
+  $_ME sync
+
+Description:
+  Pull latest changes from the remote repository and sync submodules.
+EOM
+sync() {
+  pull && submodules sync
+}
+
 # Scripts #####################################################################
 
 # ------------------------------------------------------------------- bootstrap
@@ -1308,25 +1308,6 @@ bootstrap() {
   else
     _runner "bootstrap" "${@:-}"
   fi
-}
-
-# --------------------------------------------------------------------- install
-
-desc "install" <<EOM
-Usage:
-  $_ME install ( --all | list | <script_name> )
-
-Options:
-  --all  Run all install scripts.
-
-Description:
-  Run the specified package script.
-
-  Package scripts can be added to:
-    $BINDLEPATH/script/install/
-EOM
-install() {
-  _runner "install" "${@:-}"
 }
 
 # ------------------------------------------------------------------- configure
@@ -1367,131 +1348,26 @@ customize() {
   _runner "customize" "${@:-}"
 }
 
+# --------------------------------------------------------------------- install
+
+desc "install" <<EOM
+Usage:
+  $_ME install ( --all | list | <script_name> )
+
+Options:
+  --all  Run all install scripts.
+
+Description:
+  Run the specified package script.
+
+  Package scripts can be added to:
+    $BINDLEPATH/script/install/
+EOM
+install() {
+  _runner "install" "${@:-}"
+}
+
 # Dotfiles ####################################################################
-
-# ------------------------------------------------------------------------ list
-
-desc "list" <<EOM
-Usage:
-  $_ME [bin | home] list [tracked | untracked | <filename>]
-
-Description:
-  List all files in the original directory of the current context ('bin' or
-  'home'). If neither 'bin' nor 'home' is specified, the context defaults to
-  'home' (ie, dotfiles).
-
-  If 'tracked' or 'untracked' as passed as arguments to 'list', then only the
-  files with those statuses are listed.
-
-  If a filename is passed as an argument, then a listing is printed for only
-  that item.
-
-  Indicators display information about the type and status of each entry:
-    d   - Directory
-    @   - Symbolic link
-    @ i - Symbolic link to tracked file.
-EOM
-_list_item() {
-  if [[ -L $f ]]
-  then
-    if [[ "$(readlink "$f")" == "$tracked_file" ]]
-    then
-      printf "@  i   %s\n" "$filename"
-    else
-      printf "@      %s\n" "$filename"
-    fi
-  elif [[ -d $f ]]
-  then
-    printf "d      %s\n" "$filename"
-  elif [[ -e $f ]]
-  then
-    printf "       %s\n" "$filename"
-  fi
-
-}
-list() {
-  if [[ "$1" == "untracked" ]]
-  then
-    untracked
-  elif [[ "$1" == "tracked" ]]
-  then
-    tracked
-  elif [[ "$1" =~ ^\.(.*) ]]
-  then
-    f="$original_dir/$1"
-    if [[ -e "$f" ]]
-    then
-      filename="$(basename "$f")"
-      tracked_file="$tracked_dir/$filename"
-      original_file="$original_dir/$filename"
-      _list_item
-    else
-      _die printf "File not found.\n"
-    fi
-  else
-    _each_original_file _list_item
-  fi
-}
-
-# ------------------------------------------------------------------- untracked
-
-desc "untracked" <<EOM
-Usage:
-  $_ME [bin | home] untracked
-
-Description:
-  List all untracked dotfiles in the original directory of the current context
-  ('bin' or 'home'). If neither 'bin' nor 'home' is specified, the context
-  defaults to 'home' (ie, dotfiles).
-
-  Indicators display information about the type and status of each entry:
-    d   - Directory
-    @   - Symbolic link
-EOM
-_untracked_item() {
-  if [[ -L $f ]]
-  then
-    if ! ( [[ "$(readlink "$f")" == "$tracked_file" ]] )
-    then
-      printf "@      %s\n" "$filename"
-    fi
-  elif [[ -d $f ]]
-  then
-    printf "d      %s\n" "$filename"
-  elif [[ -e $f ]]
-  then
-    printf "       %s\n" "$filename"
-  fi
-}
-untracked() {
-  _each_original_file _untracked_item
-}
-
-# --------------------------------------------------------------------- tracked
-
-desc "tracked" <<EOM
-Usage:
-  $_ME [bin | home] tracked
-
-Description:
-  List all tracked dotfiles from in the original directory of the current
-  context ('bin' or 'home'). If neither 'bin' nor 'home' is specified, the
-  context defaults to 'home' (ie, dotfiles).
-
-  Indicators display information about the type and status of each entry:
-    @ i - Symbolic link to tracked file.
-EOM
-_tracked_item() {
-  if ( [[ -L $f ]] && \
-       [[ "$(readlink "$f")" == "$tracked_file" ]]
-  )
-  then
-    printf "@  i   %s\n" "$filename"
-  fi
-}
-tracked() {
-  _each_original_file _tracked_item
-}
 
 # ------------------------------------------------------------------------- add
 
@@ -1591,80 +1467,6 @@ add() {
   fi
 }
 
-# --------------------------------------------------------------------- restore
-
-desc "restore" <<EOM
-Usage:
-  $_ME [bin | home] restore <filename>
-
-Description:
-  Unlink the specified file and move from the tracked location in the
-  repository back to original location specified by the context ('bin' or
-  'home'). If neither 'bin' nor 'home' is specified, the context  defaults to
-  'home' (ie, dotfiles).
-EOM
-restore() {
-  _debug printf "restore() \$1: %s\n" "$1"
-
-  if [[ $# = 0 ]]
-  then
-    _die printf "Must specify a valid file or directory name.\n"
-  else
-    filename="$(basename "$1")"
-
-    original_file="$original_dir/$filename"
-    _debug printf "restore() \$original_file: %s\n" "$original_file"
-
-    tracked_file="$tracked_dir/$filename"
-    _debug printf "restore() \$tracked_file: %s\n" "$tracked_file"
-
-    if [[ ! -e "$tracked_file" ]]
-    then
-      printf "File does not exist.\n"
-    elif [[ ! -L "$original_file" ]]
-    then
-      printf "File is not a symlink.\n"
-    else
-      rm "$original_file"
-      mv "$tracked_file" "$original_file"
-      printf "Restored: %s => %s\n" "$tracked_file" "$original_file"
-    fi
-  fi
-}
-
-# ---------------------------------------------------------------------- status
-
-desc "status" <<EOM
-Usage:
-  $_ME [bin | home] status
-
-Description:
-  List status of files in original directory of the current context ('bin' or
-  'home')relative to the corresponding tracked file. If neither 'bin' nor 'home'
-  is specified, the context defaults to 'home' (ie, dotfiles).
-
-  Indicators display information about the status of each entry:
-    i   - Identical, indicating a valid symbolic link to the tracked file
-     e  - A file exists, but it not linked to tracked file
-      x - No file exists
-EOM
-_status_item() {
-  if ( [[ -L "$original_file" ]] && \
-       [[ "$(readlink "$original_file")" == "$f" ]]
-  )
-  then
-    printf "i   %s\n" "$filename"
-  elif [[ -e "$original_file" ]]
-  then
-    printf " e  %s\n" "$filename"
-  else
-    printf "  x %s\n" "$filename"
-  fi
-}
-status() {
-  _each_tracked_file _status_item
-}
-
 # ------------------------------------------------------------------------ link
 
 desc "link" <<EOM
@@ -1743,40 +1545,67 @@ link() {
   fi
 }
 
-# ---------------------------------------------------------------------- unlink
+# ------------------------------------------------------------------------ list
 
-desc "unlink" <<EOM
+desc "list" <<EOM
 Usage:
-  $_ME [bin | home] unlink [<filename>]
+  $_ME [bin | home] list [tracked | untracked | <filename>]
 
 Description:
-  Remove symlinks in the original directory for the context ('bin' or 'home').
-  If neither 'bin' nor 'home' is specified, the context defaults to 'home' (ie,
-  dotfiles).
+  List all files in the original directory of the current context ('bin' or
+  'home'). If neither 'bin' nor 'home' is specified, the context defaults to
+  'home' (ie, dotfiles).
 
-  By default, the command removes all of the symlinks pointing to items in
-  tracked directory. If a filename is passed to the unlink command, then it
-  only acts on symlinks to that file.
+  If 'tracked' or 'untracked' as passed as arguments to 'list', then only the
+  files with those statuses are listed.
+
+  If a filename is passed as an argument, then a listing is printed for only
+  that item.
+
+  Indicators display information about the type and status of each entry:
+    d   - Directory
+    @   - Symbolic link
+    @ i - Symbolic link to tracked file.
 EOM
-_unlink_item() {
-  if ( [[ -L "$original_file" ]] && \
-       [[ "$(readlink "$original_file")" == "$f" ]]
-  )
+_list_item() {
+  if [[ -L $f ]]
   then
-    printf "Removing link: %s\n" "$original_file"
-    rm "$original_file"
+    if [[ "$(readlink "$f")" == "$tracked_file" ]]
+    then
+      printf "@  i   %s\n" "$filename"
+    else
+      printf "@      %s\n" "$filename"
+    fi
+  elif [[ -d $f ]]
+  then
+    printf "d      %s\n" "$filename"
+  elif [[ -e $f ]]
+  then
+    printf "       %s\n" "$filename"
   fi
+
 }
-unlink() {
-  if [[ -n "$1" ]]
+list() {
+  if [[ "$1" == "untracked" ]]
   then
-    f="$tracked_dir/$1"
-    filename="$(basename "$1")"
-    tracked_file="$tracked_dir/$filename"
-    original_file="$original_dir/$filename"
-    _unlink_item
+    untracked
+  elif [[ "$1" == "tracked" ]]
+  then
+    tracked
+  elif [[ "$1" =~ ^\.(.*) ]]
+  then
+    f="$original_dir/$1"
+    if [[ -e "$f" ]]
+    then
+      filename="$(basename "$f")"
+      tracked_file="$tracked_dir/$filename"
+      original_file="$original_dir/$filename"
+      _list_item
+    else
+      _die printf "File not found.\n"
+    fi
   else
-    _each_tracked_file _unlink_item
+    _each_original_file _list_item
   fi
 }
 
@@ -1821,7 +1650,191 @@ rename() {
   fi
 }
 
+# --------------------------------------------------------------------- restore
+
+desc "restore" <<EOM
+Usage:
+  $_ME [bin | home] restore <filename>
+
+Description:
+  Unlink the specified file and move from the tracked location in the
+  repository back to original location specified by the context ('bin' or
+  'home'). If neither 'bin' nor 'home' is specified, the context  defaults to
+  'home' (ie, dotfiles).
+EOM
+restore() {
+  _debug printf "restore() \$1: %s\n" "$1"
+
+  if [[ $# = 0 ]]
+  then
+    _die printf "Must specify a valid file or directory name.\n"
+  else
+    filename="$(basename "$1")"
+
+    original_file="$original_dir/$filename"
+    _debug printf "restore() \$original_file: %s\n" "$original_file"
+
+    tracked_file="$tracked_dir/$filename"
+    _debug printf "restore() \$tracked_file: %s\n" "$tracked_file"
+
+    if [[ ! -e "$tracked_file" ]]
+    then
+      printf "File does not exist.\n"
+    elif [[ ! -L "$original_file" ]]
+    then
+      printf "File is not a symlink.\n"
+    else
+      rm "$original_file"
+      mv "$tracked_file" "$original_file"
+      printf "Restored: %s => %s\n" "$tracked_file" "$original_file"
+    fi
+  fi
+}
+
+# ---------------------------------------------------------------------- status
+
+desc "status" <<EOM
+Usage:
+  $_ME [bin | home] status
+
+Description:
+  List status of files in original directory of the current context ('bin' or
+  'home')relative to the corresponding tracked file. If neither 'bin' nor 'home'
+  is specified, the context defaults to 'home' (ie, dotfiles).
+
+  Indicators display information about the status of each entry:
+    i   - Identical, indicating a valid symbolic link to the tracked file
+     e  - A file exists, but it not linked to tracked file
+      x - No file exists
+EOM
+_status_item() {
+  if ( [[ -L "$original_file" ]] && \
+       [[ "$(readlink "$original_file")" == "$f" ]]
+  )
+  then
+    printf "i   %s\n" "$filename"
+  elif [[ -e "$original_file" ]]
+  then
+    printf " e  %s\n" "$filename"
+  else
+    printf "  x %s\n" "$filename"
+  fi
+}
+status() {
+  _each_tracked_file _status_item
+}
+
+# --------------------------------------------------------------------- tracked
+
+desc "tracked" <<EOM
+Usage:
+  $_ME [bin | home] tracked
+
+Description:
+  List all tracked dotfiles from in the original directory of the current
+  context ('bin' or 'home'). If neither 'bin' nor 'home' is specified, the
+  context defaults to 'home' (ie, dotfiles).
+
+  Indicators display information about the type and status of each entry:
+    @ i - Symbolic link to tracked file.
+EOM
+_tracked_item() {
+  if ( [[ -L $f ]] && \
+       [[ "$(readlink "$f")" == "$tracked_file" ]]
+  )
+  then
+    printf "@  i   %s\n" "$filename"
+  fi
+}
+tracked() {
+  _each_original_file _tracked_item
+}
+
+# ---------------------------------------------------------------------- unlink
+
+desc "unlink" <<EOM
+Usage:
+  $_ME [bin | home] unlink [<filename>]
+
+Description:
+  Remove symlinks in the original directory for the context ('bin' or 'home').
+  If neither 'bin' nor 'home' is specified, the context defaults to 'home' (ie,
+  dotfiles).
+
+  By default, the command removes all of the symlinks pointing to items in
+  tracked directory. If a filename is passed to the unlink command, then it
+  only acts on symlinks to that file.
+EOM
+_unlink_item() {
+  if ( [[ -L "$original_file" ]] && \
+       [[ "$(readlink "$original_file")" == "$f" ]]
+  )
+  then
+    printf "Removing link: %s\n" "$original_file"
+    rm "$original_file"
+  fi
+}
+unlink() {
+  if [[ -n "$1" ]]
+  then
+    f="$tracked_dir/$1"
+    filename="$(basename "$1")"
+    tracked_file="$tracked_dir/$filename"
+    original_file="$original_dir/$filename"
+    _unlink_item
+  else
+    _each_tracked_file _unlink_item
+  fi
+}
+
+# ------------------------------------------------------------------- untracked
+
+desc "untracked" <<EOM
+Usage:
+  $_ME [bin | home] untracked
+
+Description:
+  List all untracked dotfiles in the original directory of the current context
+  ('bin' or 'home'). If neither 'bin' nor 'home' is specified, the context
+  defaults to 'home' (ie, dotfiles).
+
+  Indicators display information about the type and status of each entry:
+    d   - Directory
+    @   - Symbolic link
+EOM
+_untracked_item() {
+  if [[ -L $f ]]
+  then
+    if ! ( [[ "$(readlink "$f")" == "$tracked_file" ]] )
+    then
+      printf "@      %s\n" "$filename"
+    fi
+  elif [[ -d $f ]]
+  then
+    printf "d      %s\n" "$filename"
+  elif [[ -e $f ]]
+  then
+    printf "       %s\n" "$filename"
+  fi
+}
+untracked() {
+  _each_original_file _untracked_item
+}
+
 # Utilties ####################################################################
+
+# ------------------------------------------------------------------------- dir
+
+desc "dir" <<EOM
+Usage:
+  $_ME dir
+
+Description:
+  Print the current value of \$BINDLEPATH
+EOM
+dir() {
+  printf "%s\n" "$BINDLEPATH"
+}
 
 # ------------------------------------------------------------------------ edit
 
@@ -1845,19 +1858,6 @@ edit() {
   else
     $EDITOR "$BINDLEPATH"
   fi
-}
-
-# ------------------------------------------------------------------------- dir
-
-desc "dir" <<EOM
-Usage:
-  $_ME dir
-
-Description:
-  Print the current value of \$BINDLEPATH
-EOM
-dir() {
-  printf "%s\n" "$BINDLEPATH"
 }
 
 ###############################################################################
