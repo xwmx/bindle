@@ -1583,7 +1583,6 @@ _list_item() {
   then
     printf "       %s\n" "$filename"
   fi
-
 }
 list() {
   if [[ "$1" == "untracked" ]]
