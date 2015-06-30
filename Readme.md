@@ -58,7 +58,7 @@ for setting preferences.
 
 To install with [Homebrew](http://brew.sh/):
 
-    brew install alphabetum/taps/bindle
+    brew tap alphabetum/taps && brew install alphabetum/taps/bindle
 
 #### bpkg
 
