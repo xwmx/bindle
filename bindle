@@ -1228,6 +1228,19 @@ pull() {
   _debug printf "%s pull\n" "$_git_bin"
 }
 
+# ------------------------------------------------------------------------ sync
+
+desc "sync" <<EOM
+Usage:
+  $_ME sync
+
+Description:
+  Pull latest changes from the remote repository and sync submodules.
+EOM
+sync() {
+  pull && submodules sync
+}
+
 # ------------------------------------------------------------------------ push
 
 desc "push" <<EOM
