@@ -405,9 +405,9 @@ _debug printf "\$_ME: %s\n" "$_ME"
 # the $_CONTEXT
 if [[ "$_CONTEXT" == "bin" ]]
 then
-  tracked_dir=$BINDLEPATH/bin
+  tracked_dir="${BINDLEPATH}/bin"
 else
-  tracked_dir=$BINDLEPATH/home
+  tracked_dir="${BINDLEPATH}/home"
 fi
 
 _debug printf "\$tracked_dir: %s\n" "$tracked_dir"
@@ -417,9 +417,9 @@ _debug printf "\$tracked_dir: %s\n" "$tracked_dir"
 # Set to either '$HOME/bin' or '$HOME', depending on the context.
 if [[ "$_CONTEXT" == "bin" ]]
 then
-  original_dir=$HOME/bin
+  original_dir="${HOME}/bin"
 else
-  original_dir=$HOME
+  original_dir="${HOME}"
 fi
 
 _debug printf "\$original_dir: %s\n" "$original_dir"
@@ -428,7 +428,7 @@ _debug printf "\$original_dir: %s\n" "$original_dir"
 #
 # Must perform git operations via $_git_bin to avoid calling the `bindle git`
 # command.
-_git_bin=$(which git)
+_git_bin="$(which git)"
 if [[ -z "$_git_bin" ]]
 then
   _die printf "\
@@ -442,7 +442,7 @@ fi
 # is only partially loaded. The only command that currently uses this
 # directly handles the blank case by outputting an error, but nothing else
 # should be directly impacted by the blank case.
-if [[ -z ${EDITOR:-} ]]
+if [[ -z "${EDITOR:-}" ]]
 then
   EDITOR=
 fi
