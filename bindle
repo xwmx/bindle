@@ -1638,13 +1638,13 @@ rename() {
   then
     printf "A file already exists with the new filename.\n"
   else
-    $_ME $_CONTEXT unlink "$1"
+    "$_ME" "$_CONTEXT" unlink "$1"
     _debug printf "unlink %s\n" "$1"
 
     mv "$old_file" "$new_file"
     _debug printf "mv %s %s\n" "$old_file" "$new_file"
 
-    $_ME $_CONTEXT link "$2"
+    "$_ME" "$_CONTEXT" link "$2"
     _debug printf "link %s\n" "$2"
   fi
 }
