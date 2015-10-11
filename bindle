@@ -210,7 +210,7 @@ DEFAULT_COMMAND="${DEFAULT_COMMAND:-help}"
 # Globals
 ###############################################################################
 
-_BINDLE_VERSION="5.1.0"
+_BINDLE_VERSION="6.0.0.alpha"
 
 # Set `$BINDLEPATH` to `$DOTSPATH` if present.
 #
@@ -1865,4 +1865,3 @@ edit() {
 
 # Call the _main function after everything has been defined.
 _main
-
