@@ -397,9 +397,9 @@ fi
 #   $BINDLEPATH. Subcommands that do not require a valid $BINDLEPATH target
 #   are exempt from this validation.
 _validate_bindlepath_target() {
-  if [[ "$_CMD" == "help" ]] ||
-     [[ "$_CMD" == "init" ]] ||
-     [[ "$_CMD" == "version" ]] ||
+  if [[ "$_CMD" == "help"     ]] ||
+     [[ "$_CMD" == "init"     ]] ||
+     [[ "$_CMD" == "version"  ]] ||
      [[ -z "$_CMD" ]]
   then
     return 0
