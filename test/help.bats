@@ -16,8 +16,7 @@ export _HELP_HEADER
 
 @test "\`help\` with no arguments prints default help." {
   run "$_BINDLE" help
-  printf "expected:\n'%s'\n" "${_HELP_HEADER}"
-  printf "actual:\n'%s'\n" "$(IFS=$'\n'; echo "${lines[*]:0:4}")"
+  _compare "${_HELP_HEADER}" "$(IFS=$'\n'; echo "${lines[*]:0:4}")"
   [[ $(IFS=$'\n'; echo "${lines[*]:0:4}") == "$_HELP_HEADER" ]]
 }
 
@@ -42,7 +41,6 @@ Description:
   Display help information for bindle or a specified command.
 HEREDOC
   )"
-  printf "expected:\n'%s'\n" "${output}"
-  printf "actual:\n'%s'\n" "${_expected}"
+  _compare "${_expected}" "${output}"
   [[ "$output" == "$_expected" ]]
 }
