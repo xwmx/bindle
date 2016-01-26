@@ -890,7 +890,7 @@ A configuration management tool for your personal unix-like computer.
 Version: $_BINDLE_VERSION
 
 Usage:
-  $_ME command [--debug] [--command-options] [<arguments>]
+  $_ME <command> [<arguments>]
   $_ME -h | --help
   $_ME --version
 
