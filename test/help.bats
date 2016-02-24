@@ -10,28 +10,28 @@ _HELP_HEADER="\
 export _HELP_HEADER
 
 @test "\`help\` with no arguments exits with status 0." {
-  run "$_BINDLE" help
-  [ "$status" -eq 0 ]
+  run "${_BINDLE}" help
+  [ "${status}" -eq 0 ]
 }
 
 @test "\`help\` with no arguments prints default help." {
-  run "$_BINDLE" help
+  run "${_BINDLE}" help
   _compare "${_HELP_HEADER}" "$(IFS=$'\n'; echo "${lines[*]:0:4}")"
-  [[ $(IFS=$'\n'; echo "${lines[*]:0:4}") == "$_HELP_HEADER" ]]
+  [[ $(IFS=$'\n'; echo "${lines[*]:0:4}") == "${_HELP_HEADER}" ]]
 }
 
 @test "\`bindle -h\` prints default help." {
-  run "$_BINDLE" -h
-  [[ $(IFS=$'\n'; echo "${lines[*]:0:4}") == "$_HELP_HEADER" ]]
+  run "${_BINDLE}" -h
+  [[ $(IFS=$'\n'; echo "${lines[*]:0:4}") == "${_HELP_HEADER}" ]]
 }
 
 @test "\`bindle --help\` prints default help." {
-  run "$_BINDLE" --help
-  [[ $(IFS=$'\n'; echo "${lines[*]:0:4}") == "$_HELP_HEADER" ]]
+  run "${_BINDLE}" --help
+  [[ $(IFS=$'\n'; echo "${lines[*]:0:4}") == "${_HELP_HEADER}" ]]
 }
 
 @test "\`bindle help help\` prints \`help\` subcommand usage." {
-  run "$_BINDLE" help help
+  run "${_BINDLE}" help help
   _expected="$(
     cat <<HEREDOC
 Usage:
@@ -42,5 +42,5 @@ Description:
 HEREDOC
   )"
   _compare "${_expected}" "${output}"
-  [[ "$output" == "$_expected" ]]
+  [[ "${output}" == "${_expected}" ]]
 }
