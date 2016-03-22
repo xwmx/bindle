@@ -58,7 +58,7 @@ for setting preferences.
 
 To install with [Homebrew](http://brew.sh/):
 
-    brew tap alphabetum/taps && brew install alphabetum/taps/bindle
+    brew install alphabetum/taps/bindle
 
 #### bpkg
 
@@ -71,7 +71,7 @@ To install with [bpkg](http://www.bpkg.io/):
 To install manually, simply add the `bindle` script to your `$PATH`. If
 you already have a `~/bin` directory, you can use the following command:
 
-    curl -L https://raw.github.com/alphabetum/hosts/master/bindle \
+    curl -L https://raw.github.com/alphabetum/bindle/master/bindle \
       -o ~/bin/bindle && chmod +x ~/bin/bindle
 
 ### Viewing Help Information
@@ -331,4 +331,3 @@ To view the help and usage information for any command, use:
 
 - [alphabetum/dotfiles](https://github.com/alphabetum/dotfiles)
 - [alphabetum/dotfile-research](https://github.com/alphabetum/dotfile-research)
-
