@@ -441,37 +441,37 @@ _validate_bindlepath_target() {
 }
 _validate_bindlepath_target
 
-# $tracked_dir
+# $_TRACKED_DIR
 #
 # Set to either 'home' or 'bin' within the dotfiles repository, depending on
 # the $_CONTEXT
 if [[ "${_CONTEXT}" == "bin" ]]
 then
-  tracked_dir="${BINDLEPATH}/bin"
+  _TRACKED_DIR="${BINDLEPATH}/bin"
 else
-  tracked_dir="${BINDLEPATH}/home"
+  _TRACKED_DIR="${BINDLEPATH}/home"
 fi
 
-_debug printf "\${tracked_dir}: %s\n" "${tracked_dir}"
+_debug printf "\${_TRACKED_DIR}: %s\n" "${_TRACKED_DIR}"
 
-# $original_dir
+# $_ORIGINAL_DIR
 #
 # Set to either '$HOME/bin' or '$HOME', depending on the context.
 if [[ "${_CONTEXT}" == "bin" ]]
 then
-  original_dir="${HOME}/bin"
+  _ORIGINAL_DIR="${HOME}/bin"
 else
-  original_dir="${HOME}"
+  _ORIGINAL_DIR="${HOME}"
 fi
 
-_debug printf "\${original_dir}: %s\n" "${original_dir}"
+_debug printf "\${_ORIGINAL_DIR}: %s\n" "${_ORIGINAL_DIR}"
 
-# $_git_bin
+# $_GIT_BIN
 #
-# Must perform git operations via $_git_bin to avoid calling the `bindle git`
+# Must perform git operations via $_GIT_BIN to avoid calling the `bindle git`
 # command.
-_git_bin="$(which git)"
-if [[ -z "${_git_bin}" ]]
+_GIT_BIN="$(which git)"
+if [[ -z "${_GIT_BIN}" ]]
 then
   _die printf "\
 The \`git\` executable can not be found. Since \`${_ME}\` depends on git, \
@@ -599,8 +599,8 @@ _each_file() {
   do
     local filename
     filename="$(basename "${f}")"
-    local tracked_file="${tracked_dir}/${filename}"
-    local original_file="${original_dir}/${filename}"
+    local tracked_file="${_TRACKED_DIR}/${filename}"
+    local original_file="${_ORIGINAL_DIR}/${filename}"
     if [[ "${_CONTEXT}" == "home" ]]
     then
       if ! ( [[ "${filename}" =~ ^\.?\.$     ]] || \
@@ -682,7 +682,7 @@ EOM
 # Iterate over the files in the tracked directory and execute the specified
 # function.
 _each_tracked_file() {
-  _each_file "${tracked_dir}" "${1}"
+  _each_file "${_TRACKED_DIR}" "${1}"
 }
 
 # _each_original_file()
@@ -693,7 +693,7 @@ _each_tracked_file() {
 # Iterate over the files in the original directory and execute the specified
 # function.
 _each_original_file() {
-  _each_file "${original_dir}" "${1}"
+  _each_file "${_ORIGINAL_DIR}" "${1}"
 }
 
 # _function_exists()
@@ -1020,14 +1020,14 @@ _init_with_source() {
   then
     _die printf "Source URL not specified.\n"
   else
-    "${_git_bin}" clone "${2}" "${1}"
+    "${_GIT_BIN}" clone "${2}" "${1}"
   fi
 
   if _command_argv_includes "--initialize-submodules"
   then
     cd "${1}"
-    "${_git_bin}" submodule init
-    "${_git_bin}" submodule update --init --recursive
+    "${_GIT_BIN}" submodule init
+    "${_GIT_BIN}" submodule update --init --recursive
   fi
 }
 # _init_bindlerc()
@@ -1112,7 +1112,7 @@ _init_git_repository() {
   if [[ -n "${1}" ]]
   then
     cd "${1}"
-    "${_git_bin}" init
+    "${_GIT_BIN}" init
   else
     printf "Repository directory not specified.\n"
   fi
@@ -1220,11 +1220,11 @@ commit() {
   cd "${BINDLEPATH}"
   if [[ -n "${1}" ]]
   then
-    "${_git_bin}" add .
-    "${_git_bin}" commit -a -m "${1}"
+    "${_GIT_BIN}" add .
+    "${_GIT_BIN}" commit -a -m "${1}"
   else
-    "${_git_bin}" add .
-    "${_git_bin}" commit -a
+    "${_GIT_BIN}" add .
+    "${_GIT_BIN}" commit -a
   fi
 }
 
@@ -1252,7 +1252,7 @@ git() {
   ))
 
   # call the environment's git with the git options passed as an array.
-  "${_git_bin}" "${git_options[@]}"
+  "${_GIT_BIN}" "${git_options[@]}"
 }
 
 # ------------------------------------------------------------------------ pull
@@ -1266,8 +1266,8 @@ Description:
 EOM
 pull() {
   cd "${BINDLEPATH}"
-  "${_git_bin}" pull
-  _debug printf "%s pull\n" "${_git_bin}"
+  "${_GIT_BIN}" pull
+  _debug printf "%s pull\n" "${_GIT_BIN}"
 }
 
 # ------------------------------------------------------------------------ push
@@ -1281,8 +1281,8 @@ Description:
 EOM
 push() {
   cd "${BINDLEPATH}"
-  "${_git_bin}" push
-  _debug printf "%s push\n" "${_git_bin}"
+  "${_GIT_BIN}" push
+  _debug printf "%s push\n" "${_GIT_BIN}"
 }
 
 # ------------------------------------------------------------------ submodules
@@ -1303,10 +1303,10 @@ submodules() {
   cd "${BINDLEPATH}"
   case "${1}" in
     sync)
-      "${_git_bin}" submodule update --init --recursive
+      "${_GIT_BIN}" submodule update --init --recursive
       ;;
     update)
-      "${_git_bin}" submodule update --init --remote
+      "${_GIT_BIN}" submodule update --init --remote
       ;;
     *)
       _die printf "Unrecognized subcommand: submodules %s\n" "${1}"
@@ -1447,10 +1447,10 @@ add() {
   else
     filename="$(basename "${_arguments[1]:-}")"
 
-    original_file="${original_dir}/${filename}"
+    original_file="${_ORIGINAL_DIR}/${filename}"
     _debug printf "add() \${original_file}: %s\n" "${original_file}"
 
-    tracked_file="${tracked_dir}/${filename}"
+    tracked_file="${_TRACKED_DIR}/${filename}"
     _debug printf "add() \${tracked_file}: %s\n" "${tracked_file}"
 
     # Because the if / else is complicated, guarding against errors by only
@@ -1502,7 +1502,7 @@ add() {
     fi
     if [[ -n "${safe_to_proceed}" ]]
     then
-      mv "${original_file}" "${tracked_dir}"
+      mv "${original_file}" "${_TRACKED_DIR}"
       printf "Linking %s => %s\n" "${tracked_file}" "${original_file}"
       ln -s "${tracked_file}" "${original_file}"
     fi
@@ -1574,10 +1574,10 @@ link() {
 
   if [[ -n "${_arguments[1]:-}" ]]
   then
-    f="${tracked_dir}/${_arguments[1]}"
+    f="${_TRACKED_DIR}/${_arguments[1]}"
     filename="$(basename "${_arguments[1]}")"
-    tracked_file="${tracked_dir}/${filename}"
-    original_file="${original_dir}/${filename}"
+    tracked_file="${_TRACKED_DIR}/${filename}"
+    original_file="${_ORIGINAL_DIR}/${filename}"
     if [[ -e "${tracked_file}" ]]
     then
       _link_item
@@ -1635,12 +1635,12 @@ list() {
     tracked
   elif [[ "${1}" =~ ^\.(.*) ]]
   then
-    f="${original_dir}/${1}"
+    f="${_ORIGINAL_DIR}/${1}"
     if [[ -e "${f}" ]]
     then
       filename="$(basename "${f}")"
-      tracked_file="${tracked_dir}/${filename}"
-      original_file="${original_dir}/${filename}"
+      tracked_file="${_TRACKED_DIR}/${filename}"
+      original_file="${_ORIGINAL_DIR}/${filename}"
       _list_item
     else
       _die printf "File not found.\n"
@@ -1662,9 +1662,9 @@ Decription:
   dotfiles).
 EOM
 rename() {
-  old_file="${tracked_dir}/${1}"
+  old_file="${_TRACKED_DIR}/${1}"
   _debug printf "rename() \${old_file}: %s\n" "${old_file}"
-  new_file="${tracked_dir}/${2}"
+  new_file="${_TRACKED_DIR}/${2}"
   _debug printf "rename() \${new_file}: %s\n" "${new_file}"
 
   if [[ -z "${1}" ]]
@@ -1712,10 +1712,10 @@ restore() {
   else
     filename="$(basename "${1}")"
 
-    original_file="${original_dir}/${filename}"
+    original_file="${_ORIGINAL_DIR}/${filename}"
     _debug printf "restore() \${original_file}: %s\n" "${original_file}"
 
-    tracked_file="${tracked_dir}/${filename}"
+    tracked_file="${_TRACKED_DIR}/${filename}"
     _debug printf "restore() \${tracked_file}: %s\n" "${tracked_file}"
 
     if [[ ! -e "${tracked_file}" ]]
@@ -1818,10 +1818,10 @@ _unlink_item() {
 unlink() {
   if [[ -n "${1}" ]]
   then
-    f="${tracked_dir}/${1}"
+    f="${_TRACKED_DIR}/${1}"
     filename="$(basename "${1}")"
-    tracked_file="${tracked_dir}/${filename}"
-    original_file="${original_dir}/${filename}"
+    tracked_file="${_TRACKED_DIR}/${filename}"
+    original_file="${_ORIGINAL_DIR}/${filename}"
     _unlink_item
   else
     _each_tracked_file _unlink_item
@@ -1892,9 +1892,9 @@ edit() {
   [[ -z "${EDITOR}" ]] && _die printf "\$EDITOR is not set.\n"
   if [[ -n "${1}" ]]
   then
-    f="${tracked_dir}/${1}"
+    f="${_TRACKED_DIR}/${1}"
     filename="$(basename "${1}")"
-    tracked_file="${tracked_dir}/${filename}"
+    tracked_file="${_TRACKED_DIR}/${filename}"
     ${EDITOR} "${tracked_file}"
   else
     ${EDITOR} "${BINDLEPATH}"
