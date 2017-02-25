@@ -323,7 +323,6 @@ _COMMAND_ARGV=("${0}")
 # depending on what the program needs.
 _CMD=""
 _USE_DEBUG=0
-_CONTEXT="home"
 
 while [ ${#} -gt 0 ]
 do
@@ -339,19 +338,8 @@ do
     --debug)
       _USE_DEBUG=1
       ;;
-    bin|home)
-      # If an argument prior to the command name is either 'bin' or 'home', set
-      # that as the $_CONTEXT. Otherwise, if the command has already been set,
-      # then any matches are assumed to be command arguments.
-      if [[ -z ${_CMD} ]]
-      then
-        _CONTEXT="${opt}"
-      else
-        _COMMAND_ARGV+=("${opt}")
-      fi
-      ;;
     *)
-      # The first non-$_CONTEXT argument encountered is assumed to be the
+      # The first argument encountered is assumed to be the
       # command name, and all subsequent arguments are set as command
       # arguments.
       if [[ -n ${_CMD} ]]
@@ -375,9 +363,6 @@ done
 _COMMAND_PARAMETERS=(${_COMMAND_ARGV[*]})
 unset _COMMAND_PARAMETERS[0]
 
-_debug printf \
-  "\${_CONTEXT}: %s\n" \
-  "${_CONTEXT}"
 _debug printf \
   "\${_CMD}: %s\n" \
   "${_CMD}"
@@ -443,26 +428,15 @@ _validate_bindlepath_target
 
 # $_TRACKED_DIR
 #
-# Set to either 'home' or 'bin' within the dotfiles repository, depending on
-# the $_CONTEXT
-if [[ "${_CONTEXT}" == "bin" ]]
-then
-  _TRACKED_DIR="${BINDLEPATH}/bin"
-else
-  _TRACKED_DIR="${BINDLEPATH}/home"
-fi
+# The directory containing the track files.
+_TRACKED_DIR="${BINDLEPATH}/home"
 
 _debug printf "\${_TRACKED_DIR}: %s\n" "${_TRACKED_DIR}"
 
 # $_ORIGINAL_DIR
 #
-# Set to either '$HOME/bin' or '$HOME', depending on the context.
-if [[ "${_CONTEXT}" == "bin" ]]
-then
-  _ORIGINAL_DIR="${HOME}/bin"
-else
-  _ORIGINAL_DIR="${HOME}"
-fi
+# The user's home directory.
+_ORIGINAL_DIR="${HOME}"
 
 _debug printf "\${_ORIGINAL_DIR}: %s\n" "${_ORIGINAL_DIR}"
 
@@ -588,12 +562,7 @@ _main() {
 # function.
 _each_file() {
   local per_file_function="${2}"
-  if [[ "${_CONTEXT}" == "home" ]]
-  then
-    local search_files=("${1}"/.*)
-  else
-    local search_files=("${1}"/*)
-  fi
+  local search_files=("${1}"/.*)
   _debug printf "_each_file() \${#search_files[@]}: %s\n" "${#search_files[@]}"
   for f in "${search_files[@]}"
   do
@@ -601,17 +570,13 @@ _each_file() {
     filename="$(basename "${f}")"
     local tracked_file="${_TRACKED_DIR}/${filename}"
     local original_file="${_ORIGINAL_DIR}/${filename}"
-    if [[ "${_CONTEXT}" == "home" ]]
+
+    if ! ( [[ "${filename}" =~ ^\.?\.$     ]] || \
+           [[ "${filename}" == ".DS_Store" ]]
+    )
     then
-      if ! ( [[ "${filename}" =~ ^\.?\.$     ]] || \
-             [[ "${filename}" == ".DS_Store" ]]
-      )
-      then
-        # Subfunctions can access the variables in this function, so it's not
-        # necessary to pass them as arguments.
-        ${per_file_function}
-      fi
-    else
+      # Subfunctions can access the variables in this function, so it's not
+      # necessary to pass them as arguments.
       ${per_file_function}
     fi
   done
@@ -993,8 +958,7 @@ Options:
   --skip-bindlerc          Don't generate a bindlerc file.
 
 Description:
-  Create initial repository file structure and \$HOME/bin if it doesn't exist
-  yet.
+  Create initial repository file structure.
 
   When provided with a URL as the first argument or a second argument the git
   repository at that URL is cloned and used as the tracking repository.
@@ -1134,13 +1098,6 @@ _init_post_message() {
 Your bindle git repo has been initialized at the following location:
 
 %s
-
-To finish installation, add the following to your shell configuration
-(.bashrc, .bash_profile, .zshrc, or similar):
-
-if [ -d \"\$HOME/bin\" ]; then
-  PATH=\"\$HOME/bin:\$PATH\"
-fi
 " "${1}"
   else
     printf "Repository directory not specified.\n"
@@ -1156,12 +1113,6 @@ init() {
   init_source=
   # A URL-matching regex to check arguments for a source git repository.
   _regex='(https?|git|ssh|file)://[-A-Za-z0-9\+&@#/%?=~_|!:,.;]*[-A-Za-z0-9\+&@#/%=~_|]'
-
-  # Create $HOME/bin if it doesn't exist.
-  if [[ ! -e "${HOME}/bin" ]]
-  then
-    mkdir "${HOME}/bin"
-  fi
 
   # Handle arguments.
   #
@@ -1415,16 +1366,14 @@ install() {
 
 desc "add" <<EOM
 Usage:
-  ${_ME} [bin | home] add <filename> [--force]
+  ${_ME} add <filename> [--force]
 
 Options:
   --force  Overwrite files and folders in the repository that have the same
            name as the item(s) being added.
 
 Description:
-  Add the specified file to the tracked directory for the context ('bin' or
-  'home') and link. If neither 'bin' nor 'home' is specified, the context
-  defaults to 'home' (ie, dotfiles).
+  Add the specified file to the tracked directory.
 EOM
 add() {
   _debug printf "add() \${1}: %s\n" "${1}"
@@ -1513,7 +1462,7 @@ add() {
 
 desc "link" <<EOM
 Usage:
-  ${_ME} [bin | home] link [<filename>] [--overwrite [--with-backup]]
+  ${_ME} link [<filename>] [--overwrite [--with-backup]]
 
 Options:
   --overwrite    Overwrite any files that exist in the directory where links
@@ -1526,11 +1475,10 @@ Options:
                  nothing is done to this file and no link is created.
 
 Description:
-  Create a link in the original directory for the context ('bin' or 'home')
-  that references the corresponding item in the tracked directory. If neither
-  'bin' nor 'home' is specified, the context defaults to 'home' (ie, dotfiles).
+  Create a link in \$HOME that references the corresponding item in the
+  tracked directory.
 
-  By default the command links all files that exist in the tracked directory.
+  By default, the command links all files that exist in the tracked directory.
   If a filename is passed to the link command, then it only acts on that file.
 EOM
 _link_item() {
@@ -1591,12 +1539,10 @@ link() {
 
 desc "list" <<EOM
 Usage:
-  ${_ME} [bin | home] list [tracked | untracked | <filename>]
+  ${_ME} list [tracked | untracked | <filename>]
 
 Description:
-  List all files in the original directory of the current context ('bin' or
-  'home'). If neither 'bin' nor 'home' is specified, the context defaults to
-  'home' (ie, dotfiles).
+  List all files in \$HOME.
 
   If 'tracked' or 'untracked' as passed as arguments to 'list', then only the
   files with those statuses are listed.
@@ -1654,12 +1600,10 @@ list() {
 
 desc "rename" <<EOM
 Usage:
-  ${_ME} [bin | home] rename <old_filename> <new_filename>
+  ${_ME} rename <old_filename> <new_filename>
 
 Decription:
-  Rename a tracked file and its corresponding link in the specified context. If
-  neither 'bin' nor 'home' is specified, the context defaults to 'home' (ie,
-  dotfiles).
+  Rename a tracked file and its corresponding link in \$HOME.
 EOM
 rename() {
   old_file="${_TRACKED_DIR}/${1}"
@@ -1680,13 +1624,13 @@ rename() {
   then
     printf "A file already exists with the new filename.\n"
   else
-    "${_ME}" "${_CONTEXT}" unlink "${1}"
+    "${_ME}" unlink "${1}"
     _debug printf "unlink %s\n" "${1}"
 
     mv "${old_file}" "${new_file}"
     _debug printf "mv %s %s\n" "${old_file}" "${new_file}"
 
-    "${_ME}" "${_CONTEXT}" link "${2}"
+    "${_ME}" link "${2}"
     _debug printf "link %s\n" "${2}"
   fi
 }
@@ -1695,13 +1639,11 @@ rename() {
 
 desc "restore" <<EOM
 Usage:
-  ${_ME} [bin | home] restore <filename>
+  ${_ME} restore <filename>
 
 Description:
   Unlink the specified file and move from the tracked location in the
-  repository back to original location specified by the context ('bin' or
-  'home'). If neither 'bin' nor 'home' is specified, the context  defaults to
-  'home' (ie, dotfiles).
+  repository back to original location in \$HOME.
 EOM
 restore() {
   _debug printf "restore() \${1}: %s\n" "${1}"
@@ -1736,12 +1678,10 @@ restore() {
 
 desc "status" <<EOM
 Usage:
-  ${_ME} [bin | home] status
+  ${_ME} status
 
 Description:
-  List status of files in original directory of the current context ('bin' or
-  'home')relative to the corresponding tracked file. If neither 'bin' nor 'home'
-  is specified, the context defaults to 'home' (ie, dotfiles).
+  List status of files in \$HOME.
 
   Indicators display information about the status of each entry:
     i   - Identical, indicating a valid symbolic link to the tracked file
@@ -1769,12 +1709,10 @@ status() {
 
 desc "tracked" <<EOM
 Usage:
-  ${_ME} [bin | home] tracked
+  ${_ME} tracked
 
 Description:
-  List all tracked dotfiles from in the original directory of the current
-  context ('bin' or 'home'). If neither 'bin' nor 'home' is specified, the
-  context defaults to 'home' (ie, dotfiles).
+  List all tracked dotfiles in \$HOME.
 
   Indicators display information about the type and status of each entry:
     @ i - Symbolic link to tracked file.
@@ -1795,12 +1733,10 @@ tracked() {
 
 desc "unlink" <<EOM
 Usage:
-  ${_ME} [bin | home] unlink [<filename>]
+  ${_ME} unlink [<filename>]
 
 Description:
-  Remove symlinks in the original directory for the context ('bin' or 'home').
-  If neither 'bin' nor 'home' is specified, the context defaults to 'home' (ie,
-  dotfiles).
+  Remove symlinks in \$HOME.
 
   By default, the command removes all of the symlinks pointing to items in
   tracked directory. If a filename is passed to the unlink command, then it
@@ -1832,12 +1768,10 @@ unlink() {
 
 desc "untracked" <<EOM
 Usage:
-  ${_ME} [bin | home] untracked
+  ${_ME} untracked
 
 Description:
-  List all untracked dotfiles in the original directory of the current context
-  ('bin' or 'home'). If neither 'bin' nor 'home' is specified, the context
-  defaults to 'home' (ie, dotfiles).
+  List all untracked dotfiles in \$HOME.
 
   Indicators display information about the type and status of each entry:
     d   - Directory
@@ -1882,7 +1816,7 @@ dir() {
 desc "edit" <<EOM
 Usage:
   ${_ME} edit
-  ${_ME} [bin | home] edit [<filename>]
+  ${_ME} edit [<filename>]
 
 Description:
   Open a tracked file or, when no filename is specified, the entire tracked

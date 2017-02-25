@@ -106,9 +106,6 @@ the desired location:
 
     export BINDLEPATH="/a/custom/path"
 
-`bindle init` also creates a directory for local scripts at `$HOME/bin` if one
-does not already exist.
-
 ### Overview
 
 #### home
@@ -150,26 +147,12 @@ An example `bindle`-managed home directory:
 
 #### bin
 
-Contains all scripts from `$HOME/bin` that have been added to the
-repository.
+`bin` is intended as a directory for executables and scripts that you'd like to
+track along with your dotfiles. To make the executables in this directory
+accessible to your shell environment, include the following line in your
+`.bashrc` or equivalent:
 
-Similar to `home`, all files at the root level of this directory are assumed to
-be under version control and referenced in symbolic links in
-`$HOME/bin`.
-
-To track items from `$HOME/bin`, use `bindle bin add` (note the 'bin'
-command):
-
-    bindle bin add script-name
-
-This adds the script to `$BINDLEPATH/bin` and creates a symbolic link in
-`$HOME/bin` referencing the file.
-
-To save this change, run `bindle commit` just like with dotfiles.
-
-To stop tracking an item, use `bindle bin restore`:
-
-    bindle bin restore script-name
+    PATH="${BINDLEPATH}/bin:${PATH}"
 
 ###### Example
 
