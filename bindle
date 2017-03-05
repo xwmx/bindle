@@ -120,11 +120,13 @@ IFS="${SAFER_IFS}"
 # A simple function for executing a specified command if the `$_USE_DEBUG`
 # variable has been set. The command is expected to print a message and
 # should typically be either `echo`, `printf`, or `cat`.
+__DEBUG_COUNTER=0
 _debug() {
   if [[ "${_USE_DEBUG:-"0"}" -eq 1 ]]
   then
+    __DEBUG_COUNTER=$((__DEBUG_COUNTER+1))
     # Prefix debug message with "bug (U+1F41B)"
-    printf "🐛  "
+    printf "🐛  %s " "${__DEBUG_COUNTER}"
     "${@}"
     printf "――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――\n"
   fi
@@ -485,27 +487,29 @@ _load_commands() {
   # option, displays all of the functions with the format
   # `declare -f function_name`. These are then assigned as elements in the
   # $function_list array.
-  local function_list=($(declare -F))
+  local _function_list=($(declare -F))
 
-  for c in "${function_list[@]}"
+  for __name in "${_function_list[@]}"
   do
     # Each element has the format `declare -f function_name`, so set the name
     # to only the 'function_name' part of the string.
-    local function_name
-    function_name=$(printf "%s" "${c}" | awk '{ print $3 }')
+    local _function_name
+    _function_name=$(printf "%s" "${__name}" | awk '{ print $3 }')
 
-    _debug printf "_load_commands() \${function_name}: %s\n" "${function_name}"
+    _debug printf \
+      "_load_commands() \${_function_name}: %s\n" \
+      "${_function_name}"
 
     # Add the function name to the $_DEFINED_COMMANDS array unless it starts
     # with an underscore or is one of the desc(), debug(), or die() functions,
     # since these are treated as having 'private' visibility.
-    if ! ( [[ "${function_name}" =~ ^_(.*)  ]] || \
-           [[ "${function_name}" == "desc"  ]] || \
-           [[ "${function_name}" == "debug" ]] || \
-           [[ "${function_name}" == "die"   ]]
+    if ! ( [[ "${_function_name}" =~ ^_(.*)  ]] || \
+           [[ "${_function_name}" == "desc"  ]] || \
+           [[ "${_function_name}" == "debug" ]] || \
+           [[ "${_function_name}" == "die"   ]]
     )
     then
-      _DEFINED_COMMANDS+=("${function_name}")
+      _DEFINED_COMMANDS+=("${_function_name}")
     fi
   done
 
@@ -666,8 +670,12 @@ _each_original_file() {
 # Usage:
 #   _function_exists "possible_function_name"
 #
-# Takes a potential function name as an argument and returns whether a function
-# exists with that name.
+# Returns:
+#   0  If a function with the given name is defined in the current environment.
+#   1  If not.
+#
+# Other implementations, some with better performance:
+# http://stackoverflow.com/q/85880
 _function_exists() {
   [ "$(type -t "${1}")" == 'function' ]
 }
@@ -677,10 +685,11 @@ _function_exists() {
 # Usage:
 #   _command_exists "possible_command_name"
 #
-# Takes a potential command name as an argument and returns whether a command
-# exists with that name.
+# Returns:
+#   0  If a command with the given name is defined in the current environment.
+#   1  If not.
 #
-# For information on why `hash` is used here, see:
+# Information on why `hash` is used here:
 # http://stackoverflow.com/a/677212
 _command_exists() {
   hash "${1}" 2>/dev/null
@@ -691,13 +700,15 @@ _command_exists() {
 # Usage:
 #   _contains "$item" "${list[*]}"
 #
-# Takes an item and a list and determines whether the list contains the item.
+# Returns:
+#   0  If the item is included in the list.
+#   1  If not.
 _contains() {
-  local test_list=(${*:2})
-  for _test_element in "${test_list[@]:-}"
+  local _test_list=(${*:2})
+  for __test_element in "${_test_list[@]:-}"
   do
-    _debug printf "_contains() \${_test_element}: %s\n" "${_test_element}"
-    if [[ "${_test_element}" == "${1}" ]]
+    _debug printf "_contains() \${__test_element}: %s\n" "${__test_element}"
+    if [[ "${__test_element}" == "${1}" ]]
     then
       _debug printf "_contains() match: %s\n" "${1}"
       return 0
@@ -712,18 +723,19 @@ _contains() {
 #   _join "," a b c
 #   _join "${an_array[@]}"
 #
-# Takes a separator and a list of items, joining that list of items with the
-# separator.
+# Returns:
+#   The list or array of items joined into a string with elements divided by
+#   the optional separator if one is provided.
 _join() {
-  local separator
-  local target_array
-  local dirty
-  local clean
-  separator="${1}"
-  target_array=(${@:2})
-  dirty="$(printf "${separator}%s"  "${target_array[@]}")"
-  clean="${dirty:${#separator}}"
-  printf "%s" "${clean}"
+  local _separator
+  local _target_array
+  local _dirty
+  local _clean
+  _separator="${1}"
+  _target_array=(${@:2})
+  _dirty="$(printf "${_separator}%s"  "${_target_array[@]}")"
+  _clean="${_dirty:${#_separator}}"
+  printf "%s" "${_clean}"
 }
 
 # _command_argv_includes()
@@ -731,8 +743,10 @@ _join() {
 # Usage:
 #   _command_argv_includes "an_argument"
 #
-# Takes a possible command argument and determines whether it is included in
-# the command argument list.
+# Returns:
+#   0  If the argument is included in `$_COMMAND_ARGV`, the program's command
+#      argument list.
+#   1  If not.
 #
 # This is a shortcut for simple cases where a command wants to check for the
 # presence of options quickly without parsing the options again.
@@ -745,7 +759,9 @@ _command_argv_includes() {
 # Usage:
 #   _blank "$an_argument"
 #
-# Takes an argument and returns true if it is blank.
+# Returns:
+#   0  If the argument is not present or null.
+#   1  If the argument is present and not null.
 _blank() {
   [[ -z "${1:-}" ]]
 }
@@ -755,9 +771,35 @@ _blank() {
 # Usage:
 #   _present "$an_argument"
 #
-# Takes an argument and returns true if it is present.
+# Returns:
+#   0  If the argument is present and not null.
+#   1  If the argument is not present or null.
 _present() {
   [[ -n "${1:-}" ]]
+}
+
+# _interactive_input()
+#
+# Usage:
+#   _interactive_input
+#
+# Returns:
+#   0  If the current input is interactive (eg, a shell).
+#   1  If the current input is stdin / piped input.
+_interactive_input() {
+  [[ -t 0 ]]
+}
+
+# _piped_input()
+#
+# Usage:
+#   _piped_input
+#
+# Returns:
+#   0  If the current input is stdin / piped input.
+#   1  If the current input is interactive (eg, a shell).
+_piped_input() {
+  ! _interactive_input
 }
 
 ###############################################################################
