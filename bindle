@@ -942,9 +942,9 @@ Help:
 
 $(commands)
 EOM
- else
+  else
     desc --get "${1}"
- fi
+  fi
 }
 
 # Command List ################################################################
