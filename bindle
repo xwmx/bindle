@@ -1486,7 +1486,7 @@ add() {
         printf "Overwriting %s\n" "${tracked_file}"
         while true
         do
-          read -p "Are you sure you want to proceed? [y/n] " yn
+          read -r -p "Are you sure you want to proceed? [y/n] " yn
           case ${yn} in
             [Yy]* )
               printf "Removing %s\n" "${tracked_file}"
