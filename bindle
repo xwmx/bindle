@@ -809,13 +809,33 @@ _piped_input() {
 # desc()
 #
 # Usage:
-#   desc command "description"
+#   desc <name> <description>
+#   desc --get <name>
 #
-# Create a description for a specified command name. The command description
-# text can be passed as the second argument or as standard input.
+# Options:
+#   --get  Print the description for <name> if one has been set.
 #
-# To make the description text available to other functions, desc() assigns the
-# text to a variable with the format $_desc_function_name
+# Examples:
+# ```
+#   desc "list" <<HEREDOC
+# Usage:
+#   ${_ME} list
+#
+# Description:
+#   List items.
+# HEREDOC
+#
+# desc --get "list"
+# ```
+#
+# Set or print a description for a specified command or function <name>. The
+# <description> text can be passed as the second argument or as standard input.
+#
+# To make the <description> text available to other functions, `desc()` assigns
+# the text to a variable with the format `$___desc_<name>`.
+#
+# When the `--get` option is used, the description for <name> is printed, if
+# one has been set.
 #
 # NOTE:
 #
@@ -823,9 +843,9 @@ _piped_input() {
 # implementation and simplicity. There is an alternative assignment form
 # that could be used here:
 #
-# var="$(cat <<'EOM'
+# var="$(cat <<'HEREDOC'
 # some message
-# EOM
+# HEREDOC
 # )
 #
 # However, this form appears to require trailing space after backslases to
@@ -833,35 +853,36 @@ _piped_input() {
 # escaping backslashes, which is more common.
 desc() {
   set +e
-  [[ -z ${1} ]] && _die printf "desc: No command name specified.\n"
-  if [[ -n ${2:-} ]]
-  then
-    read -d '' "_desc_${1}" <<EOM
+  [[ -z "${1:-}" ]] && _die printf "desc(): No command name specified.\n"
+
+  if [[ "${1}" == "--get" ]]
+  then # get ------------------------------------------------------------------
+    [[ -z "${2:-}" ]] && _die printf "desc(): No command name specified.\n"
+
+    local _name="${2:-}"
+    local _desc_var="___desc_${_name}"
+
+    if [[ -n "${!_desc_var:-}" ]]
+    then
+      printf "%s\n" "${!_desc_var}"
+    else
+      printf "No additional information for \`%s\`\n" "${_name}"
+    fi
+  else # set ------------------------------------------------------------------
+    if [[ -n "${2:-}" ]]
+    then # argument is present
+      read -r -d '' "___desc_${1}" <<HEREDOC
 ${2}
-EOM
-    _debug printf "desc() set with argument: _desc_%s\n" "${1}"
-  else
-    read -d '' "_desc_${1}"
-    _debug printf "desc() set with pipe: _desc_%s\n" "${1}"
+HEREDOC
+
+      _debug printf "desc() set with argument: \${___desc_%s}\n" "${1}"
+    else # no argument is present, so assume piped input
+      read -r -d '' "___desc_${1}"
+
+      _debug printf "desc() set with pipe: \${___desc_%s}\n" "${1}"
+    fi
   fi
   set -e
-}
-
-# _print_desc()
-#
-# Usage:
-#   _print_desc <command>
-#
-# Prints the description for a given command, provided the description has been
-# set using the desc() function.
-_print_desc() {
-  local var="_desc_${1}"
-  if [[ -n ${!var:-} ]]
-  then
-    printf "%s\n" "${!var}"
-  else
-    printf "No additional information for \`%s\`\n" "${1}"
-  fi
 }
 
 ###############################################################################
@@ -922,7 +943,7 @@ Help:
 $(commands)
 EOM
  else
-  _print_desc "${1}"
+    desc --get "${1}"
  fi
 }
 
@@ -1339,7 +1360,7 @@ bootstrap() {
   # intends to run all bootstrap scripts.
   if ( _command_argv_includes "--all" )
   then
-    _print_desc "bootstrap"
+    desc --get "bootstrap"
   else
     _runner "bootstrap" "${@:-}"
   fi
