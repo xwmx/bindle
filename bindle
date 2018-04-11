@@ -115,7 +115,7 @@ IFS="${SAFER_IFS}"
 # _debug()
 #
 # Usage:
-#   _debug printf "Debug info. Variable: %s\n" "$0"
+#   _debug printf "Debug info. Variable: %s\\n" "$0"
 #
 # A simple function for executing a specified command if the `$_USE_DEBUG`
 # variable has been set. The command is expected to print a message and
@@ -128,7 +128,7 @@ _debug() {
     # Prefix debug message with "bug (U+1F41B)"
     printf "🐛  %s " "${__DEBUG_COUNTER}"
     "${@}"
-    printf "――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――\n"
+    printf "――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――\\n"
   fi
 }
 # debug()
@@ -366,16 +366,16 @@ _COMMAND_PARAMETERS=(${_COMMAND_ARGV[*]})
 unset "_COMMAND_PARAMETERS[0]"
 
 _debug printf \
-  "\${_CMD}: %s\n" \
+  "\${_CMD}: %s\\n" \
   "${_CMD}"
 _debug printf \
-  "\${_RAW_OPTIONS} (one per line):\n%s\n" \
+  "\${_RAW_OPTIONS} (one per line):\\n%s\\n" \
   "${_RAW_OPTIONS}"
 _debug printf \
-  "\${_COMMAND_ARGV[*]}: %s\n" \
+  "\${_COMMAND_ARGV[*]}: %s\\n" \
   "${_COMMAND_ARGV[*]}"
 _debug printf \
-  "\${_COMMAND_PARAMETERS[*]:-}: %s\n" \
+  "\${_COMMAND_PARAMETERS[*]:-}: %s\\n" \
   "${_COMMAND_PARAMETERS[*]:-}"
 
 ###############################################################################
@@ -387,7 +387,7 @@ _debug printf \
 # Set to the program's basename.
 _ME=$(basename "${0}")
 
-_debug printf "\${_ME}: %s\n" "${_ME}"
+_debug printf "\${_ME}: %s\\n" "${_ME}"
 
 # $BINDLEPATH
 #
@@ -419,11 +419,11 @@ _validate_bindlepath_target() {
   fi
   if [[ ! -e "${BINDLEPATH}" ]]
   then
-    _die printf "\${BINDLEPATH} (%s) does not exist.\n" "${BINDLEPATH}"
+    _die printf "\${BINDLEPATH} (%s) does not exist.\\n" "${BINDLEPATH}"
   fi
   if [[ ! -d "${BINDLEPATH}" ]]
   then
-    _die printf "\${BINDLEPATH} (%s) is not a directory.\n" "${BINDLEPATH}"
+    _die printf "\${BINDLEPATH} (%s) is not a directory.\\n" "${BINDLEPATH}"
   fi
 }
 _validate_bindlepath_target
@@ -433,14 +433,14 @@ _validate_bindlepath_target
 # The directory containing the track files.
 _TRACKED_DIR="${BINDLEPATH}/home"
 
-_debug printf "\${_TRACKED_DIR}: %s\n" "${_TRACKED_DIR}"
+_debug printf "\${_TRACKED_DIR}: %s\\n" "${_TRACKED_DIR}"
 
 # $_ORIGINAL_DIR
 #
 # The user's home directory.
 _ORIGINAL_DIR="${HOME}"
 
-_debug printf "\${_ORIGINAL_DIR}: %s\n" "${_ORIGINAL_DIR}"
+_debug printf "\${_ORIGINAL_DIR}: %s\\n" "${_ORIGINAL_DIR}"
 
 # $_GIT_BIN
 #
@@ -451,7 +451,7 @@ if [[ -z "${_GIT_BIN}" ]]
 then
   _die printf "\
 The \`git\` executable can not be found. Since \`${_ME}\` depends on git, \
-please install git and make sure it has been added to your \$PATH.\n"
+please install git and make sure it has been added to your \$PATH.\\n"
 fi
 
 # Set $EDITOR to blank if it's unbound in order to avoid unrelated errors.
@@ -480,8 +480,8 @@ _DEFINED_COMMANDS=()
 # Loads all of the commands sourced in the environment.
 _load_commands() {
 
-  _debug printf "_load_commands(): entering...\n"
-  _debug printf "_load_commands() declare -F:\n%s\n" "$(declare -F)"
+  _debug printf "_load_commands(): entering...\\n"
+  _debug printf "_load_commands() declare -F:\\n%s\\n" "$(declare -F)"
 
   # declare is a bash built-in shell function that, when called with the '-F'
   # option, displays all of the functions with the format
@@ -497,7 +497,7 @@ _load_commands() {
     _function_name=$(printf "%s" "${__name}" | awk '{ print $3 }')
 
     _debug printf \
-      "_load_commands() \${_function_name}: %s\n" \
+      "_load_commands() \${_function_name}: %s\\n" \
       "${_function_name}"
 
     # Add the function name to the $_DEFINED_COMMANDS array unless it starts
@@ -514,7 +514,7 @@ _load_commands() {
   done
 
   _debug printf \
-    "commands() \${_DEFINED_COMMANDS[*]:-}:\n%s\n" \
+    "commands() \${_DEFINED_COMMANDS[*]:-}:\\n%s\\n" \
     "${_DEFINED_COMMANDS[*]:-}"
 }
 
@@ -531,8 +531,8 @@ _load_commands() {
 #
 # NOTE: must be called at end of program after all commands have been defined.
 _main() {
-  _debug printf "main(): entering...\n"
-  _debug printf "main() \${_CMD} (upon entering): %s\n" "${_CMD}"
+  _debug printf "main(): entering...\\n"
+  _debug printf "main() \${_CMD} (upon entering): %s\\n" "${_CMD}"
 
   # If $_CMD is blank, then set to `$DEFAULT_COMMAND`
   if [[ -z ${_CMD} ]]
@@ -549,7 +549,7 @@ _main() {
     # Pass all comment arguments to the program except for the first ($0).
     ${_CMD} "${_COMMAND_PARAMETERS[@]:-}"
   else
-    _die printf "Unknown command: %s\n" "${_CMD}"
+    _die printf "Unknown command: %s\\n" "${_CMD}"
   fi
 }
 
@@ -567,7 +567,7 @@ _main() {
 _each_file() {
   local per_file_function="${2}"
   local search_files=("${1}"/.*)
-  _debug printf "_each_file() \${#search_files[@]}: %s\n" "${#search_files[@]}"
+  _debug printf "_each_file() \${#search_files[@]}: %s\\n" "${#search_files[@]}"
   for f in "${search_files[@]}"
   do
     local filename
@@ -597,17 +597,17 @@ _run_script() {
   local script_arguments=(${@:2})
   if [[ -f "${_script}" ]]
   then
-    printf ">> Running %s\n" "$(basename "${_script}")"
+    printf ">> Running %s\\n" "$(basename "${_script}")"
     "${_script}" "${script_arguments[@]:-}"
   elif [[ -d "${_script}" ]]
   then
-    _die printf "'%s' is a directory.\n" "${_script}"
+    _die printf "'%s' is a directory.\\n" "${_script}"
   else
-    _die printf "'%s' not found.\n" "${_script}"
+    _die printf "'%s' not found.\\n" "${_script}"
   fi
 }
 _runner() {
-  [[ -z "${1}" ]] && _die printf "_runner: No subdirectory specified.\n"
+  [[ -z "${1}" ]] && _die printf "_runner: No subdirectory specified.\\n"
   local subdir="${1}"
   local subdir_path="${BINDLEPATH}/script/${subdir}"
   local script_file="${subdir_path}/${2}"
@@ -707,10 +707,10 @@ _contains() {
   local _test_list=(${*:2})
   for __test_element in "${_test_list[@]:-}"
   do
-    _debug printf "_contains() \${__test_element}: %s\n" "${__test_element}"
+    _debug printf "_contains() \${__test_element}: %s\\n" "${__test_element}"
     if [[ "${__test_element}" == "${1}" ]]
     then
-      _debug printf "_contains() match: %s\n" "${1}"
+      _debug printf "_contains() match: %s\\n" "${1}"
       return 0
     fi
   done
@@ -853,20 +853,20 @@ _piped_input() {
 # escaping backslashes, which is more common.
 desc() {
   set +e
-  [[ -z "${1:-}" ]] && _die printf "desc(): No command name specified.\n"
+  [[ -z "${1:-}" ]] && _die printf "desc(): No command name specified.\\n"
 
   if [[ "${1}" == "--get" ]]
   then # get ------------------------------------------------------------------
-    [[ -z "${2:-}" ]] && _die printf "desc(): No command name specified.\n"
+    [[ -z "${2:-}" ]] && _die printf "desc(): No command name specified.\\n"
 
     local _name="${2:-}"
     local _desc_var="___desc_${_name}"
 
     if [[ -n "${!_desc_var:-}" ]]
     then
-      printf "%s\n" "${!_desc_var}"
+      printf "%s\\n" "${!_desc_var}"
     else
-      printf "No additional information for \`%s\`\n" "${_name}"
+      printf "No additional information for \`%s\`\\n" "${_name}"
     fi
   else # set ------------------------------------------------------------------
     if [[ -n "${2:-}" ]]
@@ -875,11 +875,11 @@ desc() {
 ${2}
 HEREDOC
 
-      _debug printf "desc() set with argument: \${___desc_%s}\n" "${1}"
+      _debug printf "desc() set with argument: \${___desc_%s}\\n" "${1}"
     else # no argument is present, so assume piped input
       read -r -d '' "___desc_${1}"
 
-      _debug printf "desc() set with pipe: \${___desc_%s}\n" "${1}"
+      _debug printf "desc() set with pipe: \${___desc_%s}\\n" "${1}"
     fi
   fi
   set -e
@@ -901,7 +901,7 @@ Description:
   To save you the trouble, the current version is ${_BINDLE_VERSION}
 EOM
 version() {
-  printf "%s\n" "${_BINDLE_VERSION}"
+  printf "%s\\n" "${_BINDLE_VERSION}"
 }
 
 # Help ########################################################################
@@ -921,7 +921,7 @@ help() {
  _____  ___  _____  _____  ____   _____
 /  _  \\/___\\/  _  \\|  _  \\/  _/  /   __\\
 |  _  <|   ||  |  ||  |  ||  |---|   __|
-\_____/\\___/\\__|__/|_____/\\_____/\\_____/
+\\_____/\\___/\\__|__/|_____/\\_____/\\_____/
 
 A configuration management tool for your personal unix-like computer.
 
@@ -962,10 +962,10 @@ EOM
 commands() {
   if _command_argv_includes "--raw"
   then
-    printf "%s\n" "${_DEFINED_COMMANDS[@]:-}"
+    printf "%s\\n" "${_DEFINED_COMMANDS[@]:-}"
   else
-    printf "Available commands:\n"
-    printf "  %s\n" "${_DEFINED_COMMANDS[@]:-}"
+    printf "Available commands:\\n"
+    printf "  %s\\n" "${_DEFINED_COMMANDS[@]:-}"
   fi
 }
 
@@ -1037,15 +1037,15 @@ EOM
 #
 # called by: init()
 _init_with_source() {
-  _debug printf "_init_with_source() \${1}: %s\n" "${1}"
-  _debug printf "_init_with_source() \${2}: %s\n" "${2}"
+  _debug printf "_init_with_source() \${1}: %s\\n" "${1}"
+  _debug printf "_init_with_source() \${2}: %s\\n" "${2}"
 
   if [[ -z "${1}" ]]
   then
-    _die printf "Repository directory not specified.\n"
+    _die printf "Repository directory not specified.\\n"
   elif [[ -z "${2}" ]]
   then
-    _die printf "Source URL not specified.\n"
+    _die printf "Source URL not specified.\\n"
   else
     "${_GIT_BIN}" clone "${2}" "${1}"
   fi
@@ -1066,7 +1066,7 @@ _init_bindlerc() {
   _command_argv_includes "--skip-bindlerc" && return 0
   if [[ -n "${1}" ]]
   then
-    printf ">> Adding ~/.bindlerc configuration file.\n"
+    printf ">> Adding ~/.bindlerc configuration file.\\n"
     printf "\
 # .bindlerc
 #
@@ -1078,7 +1078,7 @@ _init_bindlerc() {
 export BINDLEPATH=\"%s\"
 " "${1}" >> "${HOME}/.bindlerc"
   else
-    printf "Repository location not specified.\n"
+    printf "Repository location not specified.\\n"
   fi
 }
 # _init_directory_structure()
@@ -1106,7 +1106,7 @@ _init_directory_structure() {
     mkdir "${1}/script/customize"
     touch "${1}/script/customize/.gitkeep"
   else
-    printf "Repository directory not specified.\n"
+    printf "Repository directory not specified.\\n"
   fi
 }
 # _init_gitignore()
@@ -1127,7 +1127,7 @@ _init_gitignore() {
 !/home/.ssh/config
 " >> "${1}/.gitignore"
   else
-    printf "Repository directory not specified.\n"
+    printf "Repository directory not specified.\\n"
   fi
 }
 # _init_git_repository()
@@ -1141,7 +1141,7 @@ _init_git_repository() {
     cd "${1}"
     "${_GIT_BIN}" init
   else
-    printf "Repository directory not specified.\n"
+    printf "Repository directory not specified.\\n"
   fi
 }
 # _init_post_message()
@@ -1163,7 +1163,7 @@ Your bindle git repo has been initialized at the following location:
 %s
 " "${1}"
   else
-    printf "Repository directory not specified.\n"
+    printf "Repository directory not specified.\\n"
   fi
 }
 # init()
@@ -1196,8 +1196,8 @@ init() {
       _init_bindlerc "${BINDLEPATH}"
     fi
   fi
-  _debug printf "init() \${BINDLEPATH}: %s\n" "${BINDLEPATH}"
-  _debug printf "init() \${init_source}: %s\n" "${init_source}"
+  _debug printf "init() \${BINDLEPATH}: %s\\n" "${BINDLEPATH}"
+  _debug printf "init() \${init_source}: %s\\n" "${init_source}"
 
   # Initialize either from source or with fresh directory structure.
   if [[ ! -e "${BINDLEPATH}" ]]
@@ -1214,7 +1214,7 @@ init() {
   else
     _die printf "\
 A file or directory already exists at the dotfile repository path:
-%s\n" "${BINDLEPATH}"
+%s\\n" "${BINDLEPATH}"
   fi
 }
 
@@ -1261,7 +1261,7 @@ git() {
   # Use raw options to get the option string, with some parts stripped.
   local _git_options
   _git_options=($(printf "%s" "${_RAW_OPTIONS}" | \
-    tr '\n' ' ' | \
+    tr '\\n' ' ' | \
     sed -e 's/--debug//' | \
     sed -e 's/^git //'     \
   ))
@@ -1282,7 +1282,7 @@ EOM
 pull() {
   cd "${BINDLEPATH}"
   "${_GIT_BIN}" pull
-  _debug printf "%s pull\n" "${_GIT_BIN}"
+  _debug printf "%s pull\\n" "${_GIT_BIN}"
 }
 
 # ------------------------------------------------------------------------ push
@@ -1297,7 +1297,7 @@ EOM
 push() {
   cd "${BINDLEPATH}"
   "${_GIT_BIN}" push
-  _debug printf "%s push\n" "${_GIT_BIN}"
+  _debug printf "%s push\\n" "${_GIT_BIN}"
 }
 
 # ------------------------------------------------------------------ submodules
@@ -1324,7 +1324,7 @@ submodules() {
       "${_GIT_BIN}" submodule update --init --remote
       ;;
     *)
-      _die printf "Unrecognized subcommand: submodules %s\n" "${1}"
+      _die printf "Unrecognized subcommand: submodules %s\\n" "${1}"
       ;;
   esac
 }
@@ -1440,7 +1440,7 @@ Description:
   Add the specified file to the tracked directory.
 EOM
 add() {
-  _debug printf "add() \${1}: %s\n" "${1}"
+  _debug printf "add() \${1}: %s\\n" "${1}"
 
   local _force=0
   local _arguments=()
@@ -1456,15 +1456,15 @@ add() {
 
   if [[ -z "${_arguments[1]:-}" ]]
   then
-    _die printf "Must specify a valid file or directory name.\n"
+    _die printf "Must specify a valid file or directory name.\\n"
   else
     filename="$(basename "${_arguments[1]:-}")"
 
     original_file="${_ORIGINAL_DIR}/${filename}"
-    _debug printf "add() \${original_file}: %s\n" "${original_file}"
+    _debug printf "add() \${original_file}: %s\\n" "${original_file}"
 
     tracked_file="${_TRACKED_DIR}/${filename}"
-    _debug printf "add() \${tracked_file}: %s\n" "${tracked_file}"
+    _debug printf "add() \${tracked_file}: %s\\n" "${tracked_file}"
 
     # Because the if / else is complicated, guarding against errors by only
     # proceeding when this variable has been set.
@@ -1472,51 +1472,51 @@ add() {
 
     if [[ ! -e "${original_file}" ]]
     then
-      _die printf "File or directory does not exist.\n"
+      _die printf "File or directory does not exist.\\n"
     elif ( \
       [[ "${filename}" == "/"  ]] || \
       [[ "${filename}" == "."  ]] || \
       [[ "${filename}" == ".." ]]
     )
     then
-      _die printf "Invalid filename: %s\n" "${filename}"
+      _die printf "Invalid filename: %s\\n" "${filename}"
     elif [[ -e "${tracked_file}" ]]
     then
       if ((_force))
       then
-        printf "Overwriting %s\n" "${tracked_file}"
+        printf "Overwriting %s\\n" "${tracked_file}"
         while true
         do
           read -r -p "Are you sure you want to proceed? [y/n] " yn
           case ${yn} in
             [Yy]* )
-              printf "Removing %s\n" "${tracked_file}"
+              printf "Removing %s\\n" "${tracked_file}"
               rm -r "${tracked_file}"
               break
               ;;
             [Nn]* )
-              printf "Exiting...\n"
+              printf "Exiting...\\n"
               exit
               ;;
             * )
-              printf "Please answer yes or no.\n"
+              printf "Please answer yes or no.\\n"
               ;;
           esac
         done
         safe_to_proceed=1
       else
-        _die printf "File has already been added.\n"
+        _die printf "File has already been added.\\n"
       fi
     elif [[ -L "${original_file}" ]]
     then
-      _die printf "Original is already a symlink.\n"
+      _die printf "Original is already a symlink.\\n"
     else
       safe_to_proceed=1
     fi
     if [[ -n "${safe_to_proceed}" ]]
     then
       mv "${original_file}" "${_TRACKED_DIR}"
-      printf "Linking %s => %s\n" "${tracked_file}" "${original_file}"
+      printf "Linking %s => %s\\n" "${tracked_file}" "${original_file}"
       ln -s "${tracked_file}" "${original_file}"
     fi
   fi
@@ -1554,7 +1554,7 @@ _link_item() {
       then
         if [[ -e "${original_file}".bak ]]
         then
-          printf "Exists with .bak: %s, %s\n" "${filename}" "${filename}".bak
+          printf "Exists with .bak: %s, %s\\n" "${filename}" "${filename}".bak
           return 0
         else
           mv "${original_file}" "${original_file}".bak
@@ -1563,11 +1563,11 @@ _link_item() {
         rm "${original_file}"
       fi
     else
-      printf "Exists: %s\n" "${filename}"
+      printf "Exists: %s\\n" "${filename}"
       return 0
     fi
   fi
-  printf "Linking %s => %s\n" "${f}" "${original_file}"
+  printf "Linking %s => %s\\n" "${f}" "${original_file}"
   ln -s "${f}" "${original_file}"
 }
 link() {
@@ -1624,16 +1624,16 @@ _list_item() {
   then
     if [[ "$(readlink "${f}")" == "${tracked_file}" ]]
     then
-      printf "@  i   %s\n" "${filename}"
+      printf "@  i   %s\\n" "${filename}"
     else
-      printf "@      %s\n" "${filename}"
+      printf "@      %s\\n" "${filename}"
     fi
   elif [[ -d ${f} ]]
   then
-    printf "d      %s\n" "${filename}"
+    printf "d      %s\\n" "${filename}"
   elif [[ -e ${f} ]]
   then
-    printf "       %s\n" "${filename}"
+    printf "       %s\\n" "${filename}"
   fi
 }
 list() {
@@ -1653,7 +1653,7 @@ list() {
       original_file="${_ORIGINAL_DIR}/${filename}"
       _list_item
     else
-      _die printf "File not found.\n"
+      _die printf "File not found.\\n"
     fi
   else
     _each_original_file _list_item
@@ -1671,31 +1671,31 @@ Decription:
 EOM
 rename() {
   old_file="${_TRACKED_DIR}/${1}"
-  _debug printf "rename() \${old_file}: %s\n" "${old_file}"
+  _debug printf "rename() \${old_file}: %s\\n" "${old_file}"
   new_file="${_TRACKED_DIR}/${2}"
-  _debug printf "rename() \${new_file}: %s\n" "${new_file}"
+  _debug printf "rename() \${new_file}: %s\\n" "${new_file}"
 
   if [[ -z "${1}" ]]
   then
-    printf "Filename not provided.\n"
+    printf "Filename not provided.\\n"
   elif [[ -z "${2}" ]]
   then
-    printf "New name not provided.\n"
+    printf "New name not provided.\\n"
   elif [[ ! -e "${old_file}" ]]
   then
-    printf "File not found.\n"
+    printf "File not found.\\n"
   elif [[ -e "${new_file}" ]]
   then
-    printf "A file already exists with the new filename.\n"
+    printf "A file already exists with the new filename.\\n"
   else
     "${_ME}" unlink "${1}"
-    _debug printf "unlink %s\n" "${1}"
+    _debug printf "unlink %s\\n" "${1}"
 
     mv "${old_file}" "${new_file}"
-    _debug printf "mv %s %s\n" "${old_file}" "${new_file}"
+    _debug printf "mv %s %s\\n" "${old_file}" "${new_file}"
 
     "${_ME}" link "${2}"
-    _debug printf "link %s\n" "${2}"
+    _debug printf "link %s\\n" "${2}"
   fi
 }
 
@@ -1710,30 +1710,30 @@ Description:
   repository back to original location in \$HOME.
 EOM
 restore() {
-  _debug printf "restore() \${1}: %s\n" "${1}"
+  _debug printf "restore() \${1}: %s\\n" "${1}"
 
   if [[ ${#} = 0 ]]
   then
-    _die printf "Must specify a valid file or directory name.\n"
+    _die printf "Must specify a valid file or directory name.\\n"
   else
     filename="$(basename "${1}")"
 
     original_file="${_ORIGINAL_DIR}/${filename}"
-    _debug printf "restore() \${original_file}: %s\n" "${original_file}"
+    _debug printf "restore() \${original_file}: %s\\n" "${original_file}"
 
     tracked_file="${_TRACKED_DIR}/${filename}"
-    _debug printf "restore() \${tracked_file}: %s\n" "${tracked_file}"
+    _debug printf "restore() \${tracked_file}: %s\\n" "${tracked_file}"
 
     if [[ ! -e "${tracked_file}" ]]
     then
-      printf "File does not exist.\n"
+      printf "File does not exist.\\n"
     elif [[ ! -L "${original_file}" ]]
     then
-      printf "File is not a symlink.\n"
+      printf "File is not a symlink.\\n"
     else
       rm "${original_file}"
       mv "${tracked_file}" "${original_file}"
-      printf "Restored: %s => %s\n" "${tracked_file}" "${original_file}"
+      printf "Restored: %s => %s\\n" "${tracked_file}" "${original_file}"
     fi
   fi
 }
@@ -1757,12 +1757,12 @@ _status_item() {
        [[ "$(readlink "${original_file}")" == "${f}" ]]
   )
   then
-    printf "i   %s\n" "${filename}"
+    printf "i   %s\\n" "${filename}"
   elif [[ -e "${original_file}" ]]
   then
-    printf " e  %s\n" "${filename}"
+    printf " e  %s\\n" "${filename}"
   else
-    printf "  x %s\n" "${filename}"
+    printf "  x %s\\n" "${filename}"
   fi
 }
 status() {
@@ -1786,7 +1786,7 @@ _tracked_item() {
        [[ "$(readlink "${f}")" == "${tracked_file}" ]]
   )
   then
-    printf "@  i   %s\n" "${filename}"
+    printf "@  i   %s\\n" "${filename}"
   fi
 }
 tracked() {
@@ -1811,7 +1811,7 @@ _unlink_item() {
        [[ "$(readlink "${original_file}")" == "${f}" ]]
   )
   then
-    printf "Removing link: %s\n" "${original_file}"
+    printf "Removing link: %s\\n" "${original_file}"
     rm "${original_file}"
   fi
 }
@@ -1846,14 +1846,14 @@ _untracked_item() {
   then
     if ! ( [[ "$(readlink "${f}")" == "${tracked_file}" ]] )
     then
-      printf "@      %s\n" "${filename}"
+      printf "@      %s\\n" "${filename}"
     fi
   elif [[ -d ${f} ]]
   then
-    printf "d      %s\n" "${filename}"
+    printf "d      %s\\n" "${filename}"
   elif [[ -e ${f} ]]
   then
-    printf "       %s\n" "${filename}"
+    printf "       %s\\n" "${filename}"
   fi
 }
 untracked() {
@@ -1872,7 +1872,7 @@ Description:
   Print the current value of \$BINDLEPATH
 EOM
 dir() {
-  printf "%s\n" "${BINDLEPATH}"
+  printf "%s\\n" "${BINDLEPATH}"
 }
 
 # ------------------------------------------------------------------------ edit
@@ -1887,7 +1887,7 @@ Description:
   repository in you \$EDITOR, currently set to '${EDITOR}'.
 EOM
 edit() {
-  [[ -z "${EDITOR}" ]] && _die printf "\$EDITOR is not set.\n"
+  [[ -z "${EDITOR}" ]] && _die printf "\$EDITOR is not set.\\n"
   if [[ -n "${1}" ]]
   then
     f="${_TRACKED_DIR}/${1}"
