@@ -1774,13 +1774,13 @@ restore() {
   then
     _die printf "Must specify a valid file or directory name.\\n"
   else
-    local _filename
-    _filename="$(basename "${1}")"
+    local _file_basename
+    _file_basename="$(basename "${1}")"
 
-    local _original_file="${_ORIGINAL_DIR}/${_filename}"
+    local _original_file="${_ORIGINAL_DIR}/${_file_basename}"
     _debug printf "restore() \${_original_file}: %s\\n" "${_original_file}"
 
-    local _tracked_file="${_TRACKED_DIR}/${_filename}"
+    local _tracked_file="${_TRACKED_DIR}/${_file_basename}"
     _debug printf "restore() \${_tracked_file}: %s\\n" "${_tracked_file}"
 
     if [[ ! -e "${_tracked_file}" ]]
