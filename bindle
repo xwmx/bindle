@@ -1490,7 +1490,7 @@ add() {
 
     # Because the if / else is complicated, guarding against errors by only
     # proceeding when this variable has been set.
-    safe_to_proceed=
+    local _is_safe_to_proceed=0
 
     if [[ ! -e "${_original_file}" ]]
     then
@@ -1525,7 +1525,7 @@ add() {
               ;;
           esac
         done
-        safe_to_proceed=1
+        _is_safe_to_proceed=1
       else
         _die printf "File has already been added.\\n"
       fi
@@ -1533,9 +1533,9 @@ add() {
     then
       _die printf "Original is already a symlink.\\n"
     else
-      safe_to_proceed=1
+      _is_safe_to_proceed=1
     fi
-    if [[ -n "${safe_to_proceed}" ]]
+    if ((_is_safe_to_proceed))
     then
       mv "${_original_file}" "${_TRACKED_DIR}"
       printf "Linking %s => %s\\n" "${_tracked_file}" "${_original_file}"
