@@ -1720,24 +1720,25 @@ restore() {
   then
     _die printf "Must specify a valid file or directory name.\\n"
   else
-    filename="$(basename "${1}")"
+    local _filename
+    _filename="$(basename "${1}")"
 
-    original_file="${_ORIGINAL_DIR}/${filename}"
-    _debug printf "restore() \${original_file}: %s\\n" "${original_file}"
+    local _original_file="${_ORIGINAL_DIR}/${_filename}"
+    _debug printf "restore() \${_original_file}: %s\\n" "${_original_file}"
 
-    tracked_file="${_TRACKED_DIR}/${filename}"
-    _debug printf "restore() \${tracked_file}: %s\\n" "${tracked_file}"
+    local _tracked_file="${_TRACKED_DIR}/${_filename}"
+    _debug printf "restore() \${_tracked_file}: %s\\n" "${_tracked_file}"
 
-    if [[ ! -e "${tracked_file}" ]]
+    if [[ ! -e "${_tracked_file}" ]]
     then
       printf "File does not exist.\\n"
-    elif [[ ! -L "${original_file}" ]]
+    elif [[ ! -L "${_original_file}" ]]
     then
       printf "File is not a symlink.\\n"
     else
-      rm "${original_file}"
-      mv "${tracked_file}" "${original_file}"
-      printf "Restored: %s => %s\\n" "${tracked_file}" "${original_file}"
+      rm "${_original_file}"
+      mv "${_tracked_file}" "${_original_file}"
+      printf "Restored: %s => %s\\n" "${_tracked_file}" "${_original_file}"
     fi
   fi
 }
