@@ -581,7 +581,11 @@ _each_file() {
     then
       # Subfunctions can access the variables in this function, so it's not
       # necessary to pass them as arguments.
-      ${per_file_function}
+      ${per_file_function} \
+        "${f}" \
+        "${filename}" \
+        "${tracked_file}" \
+        "${original_file}"
     fi
   done
 }
@@ -1781,16 +1785,21 @@ Description:
   Indicators display information about the type and status of each entry:
     @ i - Symbolic link to tracked file.
 EOM
-_tracked_item() {
-  if ( [[ -L ${f} ]] && \
-       [[ "$(readlink "${f}")" == "${tracked_file}" ]]
-  )
-  then
-    printf "@  i   %s\\n" "${filename}"
-  fi
-}
 tracked() {
-  _each_original_file _tracked_item
+  _print_tracked_item() {
+    local _file_path="${1:-}"
+    local _filename="${2:-}"
+    local _tracked_file="${3:-}"
+
+    if ( [[ -L ${_file_path} ]] && \
+         [[ "$(readlink "${_file_path}")" == "${_tracked_file}" ]]
+    )
+    then
+      printf "@  i   %s\\n" "${_filename}"
+    fi
+  }
+
+  _each_original_file "_print_tracked_item"
 }
 
 # ---------------------------------------------------------------------- unlink
@@ -1841,23 +1850,28 @@ Description:
     d   - Directory
     @   - Symbolic link
 EOM
-_untracked_item() {
-  if [[ -L ${f} ]]
-  then
-    if ! ( [[ "$(readlink "${f}")" == "${tracked_file}" ]] )
-    then
-      printf "@      %s\\n" "${filename}"
-    fi
-  elif [[ -d ${f} ]]
-  then
-    printf "d      %s\\n" "${filename}"
-  elif [[ -e ${f} ]]
-  then
-    printf "       %s\\n" "${filename}"
-  fi
-}
 untracked() {
-  _each_original_file _untracked_item
+  _print_untracked_item() {
+    local _file_path="${1:-}"
+    local _filename="${2:-}"
+    local _tracked_file="${3:-}"
+
+    if [[ -L ${_file_path} ]]
+    then
+      if ! ( [[ "$(readlink "${_file_path}")" == "${_tracked_file}" ]] )
+      then
+        printf "@      %s\\n" "${_filename}"
+      fi
+    elif [[ -d ${_file_path} ]]
+    then
+      printf "d      %s\\n" "${_filename}"
+    elif [[ -e ${f} ]]
+    then
+      printf "       %s\\n" "${_filename}"
+    fi
+  }
+
+  _each_original_file "_print_untracked_item"
 }
 
 # Utilties ####################################################################
