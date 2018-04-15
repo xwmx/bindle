@@ -1575,9 +1575,9 @@ link() {
 
     if [[ -e "${_original_file_path}" ]]
     then
-      if ((_overwrite))
+      if ((_OVERWRITE))
       then
-        if ((_with_backup))
+        if ((_WITH_BACKUP))
         then
           if [[ -e "${_original_file_path}.bak" ]]
           then
@@ -1598,15 +1598,15 @@ link() {
     ln -s "${_file_path}" "${_original_file_path}"
   }
 
-  local _overwrite=0
-  local _with_backup=0
+  export _OVERWRITE=0
+  export _WITH_BACKUP=0
   local _arguments=()
 
   for __arg in "${_COMMAND_ARGV[@]:-}"
   do
     case ${__arg} in
-      --overwrite)    _overwrite=1;;
-      --with-backup)  _with_backup=1;;
+      --overwrite)    _OVERWRITE=1;;
+      --with-backup)  _WITH_BACKUP=1;;
       *)              _arguments+=(${__arg});;
     esac
   done
