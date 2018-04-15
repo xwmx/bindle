@@ -1811,21 +1811,27 @@ Description:
      e  - A file exists, but it not linked to tracked file
       x - No file exists
 EOM
-_status_item() {
-  if ( [[ -L "${original_file}" ]] && \
-       [[ "$(readlink "${original_file}")" == "${f}" ]]
-  )
-  then
-    printf "i   %s\\n" "${filename}"
-  elif [[ -e "${original_file}" ]]
-  then
-    printf " e  %s\\n" "${filename}"
-  else
-    printf "  x %s\\n" "${filename}"
-  fi
-}
 status() {
-  _each_tracked_file _status_item
+  _status_item() {
+    local _file_path="${1:-}"
+    local _file_basename="${2:-}"
+    local _tracked_file_path="${3:-}"
+    local _original_file_path="${4:-}"
+
+    if ( [[ -L "${_original_file_path}" ]] && \
+         [[ "$(readlink "${_original_file_path}")" == "${_file_path}" ]]
+    )
+    then
+      printf "i   %s\\n" "${_file_basename}"
+    elif [[ -e "${_original_file_path}" ]]
+    then
+      printf " e  %s\\n" "${_file_basename}"
+    else
+      printf "  x %s\\n" "${_file_basename}"
+    fi
+  }
+
+  _each_tracked_file "_status_item"
 }
 
 # --------------------------------------------------------------------- tracked
