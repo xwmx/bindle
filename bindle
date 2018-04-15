@@ -1727,10 +1727,11 @@ Decription:
   Rename a tracked file and its corresponding link in \$HOME.
 EOM
 rename() {
-  old_file="${_TRACKED_DIR}/${1}"
-  _debug printf "rename() \${old_file}: %s\\n" "${old_file}"
-  new_file="${_TRACKED_DIR}/${2}"
-  _debug printf "rename() \${new_file}: %s\\n" "${new_file}"
+  local _old_file="${_TRACKED_DIR}/${1}"
+  _debug printf "rename() \${_old_file}: %s\\n" "${_old_file}"
+
+  local _new_file="${_TRACKED_DIR}/${2}"
+  _debug printf "rename() \${_new_file}: %s\\n" "${_new_file}"
 
   if [[ -z "${1}" ]]
   then
@@ -1738,18 +1739,18 @@ rename() {
   elif [[ -z "${2}" ]]
   then
     printf "New name not provided.\\n"
-  elif [[ ! -e "${old_file}" ]]
+  elif [[ ! -e "${_old_file}" ]]
   then
     printf "File not found.\\n"
-  elif [[ -e "${new_file}" ]]
+  elif [[ -e "${_new_file}" ]]
   then
     printf "A file already exists with the new filename.\\n"
   else
     "${_ME}" unlink "${1}"
     _debug printf "unlink %s\\n" "${1}"
 
-    mv "${old_file}" "${new_file}"
-    _debug printf "mv %s %s\\n" "${old_file}" "${new_file}"
+    mv "${_old_file}" "${_new_file}"
+    _debug printf "mv %s %s\\n" "${_old_file}" "${_new_file}"
 
     "${_ME}" link "${2}"
     _debug printf "link %s\\n" "${2}"
