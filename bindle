@@ -1571,6 +1571,7 @@ link() {
   _link_item() {
     local _file_path="${1:-}"
     local _file_basename="${2:-}"
+    local _tracked_file_path="${3:-}"
     local _original_file_path="${4:-}"
 
     if [[ -e "${_original_file_path}" ]]
@@ -1594,8 +1595,8 @@ link() {
         return 0
       fi
     fi
-    printf "Linking %s => %s\\n" "${_file_path}" "${_original_file_path}"
-    ln -s "${_file_path}" "${_original_file_path}"
+    printf "Linking %s => %s\\n" "${_tracked_file_path}" "${_original_file_path}"
+    ln -s "${_tracked_file_path}" "${_original_file_path}"
   }
 
   export _OVERWRITE=0
@@ -1623,17 +1624,23 @@ link() {
     _tracked_file_path="${_TRACKED_DIR}/${_file_basename}"
 
     local _original_file_path
-    _original_file_path="${_TRACKED_DIR}/${_file_basename}"
+    _original_file_path="${_ORIGINAL_DIR}/${_file_basename}"
 
     if [[ -e "${_tracked_file_path}" ]]
     then
+      _debug printf "link(): link with existing tracked file.\\n"
+
       _link_item \
         "${_file_path}" \
         "${_file_basename}" \
         "${_tracked_file_path}" \
         "${_original_file_path}"
+    else
+      _die printf "Tracked file not found: %s\\n" "${_tracked_file_path}"
     fi
   else
+    _debug printf "link(): link all tracked files.\\n"
+
     _each_tracked_file "_link_item"
   fi
 }
