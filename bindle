@@ -565,27 +565,44 @@ _main() {
 # Iterate over the files in the specified directory and execute the specified
 # function.
 _each_file() {
-  local per_file_function="${2}"
-  local search_files=("${1}"/.*)
-  _debug printf "_each_file() \${#search_files[@]}: %s\\n" "${#search_files[@]}"
-  for f in "${search_files[@]}"
-  do
-    local filename
-    filename="$(basename "${f}")"
-    local tracked_file="${_TRACKED_DIR}/${filename}"
-    local original_file="${_ORIGINAL_DIR}/${filename}"
+  local _callback_function="${2}"
+  local _search_files=("${1}"/.*)
 
-    if ! ( [[ "${filename}" =~ ^\.?\.$     ]] || \
-           [[ "${filename}" == ".DS_Store" ]]
+  _debug printf \
+    "_each_file() \${#_search_files[@]}: %s\\n" \
+    "${#_search_files[@]}"
+
+  for __file_path in "${_search_files[@]}"
+  do
+    local _file_basename
+    _file_basename="$(basename "${__file_path}")"
+
+    local _tracked_file_path
+    _tracked_file_path="${_TRACKED_DIR}/${_file_basename}"
+
+    local _original_file_path
+    _original_file_path="${_ORIGINAL_DIR}/${_file_basename}"
+
+    # Assign to variables expected by callbacks for legacy compatibility.
+    #
+    # TODO: Remove these assignments when all callbacks have been updated to
+    # accept arguments.
+    local f="${__file_path}"
+    local filename="${_file_basename}"
+    local tracked_file="${_tracked_file_path}"
+    local original_file="${_original_file_path}"
+
+    if ! ( [[ "${_file_basename}" =~ ^\.?\.$     ]] || \
+           [[ "${_file_basename}" == ".DS_Store" ]]
     )
     then
       # Subfunctions can access the variables in this function, so it's not
       # necessary to pass them as arguments.
-      ${per_file_function} \
-        "${f}" \
-        "${filename}" \
-        "${tracked_file}" \
-        "${original_file}"
+      ${_callback_function} \
+        "${__file_path}" \
+        "${_file_basename}" \
+        "${_tracked_file_path}" \
+        "${_original_file_path}"
     fi
   done
 }
