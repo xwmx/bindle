@@ -1665,24 +1665,30 @@ Description:
     @   - Symbolic link
     @ i - Symbolic link to tracked file.
 EOM
-_list_item() {
-  if [[ -L ${f} ]]
-  then
-    if [[ "$(readlink "${f}")" == "${tracked_file}" ]]
-    then
-      printf "@  i   %s\\n" "${filename}"
-    else
-      printf "@      %s\\n" "${filename}"
-    fi
-  elif [[ -d ${f} ]]
-  then
-    printf "d      %s\\n" "${filename}"
-  elif [[ -e ${f} ]]
-  then
-    printf "       %s\\n" "${filename}"
-  fi
-}
 list() {
+  _list_item() {
+    local _file_path="${1:-}"
+    local _file_basename="${2:-}"
+    local _tracked_file_path="${3:-}"
+    local _original_file_path="${4:-}"
+
+    if [[ -L ${_file_path} ]]
+    then
+      if [[ "$(readlink "${_file_path}")" == "${_tracked_file_path}" ]]
+      then
+        printf "@  i   %s\\n" "${_file_basename}"
+      else
+        printf "@      %s\\n" "${_file_basename}"
+      fi
+    elif [[ -d ${_file_path} ]]
+    then
+      printf "d      %s\\n" "${_file_basename}"
+    elif [[ -e ${_file_path} ]]
+    then
+      printf "       %s\\n" "${_file_basename}"
+    fi
+  }
+
   if [[ "${1}" == "untracked" ]]
   then
     untracked
@@ -1691,18 +1697,23 @@ list() {
     tracked
   elif [[ "${1}" =~ ^\.(.*) ]]
   then
-    f="${_ORIGINAL_DIR}/${1}"
-    if [[ -e "${f}" ]]
+    local _file_path="${_ORIGINAL_DIR}/${1}"
+    if [[ -e "${_file_path}" ]]
     then
-      filename="$(basename "${f}")"
-      tracked_file="${_TRACKED_DIR}/${filename}"
-      original_file="${_ORIGINAL_DIR}/${filename}"
-      _list_item
+      _file_basename="$(basename "${_file_path}")"
+      _tracked_file_path="${_TRACKED_DIR}/${_file_basename}"
+      _original_file_path="${_ORIGINAL_DIR}/${_file_basename}"
+
+      _list_item \
+        "${_file_path}" \
+        "${_file_basename}" \
+        "${_tracked_file_path}" \
+        "${_original_file_path}"
     else
       _die printf "File not found.\\n"
     fi
   else
-    _each_original_file _list_item
+    _each_original_file "_list_item"
   fi
 }
 
