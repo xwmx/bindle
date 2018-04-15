@@ -1876,25 +1876,43 @@ Description:
   tracked directory. If a filename is passed to the unlink command, then it
   only acts on symlinks to that file.
 EOM
-_unlink_item() {
-  if ( [[ -L "${original_file}" ]] && \
-       [[ "$(readlink "${original_file}")" == "${f}" ]]
-  )
-  then
-    printf "Removing link: %s\\n" "${original_file}"
-    rm "${original_file}"
-  fi
-}
 unlink() {
+  _unlink_item() {
+    local _file_path="${1:-}"
+    local _file_basename="${2:-}"
+    local _tracked_file_path="${3:-}"
+    local _original_file_path="${4:-}"
+
+    if ( [[ -L "${_original_file_path}" ]] && \
+         [[ "$(readlink "${_original_file_path}")" == "${_file_path}" ]]
+    )
+    then
+      printf "Removing link: %s\\n" "${_original_file_path}"
+      rm "${_original_file_path}"
+    fi
+  }
+
   if [[ -n "${1}" ]]
   then
-    f="${_TRACKED_DIR}/${1}"
-    filename="$(basename "${1}")"
-    tracked_file="${_TRACKED_DIR}/${filename}"
-    original_file="${_ORIGINAL_DIR}/${filename}"
-    _unlink_item
+    local _file_path
+    _file_path="${_TRACKED_DIR}/${1}"
+
+    local _file_basename
+    _file_basename="$(basename "${_file_path}")"
+
+    local _tracked_file_path
+    _tracked_file_path="${_TRACKED_DIR}/${_file_basename}"
+
+    local _original_file_path
+    _original_file_path="${_ORIGINAL_DIR}/${_file_basename}"
+
+    _unlink_item \
+      "${_file_path}" \
+      "${_file_basename}" \
+      "${_tracked_file_path}" \
+      "${_original_file_path}"
   else
-    _each_tracked_file _unlink_item
+    _each_tracked_file "_unlink_item"
   fi
 }
 
