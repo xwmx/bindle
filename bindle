@@ -1466,11 +1466,11 @@ add() {
   local _force=0
   local _arguments=()
 
-  for arg in "${_COMMAND_ARGV[@]:-}"
+  for __arg in "${_COMMAND_ARGV[@]:-}"
   do
-    case ${arg} in
+    case ${__arg} in
       --force) _force=1;;
-      *) _arguments+=(${arg});;
+      *) _arguments+=(${__arg});;
     esac
   done
 
@@ -1596,12 +1596,12 @@ link() {
   local _with_backup=0
   local _arguments=()
 
-  for arg in "${_COMMAND_ARGV[@]:-}"
+  for __arg in "${_COMMAND_ARGV[@]:-}"
   do
-    case ${arg} in
+    case ${__arg} in
       --overwrite)    _overwrite=1;;
       --with-backup)  _with_backup=1;;
-      *)              _arguments+=(${arg});;
+      *)              _arguments+=(${__arg});;
     esac
   done
 
