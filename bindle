@@ -1568,29 +1568,33 @@ Description:
   If a filename is passed to the link command, then it only acts on that file.
 EOM
 _link_item() {
-  if [[ -e "${original_file}" ]]
+  local _file_path="${1:-}"
+  local _file_basename="${2:-}"
+  local _original_file_path="${4:-}"
+
+  if [[ -e "${_original_file_path}" ]]
   then
     if ((_overwrite))
     then
       if ((_with_backup))
       then
-        if [[ -e "${original_file}".bak ]]
+        if [[ -e "${_original_file_path}.bak" ]]
         then
-          printf "Exists with .bak: %s, %s\\n" "${filename}" "${filename}".bak
+          printf "Exists with .bak: %s, %s\\n" "${_file_basename}" "${_file_basename}.bak"
           return 0
         else
-          mv "${original_file}" "${original_file}".bak
+          mv "${_original_file_path}" "${_original_file_path}.bak"
         fi
       else
-        rm "${original_file}"
+        rm "${_original_file_path}"
       fi
     else
-      printf "Exists: %s\\n" "${filename}"
+      printf "Exists: %s\\n" "${_file_basename}"
       return 0
     fi
   fi
-  printf "Linking %s => %s\\n" "${f}" "${original_file}"
-  ln -s "${f}" "${original_file}"
+  printf "Linking %s => %s\\n" "${_file_path}" "${_original_file_path}"
+  ln -s "${_file_path}" "${_original_file_path}"
 }
 link() {
   local _overwrite=0
@@ -1608,16 +1612,28 @@ link() {
 
   if [[ -n "${_arguments[1]:-}" ]]
   then
-    f="${_TRACKED_DIR}/${_arguments[1]}"
-    filename="$(basename "${_arguments[1]}")"
-    tracked_file="${_TRACKED_DIR}/${filename}"
-    original_file="${_ORIGINAL_DIR}/${filename}"
-    if [[ -e "${tracked_file}" ]]
+    local _file_path
+    _file_path="${_TRACKED_DIR}/${_arguments[1]}"
+
+    local _file_basename
+    _file_basename="$(basename "${_arguments[1]}")"
+
+    local _tracked_file_path
+    _tracked_file_path="${_TRACKED_DIR}/${_file_basename}"
+
+    local _original_file_path
+    _original_file_path="${_TRACKED_DIR}/${_file_basename}"
+
+    if [[ -e "${_tracked_file_path}" ]]
     then
-      _link_item
+      _link_item \
+        "${_file_path}" \
+        "${_file_basename}" \
+        "${_tracked_file_path}" \
+        "${_original_file_path}"
     fi
   else
-    _each_tracked_file _link_item
+    _each_tracked_file "_link_item"
   fi
 }
 
