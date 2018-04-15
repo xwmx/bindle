@@ -1567,36 +1567,37 @@ Description:
   By default, the command links all files that exist in the tracked directory.
   If a filename is passed to the link command, then it only acts on that file.
 EOM
-_link_item() {
-  local _file_path="${1:-}"
-  local _file_basename="${2:-}"
-  local _original_file_path="${4:-}"
+link() {
+  _link_item() {
+    local _file_path="${1:-}"
+    local _file_basename="${2:-}"
+    local _original_file_path="${4:-}"
 
-  if [[ -e "${_original_file_path}" ]]
-  then
-    if ((_overwrite))
+    if [[ -e "${_original_file_path}" ]]
     then
-      if ((_with_backup))
+      if ((_overwrite))
       then
-        if [[ -e "${_original_file_path}.bak" ]]
+        if ((_with_backup))
         then
-          printf "Exists with .bak: %s, %s\\n" "${_file_basename}" "${_file_basename}.bak"
-          return 0
+          if [[ -e "${_original_file_path}.bak" ]]
+          then
+            printf "Exists with .bak: %s, %s\\n" "${_file_basename}" "${_file_basename}.bak"
+            return 0
+          else
+            mv "${_original_file_path}" "${_original_file_path}.bak"
+          fi
         else
-          mv "${_original_file_path}" "${_original_file_path}.bak"
+          rm "${_original_file_path}"
         fi
       else
-        rm "${_original_file_path}"
+        printf "Exists: %s\\n" "${_file_basename}"
+        return 0
       fi
-    else
-      printf "Exists: %s\\n" "${_file_basename}"
-      return 0
     fi
-  fi
-  printf "Linking %s => %s\\n" "${_file_path}" "${_original_file_path}"
-  ln -s "${_file_path}" "${_original_file_path}"
-}
-link() {
+    printf "Linking %s => %s\\n" "${_file_path}" "${_original_file_path}"
+    ln -s "${_file_path}" "${_original_file_path}"
+  }
+
   local _overwrite=0
   local _with_backup=0
   local _arguments=()
