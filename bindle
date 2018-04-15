@@ -1902,12 +1902,10 @@ Description:
 EOM
 edit() {
   [[ -z "${EDITOR}" ]] && _die printf "\$EDITOR is not set.\\n"
-  if [[ -n "${1}" ]]
+  if [[ -n "${1:-}" ]]
   then
-    f="${_TRACKED_DIR}/${1}"
-    filename="$(basename "${1}")"
-    tracked_file="${_TRACKED_DIR}/${filename}"
-    ${EDITOR} "${tracked_file}"
+    local _tracked_file="${_TRACKED_DIR}/${1}"
+    ${EDITOR} "${_tracked_file}"
   else
     ${EDITOR} "${BINDLEPATH}"
   fi
