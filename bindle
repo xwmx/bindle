@@ -1194,9 +1194,9 @@ init() {
   # Initialize variables
   #
   # $init_souce: will be set to a source git repository URL if available.
-  init_source=
+  local _init_source
   # A URL-matching regex to check arguments for a source git repository.
-  _regex='(https?|git|ssh|file)://[-A-Za-z0-9\+&@#/%?=~_|!:,.;]*[-A-Za-z0-9\+&@#/%=~_|]'
+  local _git_regex='(https?|git|ssh|file)://[-A-Za-z0-9\+&@#/%?=~_|!:,.;]*[-A-Za-z0-9\+&@#/%=~_|]'
 
   # Handle arguments.
   #
@@ -1204,9 +1204,9 @@ init() {
   #   init [<source_repository>] [<bindlepath>]
   if [[ -n "${1}" ]]
   then
-    if [[ "${1}" =~ ${_regex} ]]
+    if [[ "${1}" =~ ${_git_regex} ]]
     then
-      init_source="${1}"
+      _init_source="${1}"
       if [[ -n "${2}" ]]
       then
         BINDLEPATH="${2}"
@@ -1218,14 +1218,14 @@ init() {
     fi
   fi
   _debug printf "init() \${BINDLEPATH}: %s\\n" "${BINDLEPATH}"
-  _debug printf "init() \${init_source}: %s\\n" "${init_source}"
+  _debug printf "init() \${_init_source}: %s\\n" "${_init_source}"
 
   # Initialize either from source or with fresh directory structure.
   if [[ ! -e "${BINDLEPATH}" ]]
   then
-    if [[ -n "${init_source}" ]]
+    if [[ -n "${_init_source}" ]]
     then
-      _init_with_source "${BINDLEPATH}" "${init_source}"
+      _init_with_source "${BINDLEPATH}" "${_init_source}"
     else
       _init_directory_structure "${BINDLEPATH}"
       _init_gitignore "${BINDLEPATH}"
