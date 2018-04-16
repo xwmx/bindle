@@ -649,10 +649,10 @@ _runner() {
       _run_script "${_script_file}" "${_script_arguments[@]:-}"
     fi
   else
-    _die cat <<EOM
+    _die cat <<HEREDOC
 Script must be specified. List available '${_subdir}' scripts by running:
   ${_ME} ${1} list
-EOM
+HEREDOC
   fi
 }
 
@@ -904,7 +904,7 @@ HEREDOC
 
 # Version #####################################################################
 
-desc "version" <<EOM
+desc "version" <<HEREDOC
 Usage:
   ${_ME} ( version | --version )
 
@@ -912,24 +912,24 @@ Description:
   Display the current program version.
 
   To save you the trouble, the current version is ${_BINDLE_VERSION}
-EOM
+HEREDOC
 version() {
   printf "%s\\n" "${_BINDLE_VERSION}"
 }
 
 # Help ########################################################################
 
-desc "help" <<EOM
+desc "help" <<HEREDOC
 Usage:
   ${_ME} help [<command>]
 
 Description:
   Display help information for ${_ME} or a specified command.
-EOM
+HEREDOC
 help() {
   if [[ ${#_COMMAND_ARGV[@]} = 1 ]]
   then
-    cat <<EOM
+    cat <<HEREDOC
 
  _____  ___  _____  _____  ____   _____
 /  _  \\/___\\/  _  \\|  _  \\/  _/  /   __\\
@@ -954,7 +954,7 @@ Help:
   ${_ME} help [<command>]
 
 $(commands)
-EOM
+HEREDOC
   else
     desc --get "${1}"
   fi
@@ -962,7 +962,7 @@ EOM
 
 # Command List ################################################################
 
-desc "commands" <<EOM
+desc "commands" <<HEREDOC
 Usage:
   ${_ME} commands [--raw]
 
@@ -971,7 +971,7 @@ Options:
 
 Description:
   Display the list of available commands.
-EOM
+HEREDOC
 commands() {
   if _command_argv_includes "--raw"
   then
@@ -993,7 +993,7 @@ commands() {
 # example() { : }         - The command called by the user.
 #
 #
-# desc example <<EOM
+# desc example <<HEREDOC
 #   Usage:
 #     $_ME example
 #
@@ -1003,7 +1003,7 @@ commands() {
 #     For usage formatting conventions see:
 #     - http://docopt.org/
 #     - http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap12.html
-# EOM
+# HEREDOC
 # _example() {
 #   echo $f
 #   echo $tracked_file
@@ -1023,7 +1023,7 @@ commands() {
 
 # ------------------------------------------------------------------------ init
 
-desc "init" <<EOM
+desc "init" <<HEREDOC
 Usage:
   ${_ME} init [<source_repository>] [<bindlepath>] [--initialize-submodules] \
 [--skip-bindlerc]
@@ -1043,7 +1043,7 @@ Description:
   after a repository URL, the initial repository is created at the specified
   path and a configuration file is created at \$HOME/.bindlerc with that
   location set as the \$BINDLEPATH.
-EOM
+HEREDOC
 # _init_with_source()
 #
 # Clone a specified URL to a specified path.
@@ -1235,14 +1235,14 @@ A file or directory already exists at the dotfile repository path:
 
 # ---------------------------------------------------------------------- commit
 
-desc "commit" <<EOM
+desc "commit" <<HEREDOC
 Usage:
   ${_ME} commit [<message>]
 
 Description:
   Commit the current changes to git. If a message is provided, it will be used
   as the commit message. Otherwise, git will open your default editor.
-EOM
+HEREDOC
 commit() {
   cd "${BINDLEPATH}"
   if [[ -n "${1}" ]]
@@ -1257,13 +1257,13 @@ commit() {
 
 # ------------------------------------------------------------------------- git
 
-desc "git" <<EOM
+desc "git" <<HEREDOC
 Usage:
   ${_ME} git command [--options] [<arguments>]
 
 Description:
   Run a git command within the \$BINDLEPATH directory.
-EOM
+HEREDOC
 git() {
   # Perform git operations in the $BINDLEPATH directory.
   cd "${BINDLEPATH}"
@@ -1285,13 +1285,13 @@ git() {
 
 # ------------------------------------------------------------------------ pull
 
-desc "pull" <<EOM
+desc "pull" <<HEREDOC
 Usage:
   ${_ME} pull
 
 Description:
   Pull latest changes from the remote repository.
-EOM
+HEREDOC
 pull() {
   cd "${BINDLEPATH}"
   "${_GIT_BIN}" pull
@@ -1300,13 +1300,13 @@ pull() {
 
 # ------------------------------------------------------------------------ push
 
-desc "push" <<EOM
+desc "push" <<HEREDOC
 Usage:
   ${_ME} push
 
 Description:
   Push local commits to the remote repository.
-EOM
+HEREDOC
 push() {
   cd "${BINDLEPATH}"
   "${_GIT_BIN}" push
@@ -1315,7 +1315,7 @@ push() {
 
 # ------------------------------------------------------------------ submodules
 
-desc "submodules" <<EOM
+desc "submodules" <<HEREDOC
 Usage:
   ${_ME} submodules ( sync | update )
 
@@ -1326,7 +1326,7 @@ Subcommands:
   update  Update all first-level submodules to the latest commit in each
           submodule's origin repository. Equivalent git command:
             git submodule update --init --remote
-EOM
+HEREDOC
 submodules() {
   cd "${BINDLEPATH}"
   case "${1}" in
@@ -1344,13 +1344,13 @@ submodules() {
 
 # ------------------------------------------------------------------------ sync
 
-desc "sync" <<EOM
+desc "sync" <<HEREDOC
 Usage:
   ${_ME} sync
 
 Description:
   Pull latest changes from the remote repository and sync submodules.
-EOM
+HEREDOC
 sync() {
   pull && submodules sync
 }
@@ -1359,7 +1359,7 @@ sync() {
 
 # ------------------------------------------------------------------- bootstrap
 
-desc "bootstrap" <<EOM
+desc "bootstrap" <<HEREDOC
 Usage:
   ${_ME} bootstrap ( list | <script_name> )
 
@@ -1368,7 +1368,7 @@ Description:
 
   Bootstrap scripts can be added to:
     ${BINDLEPATH}/script/bootstrap/
-EOM
+HEREDOC
 bootstrap() {
   # Don't permit use of the --all flag, since it's unlikely that the user
   # intends to run all bootstrap scripts.
@@ -1382,7 +1382,7 @@ bootstrap() {
 
 # ------------------------------------------------------------------- configure
 
-desc "configure" <<EOM
+desc "configure" <<HEREDOC
 Usage:
   ${_ME} configure ( --all | list | <configuration_script> )
 
@@ -1394,14 +1394,14 @@ Description:
 
   Configuration scripts can be added to:
     ${BINDLEPATH}/script/configure/
-EOM
+HEREDOC
 configure() {
   _runner "configure" "${@:-}"
 }
 
 # ------------------------------------------------------------------- customize
 
-desc "customize" <<EOM
+desc "customize" <<HEREDOC
 Usage:
   ${_ME} customize ( --all | list | <customization_script> )
 
@@ -1413,14 +1413,14 @@ Description:
 
   Customization scripts can be added to:
     ${BINDLEPATH}/script/customize/
-EOM
+HEREDOC
 customize() {
   _runner "customize" "${@:-}"
 }
 
 # --------------------------------------------------------------------- install
 
-desc "install" <<EOM
+desc "install" <<HEREDOC
 Usage:
   ${_ME} install ( --all | list | <script_name> )
 
@@ -1432,7 +1432,7 @@ Description:
 
   Package scripts can be added to:
     ${BINDLEPATH}/script/install/
-EOM
+HEREDOC
 install() {
   _runner "install" "${@:-}"
 }
@@ -1441,7 +1441,7 @@ install() {
 
 # ------------------------------------------------------------------------- add
 
-desc "add" <<EOM
+desc "add" <<HEREDOC
 Usage:
   ${_ME} add <filename> [--force]
 
@@ -1451,7 +1451,7 @@ Options:
 
 Description:
   Add the specified file to the tracked directory.
-EOM
+HEREDOC
 add() {
   _debug printf "add() \${1}: %s\\n" "${1}"
 
@@ -1538,7 +1538,7 @@ add() {
 
 # ------------------------------------------------------------------------ link
 
-desc "link" <<EOM
+desc "link" <<HEREDOC
 Usage:
   ${_ME} link [<filename>] [--overwrite [--with-backup]]
 
@@ -1558,7 +1558,7 @@ Description:
 
   By default, the command links all files that exist in the tracked directory.
   If a filename is passed to the link command, then it only acts on that file.
-EOM
+HEREDOC
 link() {
   _link_item() {
     local _file_path="${1:-}"
@@ -1639,7 +1639,7 @@ link() {
 
 # ------------------------------------------------------------------------ list
 
-desc "list" <<EOM
+desc "list" <<HEREDOC
 Usage:
   ${_ME} list [tracked | untracked | <filename>]
 
@@ -1656,7 +1656,7 @@ Description:
     d   - Directory
     @   - Symbolic link
     @ i - Symbolic link to tracked file.
-EOM
+HEREDOC
 list() {
   _list_item() {
     local _file_path="${1:-}"
@@ -1711,13 +1711,13 @@ list() {
 
 # ---------------------------------------------------------------------- rename
 
-desc "rename" <<EOM
+desc "rename" <<HEREDOC
 Usage:
   ${_ME} rename <old_filename> <new_filename>
 
 Decription:
   Rename a tracked file and its corresponding link in \$HOME.
-EOM
+HEREDOC
 rename() {
   local _old_file="${_TRACKED_DIR}/${1}"
   _debug printf "rename() \${_old_file}: %s\\n" "${_old_file}"
@@ -1751,14 +1751,14 @@ rename() {
 
 # --------------------------------------------------------------------- restore
 
-desc "restore" <<EOM
+desc "restore" <<HEREDOC
 Usage:
   ${_ME} restore <filename>
 
 Description:
   Unlink the specified file and move from the tracked location in the
   repository back to original location in \$HOME.
-EOM
+HEREDOC
 restore() {
   _debug printf "restore() \${1}: %s\\n" "${1}"
 
@@ -1791,7 +1791,7 @@ restore() {
 
 # ---------------------------------------------------------------------- status
 
-desc "status" <<EOM
+desc "status" <<HEREDOC
 Usage:
   ${_ME} status
 
@@ -1802,7 +1802,7 @@ Description:
     i   - Identical, indicating a valid symbolic link to the tracked file
      e  - A file exists, but it not linked to tracked file
       x - No file exists
-EOM
+HEREDOC
 status() {
   _status_item() {
     local _file_path="${1:-}"
@@ -1828,7 +1828,7 @@ status() {
 
 # --------------------------------------------------------------------- tracked
 
-desc "tracked" <<EOM
+desc "tracked" <<HEREDOC
 Usage:
   ${_ME} tracked
 
@@ -1837,7 +1837,7 @@ Description:
 
   Indicators display information about the type and status of each entry:
     @ i - Symbolic link to tracked file.
-EOM
+HEREDOC
 tracked() {
   _print_tracked_item() {
     local _file_path="${1:-}"
@@ -1857,7 +1857,7 @@ tracked() {
 
 # ---------------------------------------------------------------------- unlink
 
-desc "unlink" <<EOM
+desc "unlink" <<HEREDOC
 Usage:
   ${_ME} unlink [<filename>]
 
@@ -1867,7 +1867,7 @@ Description:
   By default, the command removes all of the symlinks pointing to items in
   tracked directory. If a filename is passed to the unlink command, then it
   only acts on symlinks to that file.
-EOM
+HEREDOC
 unlink() {
   _unlink_item() {
     local _file_path="${1:-}"
@@ -1910,7 +1910,7 @@ unlink() {
 
 # ------------------------------------------------------------------- untracked
 
-desc "untracked" <<EOM
+desc "untracked" <<HEREDOC
 Usage:
   ${_ME} untracked
 
@@ -1920,7 +1920,7 @@ Description:
   Indicators display information about the type and status of each entry:
     d   - Directory
     @   - Symbolic link
-EOM
+HEREDOC
 untracked() {
   _print_untracked_item() {
     local _file_path="${1:-}"
@@ -1949,20 +1949,20 @@ untracked() {
 
 # ------------------------------------------------------------------------- dir
 
-desc "dir" <<EOM
+desc "dir" <<HEREDOC
 Usage:
   ${_ME} dir
 
 Description:
   Print the current value of \$BINDLEPATH
-EOM
+HEREDOC
 dir() {
   printf "%s\\n" "${BINDLEPATH}"
 }
 
 # ------------------------------------------------------------------------ edit
 
-desc "edit" <<EOM
+desc "edit" <<HEREDOC
 Usage:
   ${_ME} edit
   ${_ME} edit [<filename>]
@@ -1970,7 +1970,7 @@ Usage:
 Description:
   Open a tracked file or, when no filename is specified, the entire tracked
   repository in you \$EDITOR, currently set to '${EDITOR}'.
-EOM
+HEREDOC
 edit() {
   [[ -z "${EDITOR}" ]] && _die printf "\$EDITOR is not set.\\n"
   if [[ -n "${1:-}" ]]
