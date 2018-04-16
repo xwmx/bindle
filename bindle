@@ -815,6 +815,22 @@ _piped_input() {
   ! _interactive_input
 }
 
+# _highlight()
+#
+# Usage:
+#   _highlight <string>
+#
+# Description:
+#   Use `tput` to highlight the given string.
+_highlight() {
+  local _input="${1:-}"
+  if [[ -z "${_input}" ]]
+  then
+    _die printf "Usage: _highlight <string>"
+  fi
+  printf "$(tput setaf 3)%s$(tput sgr0)\\n" "${_input}"
+}
+
 ###############################################################################
 # desc
 ###############################################################################
@@ -1364,28 +1380,35 @@ Usage:
   ${_ME} run ( list | <script_name> )
 
 Description:
-  Run the specified script.
+  Run and list scripts.
 
   Scripts can be added to:
     ${BINDLEPATH}/script/
 HEREDOC
 run() {
-  local _script_directory="${BINDLEPATH}/script"
-  local _script_path="${_script_directory}/${1:-}"
+  local _script_directory_name="script"
+  local _script_identifier="${1:-}"
 
-  if [[ "${1:-}" == "list" ]]
+  local _script_directory_path="${BINDLEPATH}/${_script_directory_name}"
+  local _script_path="${_script_directory_path}/${_script_identifier}"
+
+  if [[ "${_script_identifier}" == "list" ]]
   then
-    local _script_subdirectory="${2:-}"
-    if [[ -n "${_script_subdirectory}" ]]
+    local _script_subdirectory_path="${2:-}"
+    if [[ -n "${_script_subdirectory_path}" ]]
     then
-      _script_directory="${_script_directory}/${_script_subdirectory}"
+      _script_directory_path="${_script_directory_path}/${_script_subdirectory_path}"
     fi
 
-    for __file_path in $(find "${_script_directory}" -type f -follow -print ) #"${_script_directory}"/*
+    _debug printf \
+      "run(): \${_script_directory_path}: %s\\n" \
+      "${_script_directory_path}"
+
+    for __file_path in $(find "${_script_directory_path}" -type f -follow -print)
     do
       if [[ -f "${__file_path}" ]] && [[ ! "${__file_path}" =~ .DS_Store|.md ]]
       then
-        printf "%s\\n" "${__file_path#${_script_directory}/}"
+        printf "%s\\n" "${__file_path#${_script_directory_path}/}"
       fi
     done
   elif [[ -f "${_script_path}" ]]
@@ -1395,8 +1418,18 @@ run() {
     "${_script_path}" "${_script_arguments[@]:-}"
   elif [[ -d "${_script_path}" ]]
   then
-    printf "'%s' is a directory.\\n" "${_script_path}"
-    run list "${1:-}"
+    if [[ -n "${1:-}" ]]
+    then
+      _highlight "$(
+        printf "%s/%s:\\n" \
+          "${_script_directory_name}" \
+          "${1:-}"
+        )"
+      run list "${1:-}"
+    else
+      _highlight "$(printf "%s:\\n" "${_script_directory_name}")"
+      run list
+    fi
   else
     _die printf "'%s' not found.\\n" "${_script_path}"
   fi
@@ -1422,86 +1455,6 @@ Description:
 HEREDOC
 scripts() {
   run "$@"
-}
-
-# ------------------------------------------------------------------- bootstrap
-
-desc "bootstrap" <<HEREDOC
-Usage:
-  ${_ME} bootstrap ( list | <script_name> )
-
-Description:
-  Run the specified bootstrap script.
-
-  Bootstrap scripts can be added to:
-    ${BINDLEPATH}/script/bootstrap/
-HEREDOC
-bootstrap() {
-  # Don't permit use of the --all flag, since it's unlikely that the user
-  # intends to run all bootstrap scripts.
-  if ( _command_argv_includes "--all" )
-  then
-    desc --get "bootstrap"
-  else
-    _runner "bootstrap" "${@:-}"
-  fi
-}
-
-# ------------------------------------------------------------------- configure
-
-desc "configure" <<HEREDOC
-Usage:
-  ${_ME} configure ( --all | list | <configuration_script> )
-
-Options:
-  --all  Run all configure scripts.
-
-Description:
-  Run the specified package update script.
-
-  Configuration scripts can be added to:
-    ${BINDLEPATH}/script/configure/
-HEREDOC
-configure() {
-  _runner "configure" "${@:-}"
-}
-
-# ------------------------------------------------------------------- customize
-
-desc "customize" <<HEREDOC
-Usage:
-  ${_ME} customize ( --all | list | <customization_script> )
-
-Options:
-  --all  Run all customize scripts.
-
-Description:
-  Run the specified customization script.
-
-  Customization scripts can be added to:
-    ${BINDLEPATH}/script/customize/
-HEREDOC
-customize() {
-  _runner "customize" "${@:-}"
-}
-
-# --------------------------------------------------------------------- install
-
-desc "install" <<HEREDOC
-Usage:
-  ${_ME} install ( --all | list | <script_name> )
-
-Options:
-  --all  Run all install scripts.
-
-Description:
-  Run the specified package script.
-
-  Package scripts can be added to:
-    ${BINDLEPATH}/script/install/
-HEREDOC
-install() {
-  _runner "install" "${@:-}"
 }
 
 # Dotfiles ####################################################################
