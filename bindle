@@ -1381,28 +1381,6 @@ run() {
   fi
 }
 
-desc "script" <<HEREDOC
-Usage:
-  ${_ME} script ( list | <script> )
-
-Description:
-  Alias for \`${_ME} run\`. See \`${_ME} help run\` for more information.
-HEREDOC
-script() {
-  run "$@"
-}
-
-desc "scripts" <<HEREDOC
-Usage:
-  ${_ME} scripts ( list | <script> )
-
-Description:
-  Alias for \`${_ME} run\`. See \`${_ME} help run\` for more information.
-HEREDOC
-scripts() {
-  run "$@"
-}
-
 # Dotfiles ####################################################################
 
 # ------------------------------------------------------------------------- add
