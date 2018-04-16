@@ -610,55 +610,56 @@ _each_file() {
 # _runner()
 #
 # Usage:
-#   _runner subdirectory ( --all | <list> | <script_name> )
+#   _runner <subdirectory> ( --all | <list> | <script_name> )
 #
 # Run or list scripts in a specified script subdirectory.
-_run_script() {
-  local _script="${1}"
-  local script_arguments=(${@:2})
-  if [[ -f "${_script}" ]]
-  then
-    printf ">> Running %s\\n" "$(basename "${_script}")"
-    "${_script}" "${script_arguments[@]:-}"
-  elif [[ -d "${_script}" ]]
-  then
-    _die printf "'%s' is a directory.\\n" "${_script}"
-  else
-    _die printf "'%s' not found.\\n" "${_script}"
-  fi
-}
 _runner() {
+  _run_script() {
+    local _script="${1}"
+    local _script_arguments=(${@:2})
+    if [[ -f "${_script}" ]]
+    then
+      printf ">> Running %s\\n" "$(basename "${_script}")"
+      "${_script}" "${_script_arguments[@]:-}"
+    elif [[ -d "${_script}" ]]
+    then
+      _die printf "'%s' is a directory.\\n" "${_script}"
+    else
+      _die printf "'%s' not found.\\n" "${_script}"
+    fi
+  }
+
   [[ -z "${1}" ]] && _die printf "_runner: No subdirectory specified.\\n"
-  local subdir="${1}"
-  local subdir_path="${BINDLEPATH}/script/${subdir}"
-  local script_file="${subdir_path}/${2}"
-  local script_arguments=(${@:3})
+  local _subdir="${1}"
+  local _subdir_path="${BINDLEPATH}/script/${_subdir}"
+  local _script_file="${_subdir_path}/${2}"
+  local _script_arguments=(${@:3})
   if _command_argv_includes "--all"
   then
-    for f in "${subdir_path}"/*
+    for __file_path in "${_subdir_path}"/*
     do
-      if [[ ! -d "${f}" ]]
+      if [[ ! -d "${__file_path}" ]]
       then
-        _run_script "${f}" "${script_arguments[@]:-}"
+        _run_script "${__file_path}" "${_script_arguments[@]:-}"
       fi
     done
   elif [[ -n "${2}" ]]
   then
     if [[ "${2}" == "list" ]]
     then
-      for f in "${subdir_path}"/*
+      for __file_path in "${_subdir_path}"/*
       do
-        if [[ -f "${f}" ]]
+        if [[ -f "${__file_path}" ]]
         then
-          basename "${f}"
+          basename "${__file_path}"
         fi
       done
     else
-      _run_script "${script_file}" "${script_arguments[@]:-}"
+      _run_script "${_script_file}" "${_script_arguments[@]:-}"
     fi
   else
     _die cat <<EOM
-Script must be specified. List available '${subdir}' scripts by running:
+Script must be specified. List available '${_subdir}' scripts by running:
   ${_ME} ${1} list
 EOM
   fi
