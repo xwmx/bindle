@@ -1574,7 +1574,10 @@ link() {
         then
           if [[ -e "${_original_file_path}.bak" ]]
           then
-            printf "Exists with .bak: %s, %s\\n" "${_file_basename}" "${_file_basename}.bak"
+            printf \
+              "Exists with .bak: %s, %s\\n" \
+              "${_file_basename}" \
+              "${_file_basename}.bak"
             return 0
           else
             mv "${_original_file_path}" "${_original_file_path}.bak"
@@ -1587,7 +1590,9 @@ link() {
         return 0
       fi
     fi
-    printf "Linking %s => %s\\n" "${_tracked_file_path}" "${_original_file_path}"
+    printf "Linking %s => %s\\n" \
+      "${_tracked_file_path}" \
+      "${_original_file_path}"
     ln -s "${_tracked_file_path}" "${_original_file_path}"
   }
 
