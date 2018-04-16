@@ -1397,6 +1397,19 @@ add() {
   track "$@"
 }
 
+# -------------------------------------------------------------------- dotfiles
+
+desc "dotfiles" <<HEREDOC
+Usage:
+  ${_ME} dotfiles
+
+Description:
+  List all dotfiles. Alias for \`$_ME status\`.
+HEREDOC
+dotfiles() {
+  status "$@"
+}
+
 # ------------------------------------------------------------------------ link
 
 desc "link" <<HEREDOC
