@@ -169,9 +169,23 @@ to track and don't want in the default directories.
 #### script
 
 `script` contains several subdirectories for contriguration scripts.
-Scripts or programs in these directories can be written in any language and
-can be run either individually or in aggregate. `bindle` makes no assumptions
-about any of the scripts in these directories and will simply run them.
+Scripts or programs in these directories can be written in any language.
+`bindle` makes no assumptions about any of the scripts in these directories
+and will simply run them.
+
+To run a script at `$BINDLEPATH/script/example.bash`:
+
+    bindle run example.bash
+
+Scripts can be organized in subdirectories. Newly-created `bindle`
+projects contain several placeholder directories: `bootstrap`,
+`configure`, `customize`, `install`.
+
+To run a script at `$BINDLEPATH/script/install/example.bash`:
+
+    bindle run install/example.sh
+
+For more information, see `bindle help run`
 
 ###### Example
 
@@ -180,96 +194,32 @@ An example `bindle`-managed script directory:
 [alphabetum/dotfiles/script
 ](https://github.com/alphabetum/dotfiles/tree/master/script)
 
-##### bootstrap
+##### script/bootstrap
 
-`bootstrap` should contain scripts for bootstrapping the user account
+`script/bootstrap` should contain scripts for bootstrapping the user account
 and user-controlled parts of the system. For example, bootstrap scripts
 could set up some default folders and/or call a series of `install`,
 `configure`, and `customize` scripts. Generally, a bootstrap script
 should only be called once, during an initial setup.
 
-To run a bootstrap script, use the `bindle bootstrap` command. For example:
+##### script/install
 
-    bindle bootstrap ubuntu
-
-For more information, see `bindle help bootstrap`
-
-###### Example
-
-An example `bindle`-managed bootstrap directory with scripts:
-
-[alphabetum/dotfiles/script/bootstrap
-](https://github.com/alphabetum/dotfiles/tree/master/script/bootstrap)
-
-##### install
-
-`install` should contain scripts for installing programs, ideally via
+`script/install` should contain scripts for installing programs, ideally via
 package management systems. For example, you could have a bash script
 that contains commands for installing programs via a system-wide package
 manager like [homebrew](http://brew.sh/) or a language-specific one like
 [LuaRocks](http://luarocks.org/).
 
-To run an install script, use the `bindle install` command. For example:
+##### script/configure
 
-    bindle install gems.sh
-
-You can also run all of the install scripts by using the `--all` flag:
-
-    bindle install --all
-
-For more information, see `bindle help install`
-
-###### Example
-
-An example `bindle`-managed install directory with scripts:
-
-[alphabetum/dotfiles/script/install
-](https://github.com/alphabetum/dotfiles/tree/master/script/install)
-
-##### configure
-
-`configure` is intended for scripts that run perform system
+`script/configure` is intended for scripts that run perform system
 configuration operations, like setting OS X preferences.
 
-To run a configure script, use the `bindle configure` command. For example:
+##### script/customize
 
-    bindle configure osx.sh
-
-You can also run all of the configure scripts by using the `--all` flag:
-
-    bindle configure --all
-
-For more information, see `bindle help configure`
-
-###### Example
-
-An example `bindle`-managed configure directory with scripts:
-
-[alphabetum/dotfiles/script/configure
-](https://github.com/alphabetum/dotfiles/tree/master/script/configure)
-
-##### customize
-
-`customize` is intended for scripts that customize any aspect of the
+`script/customize` is intended for scripts that customize any aspect of the
 configuration or anything else on the system. In other words, 'hacks'.
 For example, I use it for changing icons on installed applications.
-
-To run a customize script, use the `bindle customize` command. For example:
-
-    bindle customize app_icons.py
-
-You can also run all of the customize scripts by using the `--all` flag:
-
-    bindle customize --all
-
-For more information, see `bindle help customize`
-
-###### Example
-
-An example `bindle`-managed customize directory with scripts:
-
-[alphabetum/dotfiles/script/customize
-](https://github.com/alphabetum/dotfiles/tree/master/script/customize)
 
 #### .gitignore
 
