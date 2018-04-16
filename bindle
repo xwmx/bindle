@@ -1617,13 +1617,13 @@ list() {
     then
       if [[ "$(readlink "${_file_path}")" == "${_tracked_file_path}" ]]
       then
-        printf "@  ✅   %s\\n" "${_file_basename}"
+        printf "✅  🔗   %s\\n" "${_file_basename}"
       else
-        printf "@       %s\\n" "${_file_basename}"
+        printf "   🔗       %s\\n" "${_file_basename}"
       fi
     elif [[ -d ${_file_path} ]]
     then
-      printf "d      %s\\n" "${_file_basename}"
+      printf "   📂   %s\\n" "${_file_basename}"
     elif [[ -e ${_file_path} ]]
     then
       printf "       %s\\n" "${_file_basename}"
@@ -1797,7 +1797,7 @@ tracked() {
          [[ "$(readlink "${_file_path}")" == "${_tracked_file_path}" ]]
     )
     then
-      printf "@  ✅   %s\\n" "${_file_basename}"
+      printf "✅  🔗   %s\\n" "${_file_basename}"
     fi
   }
 
@@ -1880,11 +1880,11 @@ untracked() {
     then
       if ! ( [[ "$(readlink "${_file_path}")" == "${_tracked_file_path}" ]] )
       then
-        printf "@      %s\\n" "${_file_basename}"
+        printf "   🔗       %s\\n" "${_file_basename}"
       fi
     elif [[ -d ${_file_path} ]]
     then
-      printf "d      %s\\n" "${_file_basename}"
+      printf "   📂   %s\\n" "${_file_basename}"
     elif [[ -e ${_file_path} ]]
     then
       printf "       %s\\n" "${_file_basename}"
