@@ -1517,11 +1517,6 @@ Description:
 
   If a filename is passed as an argument, then a listing is printed for only
   that item.
-
-  Indicators display information about the type and status of each entry:
-    d   - Directory
-    @   - Symbolic link
-    @ i - Symbolic link to tracked file.
 HEREDOC
 list() {
   _list_item() {
@@ -1773,9 +1768,6 @@ Usage:
 
 Description:
   List all tracked dotfiles in \$HOME.
-
-  Indicators display information about the type and status of each entry:
-    @ i - Symbolic link to tracked file.
 HEREDOC
 tracked() {
   _print_tracked_item() {
@@ -1895,10 +1887,6 @@ Usage:
 
 Description:
   List all untracked dotfiles in \$HOME.
-
-  Indicators display information about the type and status of each entry:
-    d   - Directory
-    @   - Symbolic link
 HEREDOC
 untracked() {
   _print_untracked_item() {
