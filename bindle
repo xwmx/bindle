@@ -1619,14 +1619,14 @@ list() {
       then
         printf "✅  🔗   %s\\n" "${_file_basename}"
       else
-        printf "   🔗       %s\\n" "${_file_basename}"
+        printf "   🔗   %s\\n" "${_file_basename}"
       fi
     elif [[ -d ${_file_path} ]]
     then
       printf "   📂   %s\\n" "${_file_basename}"
     elif [[ -e ${_file_path} ]]
     then
-      printf "       %s\\n" "${_file_basename}"
+      printf "   ⚙️   %s\\n" "${_file_basename}"
     fi
   }
 
@@ -1887,7 +1887,7 @@ untracked() {
       printf "   📂   %s\\n" "${_file_basename}"
     elif [[ -e ${_file_path} ]]
     then
-      printf "       %s\\n" "${_file_basename}"
+      printf "   ⚙️   %s\\n" "${_file_basename}"
     fi
   }
 
