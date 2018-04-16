@@ -1357,6 +1357,73 @@ sync() {
 
 # Scripts #####################################################################
 
+# ------------------------------------------------------------------------- run
+
+desc "run" <<HEREDOC
+Usage:
+  ${_ME} run ( list | <script_name> )
+
+Description:
+  Run the specified script.
+
+  Scripts can be added to:
+    ${BINDLEPATH}/script/
+HEREDOC
+run() {
+  local _script_directory="${BINDLEPATH}/script"
+  local _script_path="${_script_directory}/${1:-}"
+
+  if [[ "${1:-}" == "list" ]]
+  then
+    local _script_subdirectory="${2:-}"
+    if [[ -n "${_script_subdirectory}" ]]
+    then
+      _script_directory="${_script_directory}/${_script_subdirectory}"
+    fi
+
+    for __file_path in $(find "${_script_directory}" -type f -follow -print ) #"${_script_directory}"/*
+    do
+      if [[ -f "${__file_path}" ]] && [[ ! "${__file_path}" =~ .DS_Store|.md ]]
+      then
+        printf "%s\\n" "${__file_path#${_script_directory}/}"
+      fi
+    done
+  elif [[ -f "${_script_path}" ]]
+  then
+    local _script_arguments=(${@:2})
+    printf ">> Running %s\\n" "$(basename "${_script_path}")"
+    "${_script_path}" "${_script_arguments[@]:-}"
+  elif [[ -d "${_script_path}" ]]
+  then
+    printf "'%s' is a directory.\\n" "${_script_path}"
+    run list "${1:-}"
+  else
+    _die printf "'%s' not found.\\n" "${_script_path}"
+  fi
+}
+
+desc "script" <<HEREDOC
+Usage:
+  ${_ME} script ( list | <script> )
+
+Description:
+  Alias for \`${_ME} run\`. See \`${_ME} help run\` for more information.
+HEREDOC
+script() {
+  run "$@"
+}
+
+desc "scripts" <<HEREDOC
+Usage:
+  ${_ME} scripts ( list | <script> )
+
+Description:
+  Alias for \`${_ME} run\`. See \`${_ME} help run\` for more information.
+HEREDOC
+scripts() {
+  run "$@"
+}
+
 # ------------------------------------------------------------------- bootstrap
 
 desc "bootstrap" <<HEREDOC
