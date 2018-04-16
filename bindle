@@ -1776,6 +1776,13 @@ status() {
   _each_tracked_file "_status_item"
 }
 
+# ----------------------------------------------------------------------- track
+
+desc "track" "$(desc --get "add")"
+track() {
+  add "$@"
+}
+
 # --------------------------------------------------------------------- tracked
 
 desc "tracked" <<HEREDOC
@@ -1856,6 +1863,13 @@ unlink() {
   else
     _each_tracked_file "_unlink_item"
   fi
+}
+
+# --------------------------------------------------------------------- untrack
+
+desc "untrack" "$(desc --get "restore")"
+untrack() {
+  remove "$@"
 }
 
 # ------------------------------------------------------------------- untracked
