@@ -1884,7 +1884,7 @@ Description:
   repository back to original location in \$HOME.
 HEREDOC
 untrack() {
-  remove "$@"
+  restore "$@"
 }
 
 # ------------------------------------------------------------------- untracked
