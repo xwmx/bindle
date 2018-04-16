@@ -1849,14 +1849,14 @@ EOM
 tracked() {
   _print_tracked_item() {
     local _file_path="${1:-}"
-    local _filename="${2:-}"
-    local _tracked_file="${3:-}"
+    local _file_basename="${2:-}"
+    local _tracked_file_path="${3:-}"
 
     if ( [[ -L ${_file_path} ]] && \
-         [[ "$(readlink "${_file_path}")" == "${_tracked_file}" ]]
+         [[ "$(readlink "${_file_path}")" == "${_tracked_file_path}" ]]
     )
     then
-      printf "@  i   %s\\n" "${_filename}"
+      printf "@  i   %s\\n" "${_file_basename}"
     fi
   }
 
@@ -1932,21 +1932,21 @@ EOM
 untracked() {
   _print_untracked_item() {
     local _file_path="${1:-}"
-    local _filename="${2:-}"
-    local _tracked_file="${3:-}"
+    local _file_basename="${2:-}"
+    local _tracked_file_path="${3:-}"
 
     if [[ -L ${_file_path} ]]
     then
-      if ! ( [[ "$(readlink "${_file_path}")" == "${_tracked_file}" ]] )
+      if ! ( [[ "$(readlink "${_file_path}")" == "${_tracked_file_path}" ]] )
       then
-        printf "@      %s\\n" "${_filename}"
+        printf "@      %s\\n" "${_file_basename}"
       fi
     elif [[ -d ${_file_path} ]]
     then
-      printf "d      %s\\n" "${_filename}"
-    elif [[ -e ${f} ]]
+      printf "d      %s\\n" "${_file_basename}"
+    elif [[ -e ${_file_path} ]]
     then
-      printf "       %s\\n" "${_filename}"
+      printf "       %s\\n" "${_file_basename}"
     fi
   }
 
