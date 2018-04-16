@@ -1617,9 +1617,9 @@ list() {
     then
       if [[ "$(readlink "${_file_path}")" == "${_tracked_file_path}" ]]
       then
-        printf "@  i   %s\\n" "${_file_basename}"
+        printf "@  ✅   %s\\n" "${_file_basename}"
       else
-        printf "@      %s\\n" "${_file_basename}"
+        printf "@       %s\\n" "${_file_basename}"
       fi
     elif [[ -d ${_file_path} ]]
     then
@@ -1748,7 +1748,7 @@ Description:
   List status of files in \$HOME.
 
   Indicators display information about the status of each entry:
-    i   - Identical, indicating a valid symbolic link to the tracked file
+    ✅   - Identical, indicating a valid symbolic link to the tracked file
      e  - A file exists, but it not linked to tracked file
       x - No file exists
 HEREDOC
@@ -1763,7 +1763,7 @@ status() {
          [[ "$(readlink "${_original_file_path}")" == "${_file_path}" ]]
     )
     then
-      printf "i   %s\\n" "${_file_basename}"
+      printf "✅   %s\\n" "${_file_basename}"
     elif [[ -e "${_original_file_path}" ]]
     then
       printf " e  %s\\n" "${_file_basename}"
@@ -1797,7 +1797,7 @@ tracked() {
          [[ "$(readlink "${_file_path}")" == "${_tracked_file_path}" ]]
     )
     then
-      printf "@  i   %s\\n" "${_file_basename}"
+      printf "@  ✅   %s\\n" "${_file_basename}"
     fi
   }
 
