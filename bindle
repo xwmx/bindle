@@ -1706,33 +1706,7 @@ Description:
     \`bindle help untrack\`
 HEREDOC
 restore() {
-  _debug printf "restore() \${1}: %s\\n" "${1}"
-
-  if [[ ${#} = 0 ]]
-  then
-    _die printf "Must specify a valid file or directory name.\\n"
-  else
-    local _file_basename
-    _file_basename="$(basename "${1}")"
-
-    local _original_file="${_ORIGINAL_DIR}/${_file_basename}"
-    _debug printf "restore() \${_original_file}: %s\\n" "${_original_file}"
-
-    local _tracked_file="${_TRACKED_DIR}/${_file_basename}"
-    _debug printf "restore() \${_tracked_file}: %s\\n" "${_tracked_file}"
-
-    if [[ ! -e "${_tracked_file}" ]]
-    then
-      printf "File does not exist.\\n"
-    elif [[ ! -L "${_original_file}" ]]
-    then
-      printf "File is not a symlink.\\n"
-    else
-      rm "${_original_file}"
-      mv "${_tracked_file}" "${_original_file}"
-      printf "Restored: %s => %s\\n" "${_tracked_file}" "${_original_file}"
-    fi
-  fi
+  untrack "$@"
 }
 
 # ---------------------------------------------------------------------- status
@@ -1884,7 +1858,33 @@ Description:
   repository back to original location in \$HOME.
 HEREDOC
 untrack() {
-  restore "$@"
+  _debug printf "untrack() \${1}: %s\\n" "${1}"
+
+  if [[ ${#} = 0 ]]
+  then
+    _die printf "Must specify a valid file or directory name.\\n"
+  else
+    local _file_basename
+    _file_basename="$(basename "${1}")"
+
+    local _original_file="${_ORIGINAL_DIR}/${_file_basename}"
+    _debug printf "untrack() \${_original_file}: %s\\n" "${_original_file}"
+
+    local _tracked_file="${_TRACKED_DIR}/${_file_basename}"
+    _debug printf "untrack() \${_tracked_file}: %s\\n" "${_tracked_file}"
+
+    if [[ ! -e "${_tracked_file}" ]]
+    then
+      printf "File does not exist.\\n"
+    elif [[ ! -L "${_original_file}" ]]
+    then
+      printf "File is not a symlink.\\n"
+    else
+      rm "${_original_file}"
+      mv "${_tracked_file}" "${_original_file}"
+      printf "Untracked: %s => %s\\n" "${_tracked_file}" "${_original_file}"
+    fi
+  fi
 }
 
 # ------------------------------------------------------------------- untracked
