@@ -1394,87 +1394,7 @@ Description:
     \`bindle help track\`
 HEREDOC
 add() {
-  _debug printf "add() \${1}: %s\\n" "${1}"
-
-  local _force=0
-  local _arguments=()
-
-  for __arg in "${_COMMAND_ARGV[@]:-}"
-  do
-    case ${__arg} in
-      --force) _force=1;;
-      *) _arguments+=(${__arg});;
-    esac
-  done
-
-
-  if [[ -z "${_arguments[1]:-}" ]]
-  then
-    _die printf "Must specify a valid file or directory name.\\n"
-  else
-    local _file_basename
-    _file_basename="$(basename "${_arguments[1]:-}")"
-
-    local _original_file="${_ORIGINAL_DIR}/${_file_basename}"
-    _debug printf "add() \${_original_file}: %s\\n" "${_original_file}"
-
-    local _tracked_file="${_TRACKED_DIR}/${_file_basename}"
-    _debug printf "add() \${_tracked_file}: %s\\n" "${_tracked_file}"
-
-    # Because the if / else is complicated, guarding against errors by only
-    # proceeding when this variable has been set.
-    local _is_safe_to_proceed=0
-
-    if [[ ! -e "${_original_file}" ]]
-    then
-      _die printf "File or directory does not exist.\\n"
-    elif ( \
-      [[ "${_file_basename}" == "/"  ]] || \
-      [[ "${_file_basename}" == "."  ]] || \
-      [[ "${_file_basename}" == ".." ]]
-    )
-    then
-      _die printf "Invalid filename: %s\\n" "${_file_basename}"
-    elif [[ -e "${_tracked_file}" ]]
-    then
-      if ((_force))
-      then
-        printf "Overwriting %s\\n" "${_tracked_file}"
-        while true
-        do
-          read -r -p "Are you sure you want to proceed? [y/n] " yn
-          case ${yn} in
-            [Yy]* )
-              printf "Removing %s\\n" "${_tracked_file}"
-              rm -r "${_tracked_file}"
-              break
-              ;;
-            [Nn]* )
-              printf "Exiting...\\n"
-              exit
-              ;;
-            * )
-              printf "Please answer yes or no.\\n"
-              ;;
-          esac
-        done
-        _is_safe_to_proceed=1
-      else
-        _die printf "File has already been added.\\n"
-      fi
-    elif [[ -L "${_original_file}" ]]
-    then
-      _die printf "Original is already a symlink.\\n"
-    else
-      _is_safe_to_proceed=1
-    fi
-    if ((_is_safe_to_proceed))
-    then
-      mv "${_original_file}" "${_TRACKED_DIR}"
-      printf "Linking %s => %s\\n" "${_tracked_file}" "${_original_file}"
-      ln -s "${_tracked_file}" "${_original_file}"
-    fi
-  fi
+  track "$@"
 }
 
 # ------------------------------------------------------------------------ link
@@ -1762,7 +1682,87 @@ Description:
   \$HOME to the tracked file.
 HEREDOC
 track() {
-  add "$@"
+  _debug printf "track() \${1}: %s\\n" "${1}"
+
+  local _force=0
+  local _arguments=()
+
+  for __arg in "${_COMMAND_ARGV[@]:-}"
+  do
+    case ${__arg} in
+      --force) _force=1;;
+      *) _arguments+=(${__arg});;
+    esac
+  done
+
+
+  if [[ -z "${_arguments[1]:-}" ]]
+  then
+    _die printf "Must specify a valid file or directory name.\\n"
+  else
+    local _file_basename
+    _file_basename="$(basename "${_arguments[1]:-}")"
+
+    local _original_file="${_ORIGINAL_DIR}/${_file_basename}"
+    _debug printf "track() \${_original_file}: %s\\n" "${_original_file}"
+
+    local _tracked_file="${_TRACKED_DIR}/${_file_basename}"
+    _debug printf "track() \${_tracked_file}: %s\\n" "${_tracked_file}"
+
+    # Because the if / else is complicated, guarding against errors by only
+    # proceeding when this variable has been set.
+    local _is_safe_to_proceed=0
+
+    if [[ ! -e "${_original_file}" ]]
+    then
+      _die printf "File or directory does not exist.\\n"
+    elif ( \
+      [[ "${_file_basename}" == "/"  ]] || \
+      [[ "${_file_basename}" == "."  ]] || \
+      [[ "${_file_basename}" == ".." ]]
+    )
+    then
+      _die printf "Invalid filename: %s\\n" "${_file_basename}"
+    elif [[ -e "${_tracked_file}" ]]
+    then
+      if ((_force))
+      then
+        printf "Overwriting %s\\n" "${_tracked_file}"
+        while true
+        do
+          read -r -p "Are you sure you want to proceed? [y/n] " yn
+          case ${yn} in
+            [Yy]* )
+              printf "Removing %s\\n" "${_tracked_file}"
+              rm -r "${_tracked_file}"
+              break
+              ;;
+            [Nn]* )
+              printf "Exiting...\\n"
+              exit
+              ;;
+            * )
+              printf "Please answer yes or no.\\n"
+              ;;
+          esac
+        done
+        _is_safe_to_proceed=1
+      else
+        _die printf "File has already been added.\\n"
+      fi
+    elif [[ -L "${_original_file}" ]]
+    then
+      _die printf "Original is already a symlink.\\n"
+    else
+      _is_safe_to_proceed=1
+    fi
+    if ((_is_safe_to_proceed))
+    then
+      mv "${_original_file}" "${_TRACKED_DIR}"
+      printf "Linked: %s => %s\\n" "${_tracked_file}" "${_original_file}"
+      ln -s "${_tracked_file}" "${_original_file}"
+    fi
+  fi
 }
 
 # --------------------------------------------------------------------- tracked
@@ -1882,7 +1882,7 @@ untrack() {
     else
       rm "${_original_file}"
       mv "${_tracked_file}" "${_original_file}"
-      printf "Untracked: %s => %s\\n" "${_tracked_file}" "${_original_file}"
+      printf "Restored: %s => %s\\n" "${_tracked_file}" "${_original_file}"
     fi
   fi
 }
