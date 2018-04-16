@@ -1125,15 +1125,15 @@ _init_directory_structure() {
     # No .gitkeep since all dotfiles in this directory are linked and tracked.
     mkdir "${1}/local"
     touch "${1}/local/.gitkeep"
-    mkdir "${1}/script"
-    mkdir "${1}/script/bootstrap"
-    touch "${1}/script/bootstrap/.gitkeep"
-    mkdir "${1}/script/install"
-    touch "${1}/script/install/.gitkeep"
-    mkdir "${1}/script/configure"
-    touch "${1}/script/configure/.gitkeep"
-    mkdir "${1}/script/customize"
-    touch "${1}/script/customize/.gitkeep"
+    mkdir "${1}/scripts"
+    mkdir "${1}/scripts/bootstrap"
+    touch "${1}/scripts/bootstrap/.gitkeep"
+    mkdir "${1}/scripts/install"
+    touch "${1}/scripts/install/.gitkeep"
+    mkdir "${1}/scripts/configure"
+    touch "${1}/scripts/configure/.gitkeep"
+    mkdir "${1}/scripts/customize"
+    touch "${1}/scripts/customize/.gitkeep"
   else
     printf "Repository directory not specified.\\n"
   fi
@@ -1383,12 +1383,16 @@ Description:
   Run and list scripts.
 
   Scripts can be added to:
-    ${BINDLEPATH}/script/
+    ${BINDLEPATH}/scripts/
 HEREDOC
 run() {
-  local _script_directory_name="script"
-  local _script_identifier="${1:-}"
+  local _script_directory_name="scripts"
+  if [[ -d "${BINDLEPATH}/script" ]] && [[ ! -d "${BINDLEPATH}/scripts" ]]
+  then
+    _script_directory_name="script"
+  fi
 
+  local _script_identifier="${1:-}"
   local _script_directory_path="${BINDLEPATH}/${_script_directory_name}"
   local _script_path="${_script_directory_path}/${_script_identifier}"
 

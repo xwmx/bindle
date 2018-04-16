@@ -97,7 +97,7 @@ structure:
     ├── home/
     ├── bin/
     ├── local/
-    └── script/
+    └── scripts/
         ├── bootstrap/
         ├── configure/
         ├── customize/
@@ -169,14 +169,14 @@ This directory is excluded from the git repository, and therefore can be
 used for storing things related to the configuration that you don't want
 to track and don't want in the default directories.
 
-#### script
+#### scripts
 
-`script` contains several subdirectories for contriguration scripts.
+`scripts` contains several subdirectories for contriguration scripts.
 Scripts or programs in these directories can be written in any language.
 `bindle` makes no assumptions about any of the scripts in these directories
 and will simply run them.
 
-To run a script at `$BINDLEPATH/script/example.bash`:
+To run a script that is located at `$BINDLEPATH/scripts/example.bash`:
 
     bindle run example.bash
 
@@ -184,7 +184,7 @@ Scripts can be organized in subdirectories. Newly-created `bindle`
 projects contain several placeholder directories: `bootstrap`,
 `configure`, `customize`, `install`.
 
-To run a script at `$BINDLEPATH/script/install/example.bash`:
+To run a script that is located at `$BINDLEPATH/scripts/install/example.bash`:
 
     bindle run install/example.sh
 
@@ -192,35 +192,35 @@ For more information, see `bindle help run`
 
 ###### Example
 
-An example `bindle`-managed script directory:
+An example `bindle`-managed scripts directory:
 
 [alphabetum/dotfiles/script
 ](https://github.com/alphabetum/dotfiles/tree/master/script)
 
-##### script/bootstrap
+##### scripts/bootstrap
 
-`script/bootstrap` should contain scripts for bootstrapping the user account
+`scripts/bootstrap` is intended for scripts that bootstrap the user account
 and user-controlled parts of the system. For example, bootstrap scripts
 could set up some default folders and/or call a series of `install`,
 `configure`, and `customize` scripts. Generally, a bootstrap script
 should only be called once, during an initial setup.
 
-##### script/install
+##### scripts/install
 
-`script/install` should contain scripts for installing programs, ideally via
+`scripts/install` is intended for scripts that install programs, ideally via
 package management systems. For example, you could have a bash script
 that contains commands for installing programs via a system-wide package
 manager like [homebrew](http://brew.sh/) or a language-specific one like
 [LuaRocks](http://luarocks.org/).
 
-##### script/configure
+##### scripts/configure
 
-`script/configure` is intended for scripts that run perform system
+`scripts/configure` is intended for scripts that run perform system
 configuration operations, like setting OS X preferences.
 
-##### script/customize
+##### scripts/customize
 
-`script/customize` is intended for scripts that customize any aspect of the
+`scripts/customize` is intended for scripts that customize any aspect of the
 configuration or anything else on the system. In other words, 'hacks'.
 For example, I use it for changing icons on installed applications.
 
