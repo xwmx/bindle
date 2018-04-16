@@ -583,15 +583,6 @@ _each_file() {
     local _original_file_path
     _original_file_path="${_ORIGINAL_DIR}/${_file_basename}"
 
-    # Assign to variables expected by callbacks for legacy compatibility.
-    #
-    # TODO: Remove these assignments when all callbacks have been updated to
-    # accept arguments.
-    local f="${__file_path}"
-    local filename="${_file_basename}"
-    local tracked_file="${_tracked_file_path}"
-    local original_file="${_original_file_path}"
-
     if ! ( [[ "${_file_basename}" =~ ^\.?\.$     ]] || \
            [[ "${_file_basename}" == ".DS_Store" ]]
     )
