@@ -1745,11 +1745,12 @@ Usage:
   ${_ME} status
 
 Description:
-  List status of files in \$HOME.
+  List status of files in \$HOME with filenames matching those in
+  \$BINDLEPATH/home/.
 
   Indicators display information about the status of each entry:
     ✅   - Identical, indicating a valid symbolic link to the tracked file
-     e  - A file exists, but it not linked to tracked file
+     e  - A file exists, but it's not linked to tracked file
       x - No file exists
 HEREDOC
 status() {
