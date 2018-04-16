@@ -1624,6 +1624,19 @@ restore() {
   untrack "$@"
 }
 
+# --------------------------------------------------------------------- scripts
+
+desc "scripts" <<HEREDOC
+Usage:
+  ${_ME} scripts
+
+Description:
+  List all scripts. Alias for \`$_ME run\`.
+HEREDOC
+scripts() {
+  run "$@"
+}
+
 # ---------------------------------------------------------------------- status
 
 desc "status" <<HEREDOC
