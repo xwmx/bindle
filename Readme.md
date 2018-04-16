@@ -121,9 +121,9 @@ are 1) dotfiles (files and directories with a `.` prefix like `.bashrc` or
 `.vim`) and 2) normally exist at your `$HOME` path, aka `~/`, which is the
 root level of your user account's home directory.
 
-To track items from `$HOME`, use `bindle add`:
+To track items from `$HOME`, use `bindle track`:
 
-    bindle add .bashrc
+    bindle track .bashrc
 
 This adds the file or directory to `BINDLEPATH/home` and creates a symbolic link
 in `$HOME` referencing the file or directory.
@@ -132,12 +132,12 @@ Once you've added a file, you need to commit it to the repository.
 
     bindle commit
 
-Which will `git add` the changed files and do a `git commit`. See `bindle
+This will `git add` the changed files and do a `git commit`. See `bindle
 help commit` for more information.
 
-If you want to stop tracking a dotfile or directory, run `bindle restore`:
+If you want to stop tracking a dotfile or directory, run `bindle untrack`:
 
-    bindle restore .bashrc
+    bindle untrack .bashrc
 
 This removes the symbolic link in `$HOME` and copies the original file back to
 `$HOME` from `$BINDLEPATH/home`.
