@@ -41,6 +41,9 @@ example of a configuration managed with `bindle`.
 
 ## Usage
 
+*This documentation is for version 7 and higher. For version 6 documentation,
+[see here](https://github.com/alphabetum/bindle/blob/6.0.2/Readme.md).*
+
 The basic idea is that you can add dotfiles and user scripts to the
 `~/.bindle` respository so they can be versioned, and symbolic links are
 created in their original locations pointing to the versioned files.
