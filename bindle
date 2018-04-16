@@ -1702,8 +1702,8 @@ Usage:
   ${_ME} restore <filename>
 
 Description:
-  Unlink the specified file and move from the tracked location in the
-  repository back to original location in \$HOME.
+  \`restore\` is an alias for \`untrack\`. For more information, run:
+    \`bindle help untrack\`
 HEREDOC
 restore() {
   _debug printf "restore() \${1}: %s\\n" "${1}"
@@ -1875,7 +1875,14 @@ unlink() {
 
 # --------------------------------------------------------------------- untrack
 
-desc "untrack" "$(desc --get "restore")"
+desc "untrack" <<HEREDOC
+Usage:
+  ${_ME} untrack <filename>
+
+Description:
+  Unlink the specified file and move it from the tracked location in the
+  repository back to original location in \$HOME.
+HEREDOC
 untrack() {
   remove "$@"
 }
