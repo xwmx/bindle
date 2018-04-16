@@ -1389,12 +1389,9 @@ desc "add" <<HEREDOC
 Usage:
   ${_ME} add <filename> [--force]
 
-Options:
-  --force  Overwrite files and folders in the repository that have the same
-           name as the item(s) being added.
-
 Description:
-  Add the specified file to the tracked directory.
+  \`add\` is an alias for \`track\`. For more information, run:
+    \`bindle help track\`
 HEREDOC
 add() {
   _debug printf "add() \${1}: %s\\n" "${1}"
@@ -1778,7 +1775,18 @@ status() {
 
 # ----------------------------------------------------------------------- track
 
-desc "track" "$(desc --get "add")"
+desc "track" <<HEREDOC
+Usage:
+  ${_ME} track <filename> [--force]
+
+Options:
+  --force  Overwrite files and folders in the repository that have the same
+           name as the item(s) being added.
+
+Description:
+  Track the specified file, adding it to the repository and adding a link in
+  \$HOME to the tracked file.
+HEREDOC
 track() {
   add "$@"
 }
