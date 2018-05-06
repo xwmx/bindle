@@ -18,6 +18,9 @@ setup() {
   echo "1" > "${_BINDLE_TMP_DIR}/.one"
   echo "2" > "${_BINDLE_TMP_DIR}/.two"
   echo "3" > "${_BINDLE_TMP_DIR}/.three"
+
+  export _HOME_PATH="${_BINDLE_TMP_DIR}"
+  export _BINDLEPATH="${_HOME_PATH}/.bindle"
 }
 
 teardown() {
