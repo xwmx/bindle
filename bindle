@@ -1021,10 +1021,10 @@ _init_with_source() {
   _debug printf "_init_with_source() \${1}: %s\\n" "${1}"
   _debug printf "_init_with_source() \${2}: %s\\n" "${2}"
 
-  if [[ -z "${1}" ]]
+  if [[ -z "${1:-}" ]]
   then
     _die printf "Repository directory not specified.\\n"
-  elif [[ -z "${2}" ]]
+  elif [[ -z "${2:-}" ]]
   then
     _die printf "Source URL not specified.\\n"
   else
@@ -1045,7 +1045,7 @@ _init_with_source() {
 # called by: init()
 _init_bindlerc() {
   _command_argv_includes "--skip-bindlerc" && return 0
-  if [[ -n "${1}" ]]
+  if [[ -n "${1:-}" ]]
   then
     printf ">> Adding ~/.bindlerc configuration file.\\n"
     printf "\
@@ -1068,7 +1068,7 @@ export BINDLEPATH=\"%s\"
 #
 # called by: init()
 _init_directory_structure() {
-  if [[ -n "${1}" ]]
+  if [[ -n "${1:-}" ]]
   then
     mkdir "${1}"
     mkdir "${1}/bin"
@@ -1096,7 +1096,7 @@ _init_directory_structure() {
 #
 # called by: init()
 _init_gitignore() {
-  if [[ -n "${1}" ]]
+  if [[ -n "${1:-}" ]]
   then
     printf "\
 # Ignore the local directory, but track .gitkeep so it's included in the repo.
@@ -1117,7 +1117,7 @@ _init_gitignore() {
 #
 # called by: init()
 _init_git_repository() {
-  if [[ -n "${1}" ]]
+  if [[ -n "${1:-}" ]]
   then
     cd "${1}"
     "${_GIT_BIN}" init
@@ -1131,7 +1131,7 @@ _init_git_repository() {
 #
 # called by: init()
 _init_post_message() {
-  if [[ -n "${1}" ]]
+  if [[ -n "${1:-}" ]]
   then
     printf "\
  _____  ___  _____  _____  ____   _____
