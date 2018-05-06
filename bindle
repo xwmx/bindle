@@ -389,15 +389,15 @@ _ME=$(basename "${0}")
 
 _debug printf "\${_ME}: %s\\n" "${_ME}"
 
-# $_HOME_DIR
+# $_HOME_PATH
 #
 # The user's home directory.
-if [[ -z "${_HOME_DIR:-}" ]]
+if [[ -z "${_HOME_PATH:-}" ]]
 then
-  _HOME_DIR="${HOME}"
+  _HOME_PATH="${HOME}"
 fi
 
-_debug printf "\${_HOME_DIR}: %s\\n" "${_HOME_DIR}"
+_debug printf "\${_HOME_PATH}: %s\\n" "${_HOME_PATH}"
 
 # $BINDLEPATH
 #
@@ -407,7 +407,7 @@ _debug printf "\${_HOME_DIR}: %s\\n" "${_HOME_DIR}"
 # Set `$BINDLEPATH` if not already set.
 if [[ -z "${BINDLEPATH:-}" ]]
 then
-  BINDLEPATH="${_HOME_DIR}/.bindle"
+  BINDLEPATH="${_HOME_PATH}/.bindle"
 fi
 
 # _validate_bindlepath_target()
@@ -584,7 +584,7 @@ _each_file() {
     _tracked_file_path="${_BINDLE_HOME_PATH}/${_file_basename}"
 
     local _original_file_path
-    _original_file_path="${_HOME_DIR}/${_file_basename}"
+    _original_file_path="${_HOME_PATH}/${_file_basename}"
 
     if ! ( [[ "${_file_basename}" =~ ^\.?\.$     ]] || \
            [[ "${_file_basename}" == ".DS_Store" ]]
@@ -618,7 +618,7 @@ _each_tracked_file() {
 # Iterate over the files in the original directory and execute the specified
 # function.
 _each_original_file() {
-  _each_file "${_HOME_DIR}" "${1}"
+  _each_file "${_HOME_PATH}" "${1}"
 }
 
 # _function_exists()
@@ -1496,7 +1496,7 @@ link() {
     _tracked_file_path="${_BINDLE_HOME_PATH}/${_file_basename}"
 
     local _original_file_path
-    _original_file_path="${_HOME_DIR}/${_file_basename}"
+    _original_file_path="${_HOME_PATH}/${_file_basename}"
 
     if [[ -e "${_tracked_file_path}" ]]
     then
@@ -1711,7 +1711,7 @@ track() {
     local _file_basename
     _file_basename="$(basename "${_arguments[1]:-}")"
 
-    local _original_file="${_HOME_DIR}/${_file_basename}"
+    local _original_file="${_HOME_PATH}/${_file_basename}"
     _debug printf "track() \${_original_file}: %s\\n" "${_original_file}"
 
     local _tracked_file="${_BINDLE_HOME_PATH}/${_file_basename}"
@@ -1840,7 +1840,7 @@ unlink() {
     _tracked_file_path="${_BINDLE_HOME_PATH}/${_file_basename}"
 
     local _original_file_path
-    _original_file_path="${_HOME_DIR}/${_file_basename}"
+    _original_file_path="${_HOME_PATH}/${_file_basename}"
 
     _unlink_item \
       "${_file_path}" \
@@ -1872,7 +1872,7 @@ untrack() {
     local _file_basename
     _file_basename="$(basename "${1}")"
 
-    local _original_file="${_HOME_DIR}/${_file_basename}"
+    local _original_file="${_HOME_PATH}/${_file_basename}"
     _debug printf "untrack() \${_original_file}: %s\\n" "${_original_file}"
 
     local _tracked_file="${_BINDLE_HOME_PATH}/${_file_basename}"
