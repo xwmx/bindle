@@ -428,12 +428,12 @@ _validate_bindlepath_target() {
 }
 _validate_bindlepath_target
 
-# $_TRACKED_DIR
+# $_BINDLE_HOME_DIR
 #
 # The directory containing the track files.
-_TRACKED_DIR="${BINDLEPATH}/home"
+_BINDLE_HOME_DIR="${BINDLEPATH}/home"
 
-_debug printf "\${_TRACKED_DIR}: %s\\n" "${_TRACKED_DIR}"
+_debug printf "\${_BINDLE_HOME_DIR}: %s\\n" "${_BINDLE_HOME_DIR}"
 
 # $_HOME_DIR
 #
@@ -578,7 +578,7 @@ _each_file() {
     _file_basename="$(basename "${__file_path}")"
 
     local _tracked_file_path
-    _tracked_file_path="${_TRACKED_DIR}/${_file_basename}"
+    _tracked_file_path="${_BINDLE_HOME_DIR}/${_file_basename}"
 
     local _original_file_path
     _original_file_path="${_HOME_DIR}/${_file_basename}"
@@ -604,7 +604,7 @@ _each_file() {
 # Iterate over the files in the tracked directory and execute the specified
 # function.
 _each_tracked_file() {
-  _each_file "${_TRACKED_DIR}" "${1}"
+  _each_file "${_BINDLE_HOME_DIR}" "${1}"
 }
 
 # _each_original_file()
@@ -1484,13 +1484,13 @@ link() {
   if [[ -n "${_arguments[1]:-}" ]]
   then
     local _file_path
-    _file_path="${_TRACKED_DIR}/${_arguments[1]}"
+    _file_path="${_BINDLE_HOME_DIR}/${_arguments[1]}"
 
     local _file_basename
     _file_basename="$(basename "${_arguments[1]}")"
 
     local _tracked_file_path
-    _tracked_file_path="${_TRACKED_DIR}/${_file_basename}"
+    _tracked_file_path="${_BINDLE_HOME_DIR}/${_file_basename}"
 
     local _original_file_path
     _original_file_path="${_HOME_DIR}/${_file_basename}"
@@ -1577,10 +1577,10 @@ Decription:
   Rename a tracked file and its corresponding link in \$HOME.
 HEREDOC
 rename() {
-  local _old_file="${_TRACKED_DIR}/${1}"
+  local _old_file="${_BINDLE_HOME_DIR}/${1}"
   _debug printf "rename() \${_old_file}: %s\\n" "${_old_file}"
 
-  local _new_file="${_TRACKED_DIR}/${2}"
+  local _new_file="${_BINDLE_HOME_DIR}/${2}"
   _debug printf "rename() \${_new_file}: %s\\n" "${_new_file}"
 
   if [[ -z "${1}" ]]
@@ -1711,7 +1711,7 @@ track() {
     local _original_file="${_HOME_DIR}/${_file_basename}"
     _debug printf "track() \${_original_file}: %s\\n" "${_original_file}"
 
-    local _tracked_file="${_TRACKED_DIR}/${_file_basename}"
+    local _tracked_file="${_BINDLE_HOME_DIR}/${_file_basename}"
     _debug printf "track() \${_tracked_file}: %s\\n" "${_tracked_file}"
 
     # Because the if / else is complicated, guarding against errors by only
@@ -1763,7 +1763,7 @@ track() {
     fi
     if ((_is_safe_to_proceed))
     then
-      mv "${_original_file}" "${_TRACKED_DIR}"
+      mv "${_original_file}" "${_BINDLE_HOME_DIR}"
       printf "Linked: %s => %s\\n" "${_tracked_file}" "${_original_file}"
       ln -s "${_tracked_file}" "${_original_file}"
     fi
@@ -1828,13 +1828,13 @@ unlink() {
   if [[ -n "${1}" ]]
   then
     local _file_path
-    _file_path="${_TRACKED_DIR}/${1}"
+    _file_path="${_BINDLE_HOME_DIR}/${1}"
 
     local _file_basename
     _file_basename="$(basename "${_file_path}")"
 
     local _tracked_file_path
-    _tracked_file_path="${_TRACKED_DIR}/${_file_basename}"
+    _tracked_file_path="${_BINDLE_HOME_DIR}/${_file_basename}"
 
     local _original_file_path
     _original_file_path="${_HOME_DIR}/${_file_basename}"
@@ -1872,7 +1872,7 @@ untrack() {
     local _original_file="${_HOME_DIR}/${_file_basename}"
     _debug printf "untrack() \${_original_file}: %s\\n" "${_original_file}"
 
-    local _tracked_file="${_TRACKED_DIR}/${_file_basename}"
+    local _tracked_file="${_BINDLE_HOME_DIR}/${_file_basename}"
     _debug printf "untrack() \${_tracked_file}: %s\\n" "${_tracked_file}"
 
     if [[ ! -e "${_tracked_file}" ]]
@@ -1952,7 +1952,7 @@ edit() {
   [[ -z "${EDITOR}" ]] && _die printf "\$EDITOR is not set.\\n"
   if [[ -n "${1:-}" ]]
   then
-    local _tracked_file="${_TRACKED_DIR}/${1}"
+    local _tracked_file="${_BINDLE_HOME_DIR}/${1}"
     ${EDITOR} "${_tracked_file}"
   else
     ${EDITOR} "${BINDLEPATH}"
