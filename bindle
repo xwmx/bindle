@@ -1162,7 +1162,7 @@ init() {
   #
   # Expected behavior:
   #   init [<source_repository>] [<bindlepath>]
-  if [[ -n "${1}" ]]
+  if [[ -n "${1:-}" ]]
   then
     if [[ "${1}" =~ ${_git_regex} ]]
     then
@@ -1178,12 +1178,12 @@ init() {
     fi
   fi
   _debug printf "init() \${BINDLEPATH}: %s\\n" "${BINDLEPATH}"
-  _debug printf "init() \${_init_source}: %s\\n" "${_init_source}"
+  _debug printf "init() \${_init_source}: %s\\n" "${_init_source:-}"
 
   # Initialize either from source or with fresh directory structure.
   if [[ ! -e "${BINDLEPATH}" ]]
   then
-    if [[ -n "${_init_source}" ]]
+    if [[ -n "${_init_source:-}" ]]
     then
       _init_with_source "${BINDLEPATH}" "${_init_source}"
     else
