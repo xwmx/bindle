@@ -409,6 +409,15 @@ if [[ -z "${BINDLEPATH:-}" ]]
 then
   BINDLEPATH="${_HOME_PATH}/.bindle"
 fi
+# If `$_BINDLEPATH` is present in the environment, override `$BINDLEPATH` with
+# its value. This provides a mechanism for overriding `$BINDLEPATH` for
+# internal purposes such as testing.
+if [[ -n "${_BINDLEPATH:-}" ]]
+then
+  BINDLEPATH="${_BINDLEPATH}"
+fi
+
+_debug printf "\${BINDLEPATH}: %s\\n" "${BINDLEPATH}"
 
 # _validate_bindlepath_target()
 #
