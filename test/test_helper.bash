@@ -11,6 +11,22 @@ setup() {
   #
   # The location of the `bindle` script being tested.
   export _BINDLE="${BATS_TEST_DIRNAME}/../bindle"
+
+  export _BINDLE_TMP_DIR
+  _BINDLE_TMP_DIR="$(mktemp -d /tmp/bindle_test.XXXXXX)" || exit 1
+
+  echo "1" > "${_BINDLE_TMP_DIR}/.one"
+  echo "2" > "${_BINDLE_TMP_DIR}/.two"
+  echo "3" > "${_BINDLE_TMP_DIR}/.three"
+}
+
+teardown() {
+  if [[ -n "${_BINDLE_TMP_DIR}" ]] &&
+     [[ -e "${_BINDLE_TMP_DIR}" ]] &&
+     [[ "${_BINDLE_TMP_DIR}" =~ ^/tmp/bindle_test ]]
+  then
+    rm -r "${_BINDLE_TMP_DIR}"
+  fi
 }
 
 ###############################################################################
