@@ -389,6 +389,16 @@ _ME=$(basename "${0}")
 
 _debug printf "\${_ME}: %s\\n" "${_ME}"
 
+# $_HOME_DIR
+#
+# The user's home directory.
+if [[ -z "${_HOME_DIR:-}" ]]
+then
+  _HOME_DIR="${HOME}"
+fi
+
+_debug printf "\${_HOME_DIR}: %s\\n" "${_HOME_DIR}"
+
 # $BINDLEPATH
 #
 # The path to the git-tracked directory containing the bindle-structured
@@ -397,7 +407,7 @@ _debug printf "\${_ME}: %s\\n" "${_ME}"
 # Set `$BINDLEPATH` if not already set.
 if [[ -z "${BINDLEPATH:-}" ]]
 then
-  BINDLEPATH="${HOME}/.bindle"
+  BINDLEPATH="${_HOME_DIR}/.bindle"
 fi
 
 # _validate_bindlepath_target()
@@ -434,13 +444,6 @@ _validate_bindlepath_target
 _BINDLE_HOME_DIR="${BINDLEPATH}/home"
 
 _debug printf "\${_BINDLE_HOME_DIR}: %s\\n" "${_BINDLE_HOME_DIR}"
-
-# $_HOME_DIR
-#
-# The user's home directory.
-_HOME_DIR="${HOME}"
-
-_debug printf "\${_HOME_DIR}: %s\\n" "${_HOME_DIR}"
 
 # $_GIT_BIN
 #
