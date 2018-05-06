@@ -565,8 +565,8 @@ _main() {
 # Iterate over the files in the specified directory and execute the specified
 # function.
 _each_file() {
-  local _callback_function="${2}"
   local _search_files=("${1}"/.*)
+  local _callback_function="${2}"
 
   _debug printf \
     "_each_file() \${#_search_files[@]}: %s\\n" \
@@ -587,8 +587,6 @@ _each_file() {
            [[ "${_file_basename}" == ".DS_Store" ]]
     )
     then
-      # Subfunctions can access the variables in this function, so it's not
-      # necessary to pass them as arguments.
       ${_callback_function} \
         "${__file_path}" \
         "${_file_basename}" \
