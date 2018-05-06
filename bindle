@@ -1518,7 +1518,7 @@ link() {
 
 desc "list" <<HEREDOC
 Usage:
-  ${_ME} list [tracked | untracked | <search string>]
+  ${_ME} list [tracked | untracked] [<search string>]
 
 Description:
   List all files in \$HOME.
@@ -1551,12 +1551,14 @@ list() {
     fi
   }
 
-  if [[ "${1}" == "untracked" ]]
+  if [[ "${1}" == "tracked" ]] || [[ "${1}" == "untracked" ]]
   then
-    untracked
-  elif [[ "${1}" == "tracked" ]]
-  then
-    tracked
+    if _blank "${2:-}"
+    then
+      "${1}"
+    else
+      "${1}" | grep "${2:-}"
+    fi
   elif [[ -n "${1:-}" ]]
   then
     _each_original_file "_list_item" | grep "${1:-}"
