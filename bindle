@@ -435,12 +435,12 @@ _TRACKED_DIR="${BINDLEPATH}/home"
 
 _debug printf "\${_TRACKED_DIR}: %s\\n" "${_TRACKED_DIR}"
 
-# $_ORIGINAL_DIR
+# $_HOME_DIR
 #
 # The user's home directory.
-_ORIGINAL_DIR="${HOME}"
+_HOME_DIR="${HOME}"
 
-_debug printf "\${_ORIGINAL_DIR}: %s\\n" "${_ORIGINAL_DIR}"
+_debug printf "\${_HOME_DIR}: %s\\n" "${_HOME_DIR}"
 
 # $_GIT_BIN
 #
@@ -581,7 +581,7 @@ _each_file() {
     _tracked_file_path="${_TRACKED_DIR}/${_file_basename}"
 
     local _original_file_path
-    _original_file_path="${_ORIGINAL_DIR}/${_file_basename}"
+    _original_file_path="${_HOME_DIR}/${_file_basename}"
 
     if ! ( [[ "${_file_basename}" =~ ^\.?\.$     ]] || \
            [[ "${_file_basename}" == ".DS_Store" ]]
@@ -615,7 +615,7 @@ _each_tracked_file() {
 # Iterate over the files in the original directory and execute the specified
 # function.
 _each_original_file() {
-  _each_file "${_ORIGINAL_DIR}" "${1}"
+  _each_file "${_HOME_DIR}" "${1}"
 }
 
 # _function_exists()
@@ -1493,7 +1493,7 @@ link() {
     _tracked_file_path="${_TRACKED_DIR}/${_file_basename}"
 
     local _original_file_path
-    _original_file_path="${_ORIGINAL_DIR}/${_file_basename}"
+    _original_file_path="${_HOME_DIR}/${_file_basename}"
 
     if [[ -e "${_tracked_file_path}" ]]
     then
@@ -1708,7 +1708,7 @@ track() {
     local _file_basename
     _file_basename="$(basename "${_arguments[1]:-}")"
 
-    local _original_file="${_ORIGINAL_DIR}/${_file_basename}"
+    local _original_file="${_HOME_DIR}/${_file_basename}"
     _debug printf "track() \${_original_file}: %s\\n" "${_original_file}"
 
     local _tracked_file="${_TRACKED_DIR}/${_file_basename}"
@@ -1837,7 +1837,7 @@ unlink() {
     _tracked_file_path="${_TRACKED_DIR}/${_file_basename}"
 
     local _original_file_path
-    _original_file_path="${_ORIGINAL_DIR}/${_file_basename}"
+    _original_file_path="${_HOME_DIR}/${_file_basename}"
 
     _unlink_item \
       "${_file_path}" \
@@ -1869,7 +1869,7 @@ untrack() {
     local _file_basename
     _file_basename="$(basename "${1}")"
 
-    local _original_file="${_ORIGINAL_DIR}/${_file_basename}"
+    local _original_file="${_HOME_DIR}/${_file_basename}"
     _debug printf "untrack() \${_original_file}: %s\\n" "${_original_file}"
 
     local _tracked_file="${_TRACKED_DIR}/${_file_basename}"
