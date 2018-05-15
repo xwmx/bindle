@@ -260,7 +260,7 @@ _COMMAND_ARGV=("${0}")
 _CMD=""
 _USE_DEBUG=0
 
-while [ ${#} -gt 0 ]
+while [[ ${#} -gt 0 ]]
 do
   opt="${1}"
   shift
