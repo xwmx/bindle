@@ -199,16 +199,8 @@ fi
 
 if [[ -n "${BINDLERC:-}" ]]
 then
-  # ShellCheck SC1090
-  #
-  # ShellCheck is not able to include sourced files from paths that are
-  # determined at runtime. The file will not be read, potentially resulting in
-  # warnings about unassigned variables and similar. Use a Directive to point
-  # ShellCheck to a fixed location it can read instead.
-  #
   # https://github.com/koalaman/shellcheck/wiki/SC1090
-  #
-  # shellcheck source=~/.bindlerc
+  # shellcheck source=/dev/null
   source "${BINDLERC:-}"
 fi
 
