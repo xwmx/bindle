@@ -521,9 +521,8 @@ _each_file() {
     local _original_file_path
     _original_file_path="${_HOME_PATH}/${_file_basename}"
 
-    if ! ( [[ "${_file_basename}" =~ ^\.?\.$     ]] || \
-           [[ "${_file_basename}" == ".DS_Store" ]]
-    )
+    if [[ ! "${_file_basename}" =~ ^\.?\.$   ]] && \
+       [[ "${_file_basename}" != ".DS_Store" ]]
     then
       ${_callback_function} \
         "${__file_path}" \
@@ -1591,9 +1590,8 @@ status() {
     local _tracked_file_path="${3:-}"
     local _original_file_path="${4:-}"
 
-    if ( [[ -L "${_original_file_path}" ]] && \
-         [[ "$(readlink "${_original_file_path}")" == "${_file_path}" ]]
-    )
+    if [[ -L "${_original_file_path}" ]] && \
+       [[ "$(readlink "${_original_file_path}")" == "${_file_path}" ]]
     then
       printf "✅   %s\\n" "${_file_basename}"
     elif [[ -e "${_original_file_path}" ]]
@@ -1656,11 +1654,9 @@ track() {
     if [[ ! -e "${_original_file}" ]]
     then
       _die printf "File or directory does not exist.\\n"
-    elif ( \
-      [[ "${_file_basename}" == "/"  ]] || \
-      [[ "${_file_basename}" == "."  ]] || \
-      [[ "${_file_basename}" == ".." ]]
-    )
+    elif [[ "${_file_basename}" == "/"  ]] || \
+         [[ "${_file_basename}" == "."  ]] || \
+         [[ "${_file_basename}" == ".." ]]
     then
       _die printf "Invalid filename: %s\\n" "${_file_basename}"
     elif [[ -e "${_tracked_file}" ]]
@@ -1720,9 +1716,8 @@ tracked() {
     local _file_basename="${2:-}"
     local _tracked_file_path="${3:-}"
 
-    if ( [[ -L ${_file_path} ]] && \
-         [[ "$(readlink "${_file_path}")" == "${_tracked_file_path}" ]]
-    )
+    if [[ -L ${_file_path} ]] && \
+       [[ "$(readlink "${_file_path}")" == "${_tracked_file_path}" ]]
     then
       printf "✅ 🔗  %s\\n" "${_file_basename}"
     fi
@@ -1751,9 +1746,8 @@ unlink() {
     local _tracked_file_path="${3:-}"
     local _original_file_path="${4:-}"
 
-    if ( [[ -L "${_original_file_path}" ]] && \
-         [[ "$(readlink "${_original_file_path}")" == "${_file_path}" ]]
-    )
+    if [[ -L "${_original_file_path}" ]] && \
+       [[ "$(readlink "${_original_file_path}")" == "${_file_path}" ]]
     then
       printf "Removing link: %s\\n" "${_original_file_path}"
       rm "${_original_file_path}"
@@ -1841,7 +1835,7 @@ untracked() {
 
     if [[ -L ${_file_path} ]]
     then
-      if ! ( [[ "$(readlink "${_file_path}")" == "${_tracked_file_path}" ]] )
+      if [[ "$(readlink "${_file_path}")" != "${_tracked_file_path}" ]]
       then
         printf "  🔗  %s\\n" "${_file_basename}"
       fi
