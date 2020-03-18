@@ -32,17 +32,17 @@ great with or without the `bindle` program.
 In order to be as portable as possible while still being easy to develop,
 `bindle` is written in Bash and should work with the default Bash version
 on any modern unix-like system (specifically, Bash 3 and higher). [Bash
-"Strict Mode"](https://github.com/alphabetum/bash-boilerplate#bash-strict-mode)
+"Strict Mode"](https://github.com/xwmx/bash-boilerplate#bash-strict-mode)
 and [ShellCheck](http://www.shellcheck.net/about.html) are used in development
 to help ensure correctness.
 
-See [alphabetum/dotfiles](https://github.com/alphabetum/dotfiles) for an
+See [xwmx/dotfiles](https://github.com/xwmx/dotfiles) for an
 example of a configuration managed with `bindle`.
 
 ## Usage
 
 *This documentation is for version 7 and higher. For version 6 documentation,
-[see here](https://github.com/alphabetum/bindle/blob/6.0.2/Readme.md).*
+[see here](https://github.com/xwmx/bindle/blob/6.0.2/Readme.md).*
 
 The basic idea is that you can add dotfiles and user scripts to the
 `~/.bindle` respository so they can be versioned, and symbolic links are
@@ -61,20 +61,20 @@ for setting preferences.
 
 To install with [Homebrew](http://brew.sh/):
 
-    brew install alphabetum/taps/bindle
+    brew install xwmx/taps/bindle
 
 #### bpkg
 
 To install with [bpkg](http://www.bpkg.io/):
 
-    bpkg install alphabetum/bindle
+    bpkg install xwmx/bindle
 
 #### Manual
 
 To install manually, simply add the `bindle` script to your `$PATH`. If
 you already have a `~/bin` directory, you can use the following command:
 
-    curl -L https://raw.github.com/alphabetum/bindle/master/bindle \
+    curl -L https://raw.github.com/xwmx/bindle/master/bindle \
       -o ~/bin/bindle && chmod +x ~/bin/bindle
 
 ### Viewing Help Information
@@ -146,7 +146,7 @@ This removes the symbolic link in `$HOME` and copies the original file back to
 
 An example `bindle`-managed home directory:
 
-[alphabetum/dotfiles/home](https://github.com/alphabetum/dotfiles/tree/master/home)
+[xwmx/dotfiles/home](https://github.com/xwmx/dotfiles/tree/master/home)
 
 #### bin
 
@@ -161,7 +161,7 @@ accessible to your shell environment, include the following line in your
 
 An example `bindle`-managed bin directory:
 
-[alphabetum/dotfiles/bin](https://github.com/alphabetum/dotfiles/tree/master/bin)
+[xwmx/dotfiles/bin](https://github.com/xwmx/dotfiles/tree/master/bin)
 
 #### local
 
@@ -194,8 +194,8 @@ For more information, see `bindle help run`
 
 An example `bindle`-managed scripts directory:
 
-[alphabetum/dotfiles/script
-](https://github.com/alphabetum/dotfiles/tree/master/script)
+[xwmx/dotfiles/script
+](https://github.com/xwmx/dotfiles/tree/master/script)
 
 ##### scripts/bootstrap
 
@@ -265,5 +265,5 @@ To view the help and usage information for any command, use:
 
 ## More Resources
 
-- [alphabetum/dotfiles](https://github.com/alphabetum/dotfiles)
-- [alphabetum/dotfile-research](https://github.com/alphabetum/dotfile-research)
+- [xwmx/dotfiles](https://github.com/xwmx/dotfiles)
+- [xwmx/dotfile-research](https://github.com/xwmx/dotfile-research)

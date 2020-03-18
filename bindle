@@ -899,7 +899,7 @@ _init_bindlerc() {
 #
 # Configuration file for Bindle
 #
-# https://github.com/alphabetum/bindle
+# https://github.com/xwmx/bindle
 
 # Set bindle directory
 export BINDLEPATH=\"%s\"
