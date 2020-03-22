@@ -17,6 +17,7 @@
 set -o nounset
 set -o errexit
 set -o pipefail
+set -o noglob
 
 # Set IFS to just newline and tab at the start
 #
@@ -427,7 +428,10 @@ _main() {
 # Iterate over the files in the specified directory and execute the specified
 # function.
 _each_file() {
+  set +o noglob
   local _search_files=("${1}"/.*)
+  set -o noglob
+
   local _callback_function="${2}"
 
   _debug printf \
