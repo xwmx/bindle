@@ -1094,7 +1094,7 @@ git() {
   _git_options=($(printf "%s" "${_RAW_OPTIONS}" | \
     tr '\\n' ' ' | \
     sed -e 's/--debug//' | \
-    sed -e 's/^git //'     \
+    sed -e 's/^git \{0,1\}//'
   ))
 
   # call the environment's git with the git options passed as an array.
