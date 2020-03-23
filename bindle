@@ -309,13 +309,11 @@ _debug printf "\${_BINDLE_HOME_PATH}: %s\\n" "${_BINDLE_HOME_PATH}"
 #
 # Must perform git operations via $_GIT_BIN to avoid calling the `bindle git`
 # command.
-_GIT_BIN="$(which git)"
-if [[ -z "${_GIT_BIN}" ]]
-then
-  _die printf "\
+{
+  _GIT_BIN="$(command -v git)" && [[ -n "${_GIT_BIN}" ]]
+} || _die printf "\
 The \`git\` executable can not be found. Since \`${_ME}\` depends on git, \
 please install git and make sure it has been added to your \$PATH.\\n"
-fi
 
 # Set $EDITOR to blank if it's unbound in order to avoid unrelated errors.
 #
