@@ -34,6 +34,14 @@ To install with [Homebrew](http://brew.sh/):
 brew install xwmx/taps/bindle
 ```
 
+### npm
+
+To install with [npm](https://www.npmjs.com/package/bindle-cli):
+
+```bash
+npm install --global bindle-cli
+```
+
 ### bpkg
 
 To install with [bpkg](http://www.bpkg.io/):
