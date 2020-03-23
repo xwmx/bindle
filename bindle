@@ -1208,13 +1208,18 @@ run() {
       "run(): \${_script_directory_path}: %s\\n" \
       "${_script_directory_path}"
 
-    for __file_path in $(find "${_script_directory_path}" -type f -follow -print)
+    # Implementation details:
+    # https://github.com/koalaman/shellcheck/wiki/SC2044#for-posix
+    while IFS= read -r __file_path
     do
       if [[ -f "${__file_path}" ]] && [[ ! "${__file_path}" =~ .DS_Store|.md ]]
       then
         printf "%s\\n" "${__file_path#${_script_directory_path}/}"
       fi
-    done
+    done < <(find "${_script_directory_path}" \
+      -type f -follow -print \
+      ! -name "$(printf "*\n*")"
+    )
   elif [[ -f "${_script_path}" ]]
   then
     local _script_arguments=(${@:2})
