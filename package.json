@@ -1,7 +1,41 @@
 {
-  "name": "bindle",
+  "name": "bindle-cli",
   "version": "7.0.0-alpha.0",
   "description": "A configuration management tool for your personal unix-like computer.",
   "global": true,
-  "install": "make install"
+  "install": "make install",
+  "directories": {
+    "test": "test"
+  },
+  "bin": {
+    "bindle": "./bindle"
+  },
+  "scripts": {
+    "test": "bats test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xwmx/bindle.git"
+  },
+  "keywords": [
+    "dotfiles",
+    "configuration",
+    "bash",
+    "shell",
+    "cli",
+    "command-line",
+    "git",
+    "bootstrap",
+    "terminal",
+    "config",
+    "linux",
+    "unix",
+    "macos"
+  ],
+  "author": "William Melody",
+  "license": "GPL-2.0-only",
+  "bugs": {
+    "url": "https://github.com/xwmx/bindle/issues"
+  },
+  "homepage": "https://github.com/xwmx/bindle#readme"
 }
