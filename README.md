@@ -1,3 +1,4 @@
+
      _____  ___  _____  _____  ____   _____
     /  _  \/___\/  _  \|  _  \/  _/  /   __\
     |  _  <|   ||  |  ||  |  ||  |---|   __|
@@ -10,66 +11,34 @@ computer.
 
 ## Goals & Philosophy
 
-The core goal of `bindle` is to provide an easy way to manage a single
-user's configuration, particularly:
+`bindle` provides an easy way to manage a user's configuration, particularly:
 
 - dotfiles,
 - user binaries and scripts (ie, anything in `$HOME/bin`),
-- configuration scripts.
-
-In order to keep everything easy to understand, the structure of a
-`bindle`-managed repository reflects the original locations of the tracked
-files and the commands try to be as close to simple automation of the
-underlying git commands as possible.
+- scripts for configuration and bootstrapping.
 
 `bindle` is intended to compliment rather than entirely relace manual
-configuration and versioning. Sometimes a local configuration might not
-change for months or even years, so relearning a tool every time you want
-to make a configuration change could be unnecessary overhead. `bindle` was
-designed around a logical repository directory structure that works
-great with or without the `bindle` program.
-
-In order to be as portable as possible while still being easy to develop,
-`bindle` is written in Bash and should work with the default Bash version
-on any modern unix-like system (specifically, Bash 3 and higher). [Bash
-"Strict Mode"](https://github.com/xwmx/bash-boilerplate#bash-strict-mode)
-and [ShellCheck](http://www.shellcheck.net/about.html) are used in development
-to help ensure correctness.
+configuration and versioning. `bindle` is designed around a logical repository
+directory structure that works great with or without the `bindle` program.
 
 See [xwmx/dotfiles](https://github.com/xwmx/dotfiles) for an
 example of a configuration managed with `bindle`.
 
-## Usage
+## Installation
 
-*This documentation is for version 7 and higher. For version 6 documentation,
-[see here](https://github.com/xwmx/bindle/blob/6.0.2/Readme.md).*
-
-The basic idea is that you can add dotfiles and user scripts to the
-`~/.bindle` respository so they can be versioned, and symbolic links are
-created in their original locations pointing to the versioned files.
-
-The `bindle` command automates much of this by automatically moving, linking,
-and listing the files you want to version, and it also provides shortcuts
-for some git operations. Additionally, `bindle` can help version and run local
-configuration scripts that you might want to create, like scripts for
-installing local programs or libraries with package managers or scripts
-for setting preferences.
-
-### Installation
-
-#### Homebrew
+### Homebrew
 
 To install with [Homebrew](http://brew.sh/):
 
     brew install xwmx/taps/bindle
 
-#### bpkg
+### bpkg
 
 To install with [bpkg](http://www.bpkg.io/):
 
     bpkg install xwmx/bindle
 
-#### Manual
+### Manual
 
 To install manually, simply add the `bindle` script to your `$PATH`. If
 you already have a `~/bin` directory, you can use the following command:
@@ -77,12 +46,14 @@ you already have a `~/bin` directory, you can use the following command:
     curl -L https://raw.github.com/xwmx/bindle/master/bindle \
       -o ~/bin/bindle && chmod +x ~/bin/bindle
 
+## Usage
+
 ### Viewing Help Information
 
 You can view the usage and help information by running `bindle` with no
 arguments or with the `--help` or `-h` options.
 
-### init
+### Setup
 
 If you don't currently have a local repository tracking your dotfiles,
 you can create one using
@@ -119,7 +90,11 @@ repository.
 The `bindle` command assumes that any items at the root level of this directory
 are 1) dotfiles (files and directories with a `.` prefix like `.bashrc` or
 `.vim`) and 2) normally exist at your `$HOME` path, aka `~/`, which is the
-root level of your user account's home directory.
+top level of your user account's home directory.
+
+To list existing dotfiles in `$HOME`, use `bindle list`
+
+    bindle list
 
 To track items from `$HOME`, use `bindle track`:
 
@@ -134,6 +109,10 @@ Once you've added a file, you need to commit it to the repository.
 
 This will `git add` the changed files and do a `git commit`. See `bindle
 help commit` for more information.
+
+To list all tracked files:
+
+    bindle list tracked
 
 If you want to stop tracking a dotfile or directory, run `bindle untrack`:
 
@@ -226,42 +205,346 @@ For example, I use it for changing icons on installed applications.
 
 #### .gitignore
 
-`.gitignore` is particularly useful for excluding sensitive information
-from directories in the repository. For example, by default, `bindle`
+`.gitignore` can be used to exclude sensitive information
+from directories in the repository. When generating a new repository, `bindle`
 excludes everything in any added `.ssh` directory except for the
 `.ssh/config`.
 
-It's also useful for dot directories that have both config files and
-large temp or cache files. For example, a `.rbenv` directory for the
+`.gitignore` is also useful for dot directories that have both config files
+and large temp or cache files. For example, a `.rbenv` directory for the
 [rbenv](https://github.com/sstephenson/rbenv) tool contains both
 configuration files and entire Ruby installations that are many
 gigabytes in size. You can use `.gitignore` to exclude the ruby
 installation directories while tracking the configuration files.
 
-#### Git Commands
-
-`bindle` has several commands to make it easier to perform git operations
-on the `$BINDLEPATH` repository. Among these are:
-
-- `bindle pull`
-- `bindle push`
-- `bindle submodules`
-- `bindle git`
-
-Use the help command (`bindle help <command-name>`) to learn more about
-these.
-
-#### Other Commands
-
-`bindle` includes several other commands for performing operations on
-files and inspecting the current state of the repository. All commands
-can be viewed by running:
-
-    bindle commands
+### Git Commands
 
 To view the help and usage information for any command, use:
 
     bindle help <command-name>
+
+#### `add`
+
+```text
+Usage:
+  bindle add <filename> [--force]
+
+Description:
+  `add` is an alias for `track`. For more information, run:
+    `bindle help track`
+```
+
+#### `commands`
+
+```text
+Usage:
+  bindle commands [--raw]
+
+Options:
+  --raw  Display the command list without formatting.
+
+Description:
+  Display the list of available commands.
+```
+
+#### `commit`
+
+```text
+Usage:
+  bindle commit [<message>]
+
+Description:
+  Commit the current changes to git. If a message is provided, it will be used
+  as the commit message. Otherwise, git will open your default editor.
+```
+
+#### `dir`
+
+```text
+Usage:
+  bindle dir
+
+Description:
+  Print the current value of $BINDLEPATH
+```
+
+#### `dotfiles`
+
+```text
+Usage:
+  bindle dotfiles
+
+Description:
+  List all dotfiles. Alias for `bindle status`.
+```
+
+#### `edit`
+
+```text
+Usage:
+  bindle edit
+  bindle edit [<filename>]
+
+Description:
+  Open a tracked file or, when no filename is specified, the entire tracked
+  repository in you $EDITOR, currently set to 'vim'.
+```
+
+#### `git`
+
+```text
+Usage:
+  bindle git command [--options] [<arguments>]
+
+Description:
+  Run a git command within the $BINDLEPATH directory.
+```
+
+#### `help`
+
+```text
+sage:
+  bindle help [<command>]
+
+Description:
+  Display help information for bindle or a specified command.
+```
+
+#### `init`
+
+```text
+Usage:
+  bindle init [<source_repository>] [<bindlepath>] [--initialize-submodules] [--skip-bindlerc]
+
+Options:
+  --initialize-submodules  Initialize repository submodules when used with a
+                           source_repository argument.
+  --skip-bindlerc          Don't generate a bindlerc file.
+
+Description:
+  Create initial repository file structure.
+
+  When provided with a URL as the first argument or a second argument the git
+  repository at that URL is cloned and used as the tracking repository.
+
+  When provided with an absolute path as the lone argument or second argument
+  after a repository URL, the initial repository is created at the specified
+  path and a configuration file is created at $HOME/.bindlerc with that
+  location set as the $BINDLEPATH.
+```
+
+#### `link`
+
+```text
+Usage:
+  bindle link [<filename>] [--overwrite [--with-backup]]
+
+Options:
+  --overwrite    Overwrite any files that exist in the directory where links
+                 are being created, meaning that any conflicting files will be
+                 deleted and links to the corresponding repository file will
+                 be created.
+  --with-backup  When used in combination with --overwrite, any overwritten
+                 files are first renamed with a '.bak' extension. If a file
+                 with the same name plus '.bak' extension already exists,
+                 nothing is done to this file and no link is created.
+
+Description:
+  Create a link in $HOME that references the corresponding item in the
+  tracked directory.
+
+  By default, the command links all files that exist in the tracked directory.
+  If a filename is passed to the link command, then it only acts on that file.
+```
+
+#### `list`
+
+```text
+Usage:
+  bindle list [tracked | untracked] [<search string>]
+
+Description:
+  List all files in $HOME.
+
+  If 'tracked' or 'untracked' as passed as arguments to 'list', then only the
+  files with those statuses are listed. When provided with a seach string, all
+  matching filenames will be printed.
+```
+
+#### `pull`
+
+```text
+Usage:
+  bindle pull
+
+Description:
+  Pull latest changes from the remote repository.
+```
+
+#### `push`
+
+```text
+Usage:
+  bindle push
+
+Description:
+  Push local commits to the remote repository.
+```
+
+#### `rename`
+
+```text
+Usage:
+  bindle rename <old_filename> <new_filename>
+
+Decription:
+  Rename a tracked file and its corresponding link in $HOME.
+```
+
+#### `restore`
+
+```text
+Usage:
+  bindle restore <filename>
+
+Description:
+  `restore` is an alias for `untrack`. For more information, run:
+    `bindle help untrack`
+```
+
+#### `run`
+
+```text
+Usage:
+  bindle run ( list | <script_name> )
+
+Description:
+  Run and list scripts.
+
+  Scripts can be added to:
+    $BINDLEPATH/scripts/
+```
+
+#### `scripts`
+
+```text
+Usage:
+  bindle scripts
+
+Description:
+  List all scripts. Alias for `bindle run`.
+```
+
+#### `status`
+
+```text
+Usage:
+  bindle status
+
+Description:
+  List status of files in $HOME with filenames matching those in
+  $BINDLEPATH/home/.
+
+  Indicators display information about the status of each entry:
+   ✅   - Identical, indicating a valid symbolic link to the tracked file
+     e  - A file exists, but it's not linked to tracked file
+      x - No file exists
+```
+
+#### `submodules`
+
+```text
+Usage:
+  bindle submodules ( sync | update )
+
+Subcommands:
+  sync    Sync all submodules with the current head commit. This usually be
+          should be performed after a `bindle pull`. Equivalent git command:
+            git submodule update --recursive --init
+  update  Update all first-level submodules to the latest commit in each
+          submodule's origin repository. Equivalent git command:
+            git submodule update --init --remote
+```
+
+#### `sync`
+
+```text
+Usage:
+  bindle sync
+
+Description:
+  Pull latest changes from the remote repository and sync submodules.
+```
+
+#### `track`
+
+```text
+Usage:
+  bindle track <filename> [--force]
+
+Options:
+  --force  Overwrite files and folders in the repository that have the same
+           name as the item(s) being added.
+
+Description:
+  Track the specified file, adding it to the repository and adding a link in
+  $HOME to the tracked file.
+```
+
+#### `tracked`
+
+```text
+Usage:
+  bindle tracked
+
+Description:
+  List all tracked dotfiles in $HOME.
+```
+
+#### `unlink`
+
+```text
+Usage:
+  bindle unlink [<filename>]
+
+Description:
+  Remove symlinks in $HOME.
+
+  By default, the command removes all of the symlinks pointing to items in
+  tracked directory. If a filename is passed to the unlink command, then it
+  only acts on symlinks to that file.
+```
+
+#### `untrack`
+
+```text
+Usage:
+  bindle untrack <filename>
+
+Description:
+  Unlink the specified file and move it from the tracked location in the
+  repository back to original location in $HOME.
+```
+
+#### `untracked`
+
+```text
+Usage:
+  bindle untracked
+
+Description:
+  List all untracked dotfiles in $HOME.
+```
+
+#### `version`
+
+```text
+Usage:
+  bindle ( version | --version )
+
+Description:
+  Display the current program version.
+```
 
 ## More Resources
 
