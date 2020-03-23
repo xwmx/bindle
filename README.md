@@ -17,9 +17,11 @@ unix-like computer.
 - user binaries and scripts (ie, anything in `$HOME/bin`),
 - scripts for configuration and bootstrapping.
 
-`bindle` is intended to compliment rather than entirely relace manual
-configuration and versioning. `bindle` is designed around a logical repository
-directory structure that works great with or without the `bindle` program.
+`bindle` compliments manual configuration and versioning. `bindle` tracks files
+in a git repository with a simple and logical directory structure that works
+great for dotfile versioning with or without the `bindle` program itself.
+`bindle` is written as a single well-structured shell script and can be
+used with any modern unix-like system.
 
 See [xwmx/dotfiles](https://github.com/xwmx/dotfiles) for an
 example of a configuration managed with `bindle`.
