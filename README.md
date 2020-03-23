@@ -6,8 +6,8 @@
 
 # bindle
 
-`bindle` is a configuration management tool for your personal unix-like
-computer.
+`bindle` is a configuration and dotfile management tool for your personal
+unix-like computer.
 
 ## Goals & Philosophy
 
