@@ -347,11 +347,11 @@ Description:
 
 ```text
 Usage:
-  bindle init [<source_repository>] [<bindlepath>] [--initialize-submodules] [--skip-bindlerc]
+  bindle init [<source-repository> [--initialize-submodules]] [<bindlepath>] [--skip-bindlerc]
 
 Options:
   --initialize-submodules  Initialize repository submodules when used with a
-                           source_repository argument.
+                           <source-repository> argument.
   --skip-bindlerc          Don't generate a bindlerc file.
 
 Description:
@@ -394,7 +394,7 @@ Description:
 
 ```text
 Usage:
-  bindle list [tracked | untracked] [<search string>]
+  bindle list [tracked | untracked] [<search-string>]
 
 Description:
   List all files in $HOME.
@@ -428,7 +428,7 @@ Description:
 
 ```text
 Usage:
-  bindle rename <old_filename> <new_filename>
+  bindle rename <old-filename> <new-filename>
 
 Decription:
   Rename a tracked file and its corresponding link in $HOME.
@@ -449,7 +449,7 @@ Description:
 
 ```text
 Usage:
-  bindle run ( list | <script_name> )
+  bindle run ( list | <script-name> )
 
 Description:
   Run and list scripts.

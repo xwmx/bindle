@@ -843,12 +843,12 @@ commands() {
 
 desc "init" <<HEREDOC
 Usage:
-  ${_ME} init [<source_repository>] [<bindlepath>] [--initialize-submodules] \
-[--skip-bindlerc]
+  ${_ME} init [<source-repository> [--initialize-submodules]] [<bindlepath>] \
+    [--skip-bindlerc]
 
 Options:
   --initialize-submodules  Initialize repository submodules when used with a
-                           source_repository argument.
+                           <source-repository> argument.
   --skip-bindlerc          Don't generate a bindlerc file.
 
 Description:
@@ -1011,7 +1011,7 @@ init() {
   # Handle arguments.
   #
   # Expected behavior:
-  #   init [<source_repository>] [<bindlepath>]
+  #   init [<source-repository>] [<bindlepath>]
   if [[ -n "${1:-}" ]]
   then
     if [[ "${1}" =~ ${_git_regex} ]]
@@ -1179,7 +1179,7 @@ sync() {
 
 desc "run" <<HEREDOC
 Usage:
-  ${_ME} run ( list | <script_name> )
+  ${_ME} run ( list | <script-name> )
 
 Description:
   Run and list scripts.
@@ -1438,7 +1438,7 @@ list() {
 
 desc "rename" <<HEREDOC
 Usage:
-  ${_ME} rename <old_filename> <new_filename>
+  ${_ME} rename <old-filename> <new-filename>
 
 Decription:
   Rename a tracked file and its corresponding link in \$HOME.
