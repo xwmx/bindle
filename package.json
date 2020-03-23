@@ -1,6 +1,6 @@
 {
   "name": "bindle-cli",
-  "version": "7.0.0-alpha.0",
+  "version": "7.0.0",
   "description": "A configuration management tool for your personal unix-like computer.",
   "global": true,
   "install": "make install",
