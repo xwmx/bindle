@@ -30,25 +30,31 @@ example of a configuration managed with `bindle`.
 
 To install with [Homebrew](http://brew.sh/):
 
-    brew install xwmx/taps/bindle
+```bash
+brew install xwmx/taps/bindle
+```
 
 ### bpkg
 
 To install with [bpkg](http://www.bpkg.io/):
 
-    bpkg install xwmx/bindle
+```bash
+bpkg install xwmx/bindle
+```
 
 ### Manual
 
 To install manually, simply add the `bindle` script to your `$PATH`. If
 you already have a `~/bin` directory, you can use the following command:
 
-    curl -L https://raw.github.com/xwmx/bindle/master/bindle \
-      -o ~/bin/bindle && chmod +x ~/bin/bindle
+```bash
+curl -L https://raw.github.com/xwmx/bindle/master/bindle \
+  -o ~/bin/bindle && chmod +x ~/bin/bindle
+```
 
 ## Usage
 
-### Viewing Help Information
+### Help Information
 
 You can view the usage and help information by running `bindle` with no
 arguments or with the `--help` or `-h` options.
@@ -58,7 +64,9 @@ arguments or with the `--help` or `-h` options.
 If you don't currently have a local repository tracking your dotfiles,
 you can create one using
 
-    bindle init
+```bash
+bindle init
+```
 
 This will initialize a git repository at `$HOME/.bindle` with the following
 structure:
@@ -78,7 +86,9 @@ You can change the location used for storing dotfiles by adding a
 `.bindlerc` file at `$HOME/.bindlerc` and setting the `$BINDLEPATH` variable to
 the desired location:
 
-    export BINDLEPATH="/a/custom/path"
+```bash
+export BINDLEPATH="/a/custom/path"
+```
 
 ### Overview
 
@@ -94,29 +104,39 @@ top level of your user account's home directory.
 
 To list existing dotfiles in `$HOME`, use `bindle list`
 
-    bindle list
+```bash
+bindle list
+```
 
 To track items from `$HOME`, use `bindle track`:
 
-    bindle track .bashrc
+```bash
+bindle track .bashrc
+```
 
 This adds the file or directory to `BINDLEPATH/home` and creates a symbolic link
 in `$HOME` referencing the file or directory.
 
 Once you've added a file, you need to commit it to the repository.
 
-    bindle commit
+```bash
+bindle commit
+```
 
 This will `git add` the changed files and do a `git commit`. See `bindle
 help commit` for more information.
 
 To list all tracked files:
 
-    bindle list tracked
+```bash
+bindle list tracked
+```
 
 If you want to stop tracking a dotfile or directory, run `bindle untrack`:
 
-    bindle untrack .bashrc
+```bash
+bindle untrack .bashrc
+```
 
 This removes the symbolic link in `$HOME` and copies the original file back to
 `$HOME` from `$BINDLEPATH/home`.
@@ -134,7 +154,9 @@ track along with your dotfiles. To make the executables in this directory
 accessible to your shell environment, include the following line in your
 `.bashrc` or equivalent:
 
-    PATH="${BINDLEPATH}/bin:${PATH}"
+```bash
+PATH="${BINDLEPATH}/bin:${PATH}"
+```
 
 ###### Example
 
@@ -157,7 +179,9 @@ and will simply run them.
 
 To run a script that is located at `$BINDLEPATH/scripts/example.bash`:
 
-    bindle run example.bash
+```bash
+bindle run example.bash
+```
 
 Scripts can be organized in subdirectories. Newly-created `bindle`
 projects contain several placeholder directories: `bootstrap`,
@@ -165,7 +189,9 @@ projects contain several placeholder directories: `bootstrap`,
 
 To run a script that is located at `$BINDLEPATH/scripts/install/example.bash`:
 
-    bindle run install/example.sh
+```bash
+bindle run install/example.sh
+```
 
 For more information, see `bindle help run`
 
@@ -178,30 +204,29 @@ An example `bindle`-managed scripts directory:
 
 ##### scripts/bootstrap
 
-`scripts/bootstrap` is intended for scripts that bootstrap the user account
-and user-controlled parts of the system. For example, bootstrap scripts
-could set up some default folders and/or call a series of `install`,
-`configure`, and `customize` scripts. Generally, a bootstrap script
-should only be called once, during an initial setup.
+Scripts that bootstrap the user account and user-controlled parts of the
+system.
+
+For example, bootstrap scripts could set up some default folders and/or call a
+series of `install`, `configure`, and `customize` scripts. Generally, a
+bootstrap script would only be called once, during an initial setup.
 
 ##### scripts/install
 
-`scripts/install` is intended for scripts that install programs, ideally via
-package management systems. For example, you could have a bash script
-that contains commands for installing programs via a system-wide package
-manager like [homebrew](http://brew.sh/) or a language-specific one like
-[LuaRocks](http://luarocks.org/).
+Scripts that install programs, such as with package management systems.
+
+For example, you could have a bash script that contains commands for installing
+programs via a system-wide package manager like [homebrew](http://brew.sh/) or
+a language-specific one like [LuaRocks](http://luarocks.org/).
 
 ##### scripts/configure
 
-`scripts/configure` is intended for scripts that run perform system
-configuration operations, like setting OS X preferences.
+Scripts that run perform system configuration operations, like setting
+preferences.
 
 ##### scripts/customize
 
-`scripts/customize` is intended for scripts that customize any aspect of the
-configuration or anything else on the system. In other words, 'hacks'.
-For example, I use it for changing icons on installed applications.
+Scripts that customize any aspect of the configuration or system.
 
 #### .gitignore
 
