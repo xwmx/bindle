@@ -771,6 +771,9 @@ Options:
 Help:
   ${_ME} help [<command>]
 
+Home:
+  https://github.com/xwmx/bindle
+
 $(commands)
 HEREDOC
   else
