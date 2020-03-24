@@ -1,6 +1,6 @@
 {
   "name": "bindle-cli",
-  "version": "7.0.3",
+  "version": "7.0.4",
   "description": "A configuration and dotfile management tool for your personal unix-like computer.",
   "global": true,
   "install": "make install",
