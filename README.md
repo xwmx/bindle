@@ -9,9 +9,8 @@
 `bindle` is a configuration and dotfile management tool for your personal
 unix-like computer.
 
-## Goals & Philosophy
-
-`bindle` provides an easy way to manage a user's configuration, particularly:
+`bindle` provides an easy way to manage a user's configuration files,
+particularly:
 
 - dotfiles,
 - user binaries and scripts (ie, anything in `$HOME/bin`),
