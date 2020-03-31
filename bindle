@@ -1466,13 +1466,13 @@ rename() {
   then
     printf "A file already exists with the new filename.\\n"
   else
-    "${_ME}" unlink "${1}"
+    unlink "${1}"
     _debug printf "unlink %s\\n" "${1}"
 
     mv "${_old_file}" "${_new_file}"
     _debug printf "mv %s %s\\n" "${_old_file}" "${_new_file}"
 
-    "${_ME}" link "${2}"
+    link "${2}"
     _debug printf "link %s\\n" "${2}"
   fi
 }
