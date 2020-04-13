@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/xwmx/bindle.svg?branch=master)](https://travis-ci.org/xwmx/bindle)
 
      _____  ___  _____  _____  ____   _____
     /  _  \/___\/  _  \|  _  \/  _/  /   __\
