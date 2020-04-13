@@ -10,7 +10,7 @@ load test_helper
 @test "\`bindle version\` prints a version number." {
   run "${_BINDLE}" --version
   printf "'%s'" "${output}"
-  echo "${output}" | grep -q '\d\+\.\d\+\.\d\+'
+  echo "${output}" | grep -q '[[:digit:]]\+\.[[:digit:]]\+\.[[:digit:]]\+'
 }
 
 @test "\`bindle --version\` returns with 0 status." {
@@ -21,5 +21,5 @@ load test_helper
 @test "\`bindle --version\` prints a version number." {
   run "${_BINDLE}" --version
   printf "'%s'" "${output}"
-  echo "${output}" | grep -q '\d\+\.\d\+\.\d\+'
+  echo "${output}" | grep -q '[[:digit:]]\+\.[[:digit:]]\+\.[[:digit:]]\+'
 }
