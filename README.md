@@ -33,7 +33,8 @@ example of a configuration managed with `bindle`.
 To install with [Homebrew](http://brew.sh/):
 
 ```bash
-brew install xwmx/taps/bindle
+brew tap xwmx/taps
+brew install bindle
 ```
 
 ### npm
